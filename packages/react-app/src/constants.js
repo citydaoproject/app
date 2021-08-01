@@ -1,0 +1,83 @@
+// MY INFURA_ID, SWAP IN YOURS FROM https://infura.io/dashboard/ethereum
+export const INFURA_ID = "460f40a260564ac4a4f4b3fffb032dad";
+
+//MY ETHERSCAN_ID, SWAP IN YOURS FROM https://etherscan.io/myapikey
+export const ETHERSCAN_KEY = "PSW8C433Q667DVEX5BCRMGNAH9FSGFZ7Q8";
+
+export const NETWORKS = [
+    {
+      name: "xDAI",
+      id: "xdai",
+      icon: "⚫",
+      chainId: 100,
+      price: 1,
+      url: "https://dai.poa.network",
+      faucet: "https://xdai-faucet.top/",
+      blockExplorer: "https://blockscout.com/poa/xdai/",
+      active: false,
+    },
+    {
+      name: "Mainnet",
+      id: "mainnet",
+      icon: "🟢",
+      chainId: 1,
+      decimals: 3,
+      url: `https://mainnet.infura.io/v3/${process.env.INFURA_ID}`,
+      blockExplorer: "https://etherscan.io/",
+      active: false,
+    },
+    {
+      name: "Rinkeby",
+      id: "rinkeby",
+      icon: "🟡",
+      chainId: 4,
+      decimals: 3,
+      url: `https://rinkeby.infura.io/v3/${process.env.INFURA_ID}`,
+      faucet: "https://faucet.rinkeby.io/",
+      blockExplorer: "https://rinkeby.etherscan.io/",
+      active: false,
+    },
+    {
+      name: "Ropsten",
+      id: "ropsten",
+      icon: "🔴",
+      chainId: 3,
+      decimals: 3,
+      faucet: "https://faucet.dimensions.network/",
+      blockExplorer: "https://ropsten.etherscan.io/",
+      url: `https://ropsten.infura.io/v3/${process.env.INFURA_ID}`,
+      active: false,
+    },
+    {
+      name: "Kovan",
+      id: "kovan",
+      icon: "🟣",
+      chainId: 42,
+      decimals: 3,
+      url: `https://kovan.infura.io/v3/${process.env.INFURA_ID}`,
+      blockExplorer: "https://kovan.etherscan.io/",
+      faucet: "https://faucet.kovan.network/",
+      active: false,
+    },
+    {
+      name: "Goerli",
+      id: "goerli",
+      icon: "🔵",
+      chainId: 5,
+      decimals: 3,
+      faucet: "https://goerli-faucet.slock.it/",
+      blockExplorer: "https://goerli.etherscan.io/",
+      url: `https://goerli.infura.io/v3/${process.env.INFURA_ID}`,
+      active: false,
+    },
+    {      
+      name: "Local",
+      id: "localhost",
+      icon: "🔘",
+      chainId: 31337,
+      decimals: 3,
+      blockExplorer: '',
+      url: "http://localhost:8545",
+      active: true,
+    },
+  ]
