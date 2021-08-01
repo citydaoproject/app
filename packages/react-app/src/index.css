@@ -1,0 +1,14 @@
+body {
+  margin: 0;
+  overflow-x: hidden; /* Hide horizontal scrollbar */
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+.button {
+  z-index: 257;
+  position: relative; background-image: linear-gradient(#eed11a, #eed11a); background-color: #40a9ff; border-radius: 50%; width: 89px; height: 89px; box-shadow: rgb(0, 0, 0) 0.5px 0.5px 5px;
+}
