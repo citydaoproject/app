@@ -1,0 +1,25 @@
+specVersion: 0.0.2
+schema:
+  file: ./src/schema.graphql
+dataSources:
+  - kind: ethereum/contract
+    name: YourContract
+    network: localhost
+    source:
+      address: '0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512'
+      abi: YourContract
+      startBlock: 1
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      entities:
+        - Haiku
+        - Owner
+      abis:
+        - name: YourContract
+          file: ./abis/YourContract.json
+      eventHandlers:
+        - event: Mint(uint256,address,string,string,string)
+          handler: storeMint
+      file: ./src/mapping.ts

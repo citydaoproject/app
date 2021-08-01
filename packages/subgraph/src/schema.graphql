@@ -1,0 +1,17 @@
+type Haiku @entity {
+  id: ID!
+  owner: Owner!
+  text: String!
+  color: String!
+  tokenId: String!
+  createdAt: BigInt!
+  transactionHash: String!
+}
+
+type Owner @entity {
+  id: ID!
+  address: Bytes!
+  haikus: [Haiku!] @derivedFrom(field: "owner")
+  createdAt: BigInt!
+  haikuCount: BigInt!
+}
