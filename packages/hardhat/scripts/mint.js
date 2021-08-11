@@ -22,183 +22,88 @@ const main = async () => {
   const { deployer } = await getNamedAccounts();
   const parcel = await ethers.getContract("Parcel", deployer);
 
-  const buffalo = {
-    description: "It's actually a bison?",
-    external_url: "https://austingriffith.com/portfolio/paintings/", // <-- this can link to a page for the specific file too
-    image: "https://austingriffith.com/images/paintings/buffalo.jpg",
-    name: "Buffalo",
-    attributes: [
-      {
-        trait_type: "BackgroundColor",
-        value: "green",
+  const parcel0 = {
+    id: "parcel0",
+    geojson: {
+      type: "Feature",
+      properties: {},
+      geometry: {
+        type: "Polygon",
+        coordinates: [
+          [
+            [-106.31332397460938, 43.17063150289795],
+            [-106.22886657714842, 43.17063150289795],
+            [-106.22886657714842, 43.22719386727831],
+            [-106.31332397460938, 43.22719386727831],
+            [-106.31332397460938, 43.17063150289795],
+          ],
+        ],
       },
-      {
-        trait_type: "Eyes",
-        value: "googly",
-      },
-      {
-        trait_type: "Stamina",
-        value: 42,
-      },
-    ],
+    },
   };
-  console.log("Uploading buffalo...");
-  const uploaded = await ipfs.add(JSON.stringify(buffalo));
+  console.log("Uploading parcel0...");
+  const uploaded = await ipfs.add(JSON.stringify(parcel0));
 
-  console.log("Minting buffalo with IPFS hash (" + uploaded.path + ")");
+  console.log("Minting parcel0 with IPFS hash (" + uploaded.path + ")");
   await parcel.mintItem(toAddress, uploaded.path, {
     gasLimit: 400000,
   });
 
   await sleep(delayMS);
 
-  const zebra = {
-    description: "What is it so worried about?",
-    external_url: "https://austingriffith.com/portfolio/paintings/", // <-- this can link to a page for the specific file too
-    image: "https://austingriffith.com/images/paintings/zebra.jpg",
-    name: "Zebra",
-    attributes: [
-      {
-        trait_type: "BackgroundColor",
-        value: "blue",
+  const parcel1 = {
+    id: "parcel1",
+    geojson: {
+      type: "Feature",
+      properties: {},
+      geometry: {
+        type: "Polygon",
+        coordinates: [
+          [
+            [-106.36688232421875, 43.22969541537019],
+            [-106.28517150878906, 43.22969541537019],
+            [-106.28517150878906, 43.28220420881544],
+            [-106.36688232421875, 43.28220420881544],
+            [-106.36688232421875, 43.22969541537019],
+          ],
+        ],
       },
-      {
-        trait_type: "Eyes",
-        value: "googly",
-      },
-      {
-        trait_type: "Stamina",
-        value: 38,
-      },
-    ],
+    },
   };
-  console.log("Uploading zebra...");
-  const uploadedzebra = await ipfs.add(JSON.stringify(zebra));
+  console.log("Uploading parcel1...");
+  const uploadedparcel1 = await ipfs.add(JSON.stringify(parcel1));
 
-  console.log("Minting zebra with IPFS hash (" + uploadedzebra.path + ")");
-  await parcel.mintItem(toAddress, uploadedzebra.path, {
+  console.log("Minting parcel1 with IPFS hash (" + uploadedparcel1.path + ")");
+  await parcel.mintItem(toAddress, uploadedparcel1.path, {
     gasLimit: 400000,
   });
 
   await sleep(delayMS);
 
-  const rhino = {
-    description: "What a horn!",
-    external_url: "https://austingriffith.com/portfolio/paintings/", // <-- this can link to a page for the specific file too
-    image: "https://austingriffith.com/images/paintings/rhino.jpg",
-    name: "Rhino",
-    attributes: [
-      {
-        trait_type: "BackgroundColor",
-        value: "pink",
+  const parcel2 = {
+    id: "parcel2",
+    geojson: {
+      type: "Feature",
+      properties: {},
+      geometry: {
+        type: "Polygon",
+        coordinates: [
+          [
+            [-106.28242492675781, 43.22869480845322],
+            [-106.19178771972656, 43.22869480845322],
+            [-106.19178771972656, 43.28570318513211],
+            [-106.28242492675781, 43.28570318513211],
+            [-106.28242492675781, 43.22869480845322],
+          ],
+        ],
       },
-      {
-        trait_type: "Eyes",
-        value: "googly",
-      },
-      {
-        trait_type: "Stamina",
-        value: 22,
-      },
-    ],
+    },
   };
-  console.log("Uploading rhino...");
-  const uploadedrhino = await ipfs.add(JSON.stringify(rhino));
+  console.log("Uploading parcel2...");
+  const uploadedparcel2 = await ipfs.add(JSON.stringify(parcel2));
 
-  console.log("Minting rhino with IPFS hash (" + uploadedrhino.path + ")");
-  await parcel.mintItem(toAddress, uploadedrhino.path, {
-    gasLimit: 400000,
-  });
-
-  await sleep(delayMS);
-
-  const fish = {
-    description: "Is that an underbyte?",
-    external_url: "https://austingriffith.com/portfolio/paintings/", // <-- this can link to a page for the specific file too
-    image: "https://austingriffith.com/images/paintings/fish.jpg",
-    name: "Fish",
-    attributes: [
-      {
-        trait_type: "BackgroundColor",
-        value: "blue",
-      },
-      {
-        trait_type: "Eyes",
-        value: "googly",
-      },
-      {
-        trait_type: "Stamina",
-        value: 15,
-      },
-    ],
-  };
-  console.log("Uploading fish...");
-  const uploadedfish = await ipfs.add(JSON.stringify(fish));
-
-  console.log("Minting fish with IPFS hash (" + uploadedfish.path + ")");
-  await parcel.mintItem(toAddress, uploadedfish.path, {
-    gasLimit: 400000,
-  });
-
-  await sleep(delayMS);
-
-  const flamingo = {
-    description: "So delicate.",
-    external_url: "https://austingriffith.com/portfolio/paintings/", // <-- this can link to a page for the specific file too
-    image: "https://austingriffith.com/images/paintings/flamingo.jpg",
-    name: "Flamingo",
-    attributes: [
-      {
-        trait_type: "BackgroundColor",
-        value: "black",
-      },
-      {
-        trait_type: "Eyes",
-        value: "googly",
-      },
-      {
-        trait_type: "Stamina",
-        value: 6,
-      },
-    ],
-  };
-  console.log("Uploading flamingo...");
-  const uploadedflamingo = await ipfs.add(JSON.stringify(flamingo));
-
-  console.log(
-    "Minting flamingo with IPFS hash (" + uploadedflamingo.path + ")"
-  );
-  await parcel.mintItem(toAddress, uploadedflamingo.path, {
-    gasLimit: 400000,
-  });
-
-  const godzilla = {
-    description: "Raaaar!",
-    external_url: "https://austingriffith.com/portfolio/paintings/", // <-- this can link to a page for the specific file too
-    image: "https://austingriffith.com/images/paintings/godzilla.jpg",
-    name: "Godzilla",
-    attributes: [
-      {
-        trait_type: "BackgroundColor",
-        value: "orange",
-      },
-      {
-        trait_type: "Eyes",
-        value: "googly",
-      },
-      {
-        trait_type: "Stamina",
-        value: 99,
-      },
-    ],
-  };
-  console.log("Uploading godzilla...");
-  const uploadedgodzilla = await ipfs.add(JSON.stringify(godzilla));
-
-  console.log(
-    "Minting godzilla with IPFS hash (" + uploadedgodzilla.path + ")"
-  );
-  await parcel.mintItem(toAddress, uploadedgodzilla.path, {
+  console.log("Minting parcel2 with IPFS hash (" + uploadedparcel2.path + ")");
+  await parcel.mintItem(toAddress, uploadedparcel2.path, {
     gasLimit: 400000,
   });
 
@@ -209,44 +114,6 @@ const main = async () => {
   await parcel.transferOwnership(toAddress);
 
   await sleep(delayMS);
-
-  /*
-
-
-  console.log("Minting zebra...")
-  await parcel.mintItem("0xD75b0609ed51307E13bae0F9394b5f63A7f8b6A1","zebra.jpg")
-
-  */
-
-  //const secondContract = await deploy("SecondContract")
-
-  // const exampleToken = await deploy("ExampleToken")
-  // const examplePriceOracle = await deploy("ExamplePriceOracle")
-  // const smartContractWallet = await deploy("SmartContractWallet",[exampleToken.address,examplePriceOracle.address])
-
-  /*
-  //If you want to send value to an address from the deployer
-  const deployerWallet = ethers.provider.getSigner()
-  await deployerWallet.sendTransaction({
-    to: "0x34aA3F359A9D614239015126635CE7732c18fDF3",
-    value: ethers.utils.parseEther("0.001")
-  })
-  */
-
-  /*
-  //If you want to send some ETH to a contract on deploy (make your constructor payable!)
-  const yourContract = await deploy("YourContract", [], {
-  value: ethers.utils.parseEther("0.05")
-  });
-  */
-
-  /*
-  //If you want to link a library into your contract:
-  // reference: https://github.com/austintgriffith/scaffold-eth/blob/using-libraries-example/packages/hardhat/scripts/deploy.js#L19
-  const yourContract = await deploy("YourContract", [], {}, {
-   LibraryName: **LibraryAddress**
-  });
-  */
 };
 
 function sleep(ms) {

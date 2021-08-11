@@ -1,8 +1,9 @@
 import React, { useRef, useEffect, useState } from "react";
+import { useContractLoader, useContractReader } from "../hooks";
 import mapboxgl from "!mapbox-gl"; // eslint-disable-line import/no-webpack-loader-syntax
-import Parcel0 from "../temp_data/Parcel0.json";
-import Parcel1 from "../temp_data/Parcel1.json";
-import Parcel2 from "../temp_data/Parcel2.json";
+import { BufferList } from "bl";
+import ipfsAPI from "ipfs-http-client";
+const ipfs = ipfsAPI({ host: "ipfs.infura.io", port: "5001", protocol: "https" });
 
 mapboxgl.accessToken = "pk.eyJ1IjoiZ3JlZ3JvbHdlcyIsImEiOiJja3J1cnhvbWEwMGQxMnZ0NjJ4OW80emZ6In0.XPrRJMSMXwdIC6k83O4lew";
 
@@ -40,13 +41,65 @@ mapboxgl.accessToken = "pk.eyJ1IjoiZ3JlZ3JvbHdlcyIsImEiOiJja3J1cnhvbWEwMGQxMnZ0N
               (ex. by default "https://etherscan.io/" or for xdai "https://blockscout.com/poa/xdai/")
 */
 
-export default function ParcelMap() {
+export default function ParcelMap({ provider, address }) {
   const mapContainer = useRef(null);
   const map = useRef(null);
   const [lng, setLng] = useState(-106.331);
   const [lat, setLat] = useState(43.172);
   const [zoom, setZoom] = useState(9);
-  const [parcels, setParcels] = useState([Parcel0, Parcel1, Parcel2]);
+  const [parcels, setParcels] = useState([]);
+
+  const readContracts = useContractLoader(provider);
+  // keep track of a variable from the contract in the local React state:
+  const balance = useContractReader(readContracts, "Parcel", "balanceOf", [address]);
+  console.log("🤗 balance:", balance);
+
+  // helper function to "Get" from IPFS
+  // you usually go content.toString() after this...
+  const getFromIPFS = async hashToGet => {
+    for await (const file of ipfs.get(hashToGet)) {
+      if (!file.content) continue;
+      const content = new BufferList();
+      for await (const chunk of file.content) {
+        content.append(chunk);
+      }
+      return content;
+    }
+  };
+
+  useEffect(() => {
+    if (parcels.length > 0) return;
+    const updateParcels = async () => {
+      const parcelsUpdate = [];
+      for (let tokenIndex = 0; tokenIndex < balance; tokenIndex++) {
+        try {
+          const tokenId = await readContracts.Parcel.tokenOfOwnerByIndex(address, tokenIndex);
+          const tokenURI = await readContracts.Parcel.tokenURI(tokenId);
+
+          const ipfsHash = tokenURI.replace("https://ipfs.io/ipfs/", "");
+          const jsonManifestBuffer = await getFromIPFS(ipfsHash);
+
+          try {
+            const jsonManifest = JSON.parse(jsonManifestBuffer.toString());
+            parcelsUpdate.push({ id: tokenId, uri: tokenURI, owner: address, ...jsonManifest });
+          } catch (e) {
+            console.log(e);
+          }
+        } catch (e) {
+          console.log(e);
+        }
+      }
+      parcelsUpdate.forEach(parcel => {
+        try {
+          addParcelToMap(parcel.geojson, parcel.id);
+        } catch (e) {
+          console.log(e);
+        }
+      });
+      setParcels(parcelsUpdate);
+    };
+    updateParcels();
+  });
 
   const addParcelToMap = (geojson, parcel_id) => {
     map.current.addSource(parcel_id, {
@@ -84,17 +137,12 @@ export default function ParcelMap() {
   };
 
   useEffect(() => {
-    if (map.current) return; // initialize map only once
+    if (map.current) return; // initialize map only once after parcels are received
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
       style: "mapbox://styles/gregrolwes/ckruwxiwk20cf18o0x218571b",
       center: [lng, lat],
       zoom: zoom,
-    });
-    map.current.on("load", function () {
-      parcels.forEach((parcel, parcel_idx) => {
-        addParcelToMap(parcel, `parcel${parcel_idx}`);
-      });
     });
   });
 

@@ -190,6 +190,10 @@ function App(props) {
   // Load in your local 📝 contract and read a value from it:
   const readContracts = useContractLoader(localProvider);
 
+  // keep track of a variable from the contract in the local React state:
+  const balance = useContractReader(readContracts, "Parcel", "balanceOf", [address]);
+  console.log("🤗 balance:", balance);
+
   // If you want to make 🔐 write transactions to your contracts, use the userSigner:
   const writeContracts = useContractLoader(userSigner, { chainId: localChainId });
 
@@ -208,12 +212,8 @@ function App(props) {
     "0x34aA3F359A9D614239015126635CE7732c18fDF3",
   ]);
 
-  // keep track of a variable from the contract in the local React state:
-  const balance = useContractReader(readContracts, "YourCollectible", "balanceOf", [address]);
-  console.log("🤗 balance:", balance);
-
   // 📟 Listen for broadcast events
-  const transferEvents = useEventListener(readContracts, "YourCollectible", "Transfer", localProvider, 1);
+  const transferEvents = useEventListener(readContracts, "Parcel", "Transfer", localProvider, 1);
   console.log("📟 Transfer events:", transferEvents);
 
   //
@@ -221,38 +221,6 @@ function App(props) {
   //
   const yourBalance = balance && balance.toNumber && balance.toNumber();
   const [yourCollectibles, setYourCollectibles] = useState();
-
-  useEffect(() => {
-    const updateYourCollectibles = async () => {
-      const collectibleUpdate = [];
-      for (let tokenIndex = 0; tokenIndex < balance; tokenIndex++) {
-        try {
-          console.log("Getting token index", tokenIndex);
-          const tokenId = await readContracts.YourCollectible.tokenOfOwnerByIndex(address, tokenIndex);
-          console.log("tokenId", tokenId);
-          const tokenURI = await readContracts.YourCollectible.tokenURI(tokenId);
-          console.log("tokenURI", tokenURI);
-
-          const ipfsHash = tokenURI.replace("https://ipfs.io/ipfs/", "");
-          console.log("ipfsHash", ipfsHash);
-
-          const jsonManifestBuffer = await getFromIPFS(ipfsHash);
-
-          try {
-            const jsonManifest = JSON.parse(jsonManifestBuffer.toString());
-            console.log("jsonManifest", jsonManifest);
-            collectibleUpdate.push({ id: tokenId, uri: tokenURI, owner: address, ...jsonManifest });
-          } catch (e) {
-            console.log(e);
-          }
-        } catch (e) {
-          console.log(e);
-        }
-      }
-      setYourCollectibles(collectibleUpdate);
-    };
-    updateYourCollectibles();
-  }, [address, yourBalance]);
 
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
@@ -482,7 +450,7 @@ function App(props) {
                 and give you a form to interact with it locally
             */}
             <div style={{ width: 640, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
-              <ParcelMap />
+              <ParcelMap provider={localProvider} address={address} />
               <List
                 bordered
                 dataSource={yourCollectibles}
