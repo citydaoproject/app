@@ -1,6 +1,8 @@
 import React, { useRef, useEffect, useState } from "react";
 import mapboxgl from "!mapbox-gl"; // eslint-disable-line import/no-webpack-loader-syntax
 import Parcel0 from "../temp_data/Parcel0.json";
+import Parcel1 from "../temp_data/Parcel1.json";
+import Parcel2 from "../temp_data/Parcel2.json";
 
 mapboxgl.accessToken = "pk.eyJ1IjoiZ3JlZ3JvbHdlcyIsImEiOiJja3J1cnhvbWEwMGQxMnZ0NjJ4OW80emZ6In0.XPrRJMSMXwdIC6k83O4lew";
 
@@ -43,17 +45,16 @@ export default function ParcelMap() {
   const map = useRef(null);
   const [lng, setLng] = useState(-106.331);
   const [lat, setLat] = useState(43.172);
-  const [zoom, setZoom] = useState(5);
-  const [parcels, setParcels] = useState([Parcel0]);
+  const [zoom, setZoom] = useState(9);
+  const [parcels, setParcels] = useState([Parcel0, Parcel1, Parcel2]);
 
   const addParcelToMap = (geojson, parcel_id) => {
-    console.log(parcel_id);
     map.current.addSource(parcel_id, {
       type: "geojson",
       data: geojson,
     });
     map.current.addLayer({
-      id: `${parcel_id}_fill`,
+      id: parcel_id,
       source: parcel_id,
       type: "fill",
       paint: {
@@ -69,9 +70,17 @@ export default function ParcelMap() {
       type: "line",
       paint: {
         "line-color": "#eff551",
-        "line-width": 5,
+        "line-width": 3,
       },
     });
+    // set click functionality
+    map.current.on("click", parcel_id, function (e) {
+      clickParcel(parcel_id);
+    });
+  };
+
+  const clickParcel = parcel_id => {
+    console.log(parcel_id);
   };
 
   useEffect(() => {
