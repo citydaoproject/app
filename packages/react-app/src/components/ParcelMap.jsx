@@ -70,7 +70,7 @@ export default function ParcelMap() {
       type: "line",
       paint: {
         "line-color": "#eff551",
-        "line-width": 3,
+        "line-width": 2,
       },
     });
     // set click functionality
