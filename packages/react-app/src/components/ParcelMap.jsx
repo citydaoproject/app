@@ -1,9 +1,6 @@
 import React, { useRef, useEffect, useState } from "react";
-import { useContractLoader, useContractReader } from "../hooks";
 import mapboxgl from "!mapbox-gl"; // eslint-disable-line import/no-webpack-loader-syntax
-import { BufferList } from "bl";
-import ipfsAPI from "ipfs-http-client";
-const ipfs = ipfsAPI({ host: "ipfs.infura.io", port: "5001", protocol: "https" });
+import "mapbox-gl/dist/mapbox-gl.css";
 
 mapboxgl.accessToken = "pk.eyJ1IjoiZ3JlZ3JvbHdlcyIsImEiOiJja3J1cnhvbWEwMGQxMnZ0NjJ4OW80emZ6In0.XPrRJMSMXwdIC6k83O4lew";
 
@@ -41,65 +38,10 @@ mapboxgl.accessToken = "pk.eyJ1IjoiZ3JlZ3JvbHdlcyIsImEiOiJja3J1cnhvbWEwMGQxMnZ0N
               (ex. by default "https://etherscan.io/" or for xdai "https://blockscout.com/poa/xdai/")
 */
 
-export default function ParcelMap({ readContracts, address }) {
+export default function ParcelMap({ parcels, startingCoordinates, startingZoom }) {
   const mapContainer = useRef(null);
   const map = useRef(null);
-  const [lng, setLng] = useState(-106.331);
-  const [lat, setLat] = useState(43.172);
-  const [zoom, setZoom] = useState(9);
-  const [parcels, setParcels] = useState([]);
-  const [activeParcel, setActiveParcel] = useState("");
-
-  // keep track of a variable from the contract in the local React state:
-  const balance = useContractReader(readContracts, "Parcel", "balanceOf", [address]);
-  console.log("🤗 balance:", balance);
-
-  // helper function to "Get" from IPFS
-  // you usually go content.toString() after this...
-  const getFromIPFS = async hashToGet => {
-    for await (const file of ipfs.get(hashToGet)) {
-      if (!file.content) continue;
-      const content = new BufferList();
-      for await (const chunk of file.content) {
-        content.append(chunk);
-      }
-      return content;
-    }
-  };
-
-  useEffect(() => {
-    if (map.content) return;
-    const updateParcels = async () => {
-      const parcelsUpdate = [];
-      for (let tokenIndex = 0; tokenIndex < balance; tokenIndex++) {
-        try {
-          const tokenId = await readContracts.Parcel.tokenOfOwnerByIndex(address, tokenIndex);
-          const tokenURI = await readContracts.Parcel.tokenURI(tokenId);
-          console.log("calling IPFS");
-          const ipfsHash = tokenURI.replace("https://ipfs.io/ipfs/", "");
-          const jsonManifestBuffer = await getFromIPFS(ipfsHash);
-
-          try {
-            const jsonManifest = JSON.parse(jsonManifestBuffer.toString());
-            parcelsUpdate.push({ id: tokenId, uri: tokenURI, owner: address, ...jsonManifest });
-          } catch (e) {
-            console.log(e);
-          }
-        } catch (e) {
-          console.log(e);
-        }
-      }
-      parcelsUpdate.forEach(parcel => {
-        try {
-          addParcelToMap(parcel.geojson, parcel.id);
-        } catch (e) {
-          console.log(e);
-        }
-      });
-      setParcels(parcelsUpdate);
-    };
-    updateParcels();
-  });
+  const [activeParcel, setActiveParcel] = useState(null);
 
   const addParcelToMap = (geojson, parcel_id) => {
     map.current.addSource(parcel_id, {
@@ -126,6 +68,7 @@ export default function ParcelMap({ readContracts, address }) {
         "line-width": 2,
       },
     });
+
     // set click functionality
     map.current.on("click", parcel_id, function (e) {
       clickParcel(parcel_id);
@@ -141,10 +84,22 @@ export default function ParcelMap({ readContracts, address }) {
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
       style: "mapbox://styles/gregrolwes/ckruwxiwk20cf18o0x218571b",
-      center: [lng, lat],
-      zoom: zoom,
+      center: startingCoordinates,
+      zoom: startingZoom,
     });
   });
+
+  useEffect(() => {
+    parcels.forEach(parcel => {
+      try {
+        if (map.current.getSource(parcel.id)) return; // skip if already added
+        addParcelToMap(parcel.geojson, parcel.id);
+      } catch (e) {
+        console.log(e);
+      }
+    });
+  });
+
   return (
     <div>
       <div style={{ display: parcels.length > 0 ? "none" : "block", margin: "20px", textAlign: "center" }}>
