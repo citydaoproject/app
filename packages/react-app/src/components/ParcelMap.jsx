@@ -48,6 +48,7 @@ export default function ParcelMap({ provider, address }) {
   const [lat, setLat] = useState(43.172);
   const [zoom, setZoom] = useState(9);
   const [parcels, setParcels] = useState([]);
+  const [activeParcel, setActiveParcel] = useState("");
 
   const readContracts = useContractLoader(provider);
   // keep track of a variable from the contract in the local React state:
@@ -133,7 +134,7 @@ export default function ParcelMap({ provider, address }) {
   };
 
   const clickParcel = parcel_id => {
-    console.log(parcel_id);
+    setActiveParcel(parcel_id);
   };
 
   useEffect(() => {
@@ -145,9 +146,14 @@ export default function ParcelMap({ provider, address }) {
       zoom: zoom,
     });
   });
-
   return (
     <div>
+      <div style={{ display: parcels.length > 0 ? "none" : "block", margin: "20px", textAlign: "center" }}>
+        Retrieving parcels...
+      </div>
+      <div style={{ display: parcels.length > 0 ? "block" : "none", margin: "20px", textAlign: "center" }}>
+        Selected parcel: {activeParcel}
+      </div>
       <div ref={mapContainer} className="map-container" />
     </div>
   );
