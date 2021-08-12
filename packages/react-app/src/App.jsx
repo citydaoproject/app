@@ -64,6 +64,7 @@ function App(props) {
       if (userSigner) {
         const newAddress = await userSigner.getAddress();
         setAddress(newAddress);
+        console.log(`Set address on line 14 of mint.js to ${newAddress}`);
       }
     }
     getAddress();
