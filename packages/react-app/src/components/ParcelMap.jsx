@@ -7,35 +7,21 @@ mapboxgl.accessToken = "pk.eyJ1IjoiZ3JlZ3JvbHdlcyIsImEiOiJja3J1cnhvbWEwMGQxMnZ0N
 /*
   ~ What it does? ~
 
-  Displays an Address, Balance, and Wallet as one Account component,
-  also allows users to log in to existing accounts and log out
+  Displays map with parcel overlays for each given geojson feature.
 
   ~ How can I use? ~
 
-  <Account
-    address={address}
-    localProvider={localProvider}
-    userProvider={userProvider}
-    mainnetProvider={mainnetProvider}
-    price={price}
-    web3Modal={web3Modal}
-    loadWeb3Modal={loadWeb3Modal}
-    logoutOfWeb3Modal={logoutOfWeb3Modal}
-    blockExplorer={blockExplorer}
+  <ParcelMap
+    parcels={parcels}
+    startingCoordinates={[-106.331, 43.172]}
+    startingZoom={9}
   />
 
   ~ Features ~
 
-  - Provide address={address} and get balance corresponding to the given address
-  - Provide localProvider={localProvider} to access balance on local network
-  - Provide userProvider={userProvider} to display a wallet
-  - Provide mainnetProvider={mainnetProvider} and your address will be replaced by ENS name
-              (ex. "0xa870" => "user.eth")
-  - Provide price={price} of ether and get your balance converted to dollars
-  - Provide web3Modal={web3Modal}, loadWeb3Modal={loadWeb3Modal}, logoutOfWeb3Modal={logoutOfWeb3Modal}
-              to be able to log in/log out to/from existing accounts
-  - Provide blockExplorer={blockExplorer}, click on address and get the link
-              (ex. by default "https://etherscan.io/" or for xdai "https://blockscout.com/poa/xdai/")
+  - Provide parcels={parcels}. parcels is an array of objects with id and geojson properties.
+  - Provide startingCoordinates={[latitude, longitude]} for the maps starting position.
+  - Provide startingZoom={9} as the maps beginning zoom level.
 */
 
 export default function ParcelMap({ parcels, startingCoordinates, startingZoom }) {
