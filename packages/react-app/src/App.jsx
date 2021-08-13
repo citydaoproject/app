@@ -54,7 +54,8 @@ const logoutOfWeb3Modal = async () => {
 function App(props) {
   // injecedProvider will be used when metamask connection is implemented
   const [injectedProvider, setInjectedProvider] = useState();
-  const [address, setAddress] = useState();
+  const [userAddress, setUserAddress] = useState();
+  const [cityDaoAddress, setCityDaoAddress] = useState("0xb40A70Aa5C30215c44F27BF990cBf4D3E5Acb384"); // this will be the temporary address to hold the parcels on testnets, in practice will be owned by CityDAO
 
   const loadWeb3Modal = useCallback(async () => {
     const provider = await web3Modal.connect();
@@ -89,7 +90,7 @@ function App(props) {
     async function getAddress() {
       if (userSigner) {
         const newAddress = await userSigner.getAddress();
-        setAddress(newAddress);
+        setUserAddress(newAddress);
         console.log(`Set address on line 14 of mint.js to ${newAddress}`);
       }
     }
@@ -100,7 +101,7 @@ function App(props) {
   const readContracts = useContractLoader(localProvider);
 
   // keep track of a variable from the contract in the local React state:
-  const balance = useContractReader(readContracts, "Parcel", "balanceOf", [address]);
+  const balance = useContractReader(readContracts, "Parcel", "balanceOf", [cityDaoAddress]);
 
   const [parcels, setParcels] = useState([]);
 
@@ -122,13 +123,13 @@ function App(props) {
       var newParcels = [];
       for (let tokenIndex = 0; tokenIndex < balance; tokenIndex++) {
         try {
-          const tokenId = await readContracts.Parcel.tokenOfOwnerByIndex(address, tokenIndex);
+          const tokenId = await readContracts.Parcel.tokenOfOwnerByIndex(cityDaoAddress, tokenIndex);
           const tokenURI = await readContracts.Parcel.tokenURI(tokenId);
           const ipfsHash = tokenURI.replace("https://ipfs.io/ipfs/", "");
           const jsonManifestBuffer = await getFromIPFS(ipfsHash);
           try {
             const jsonManifest = JSON.parse(jsonManifestBuffer.toString());
-            newParcels.push({ id: tokenId, uri: tokenURI, owner: address, ...jsonManifest });
+            newParcels.push({ id: tokenId, uri: tokenURI, owner: cityDaoAddress, ...jsonManifest });
           } catch (e) {
             console.log(e);
           }
