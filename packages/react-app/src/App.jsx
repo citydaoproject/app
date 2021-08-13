@@ -1,12 +1,12 @@
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { Menu } from "antd";
 import "antd/dist/antd.css";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { BrowserRouter, Link, Route, Switch } from "react-router-dom";
 import Web3Modal from "web3modal";
 import "./App.css";
 import { Header, ThemeSwitch, ParcelMap } from "./components";
-import { INFURA_ID, NETWORK, NETWORKS } from "./constants";
+import { INFURA_ID, NETWORKS } from "./constants";
 import { useContractLoader, useContractReader, useUserSigner } from "./hooks";
 
 const { BufferList } = require("bl");
@@ -19,7 +19,7 @@ const { ethers } = require("ethers");
 const DEBUG = true;
 
 /// 📡 What chain are your contracts deployed to?
-const targetNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+const targetNetwork = NETWORKS.mumbai; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 🏠 Your local provider is usually pointed at your local blockchain
 const localProviderUrl = targetNetwork.rpcUrl;
@@ -33,7 +33,7 @@ const localProvider = new ethers.providers.StaticJsonRpcProvider(localProviderUr
 */
 const web3Modal = new Web3Modal({
   // network: "mainnet", // optional
-  cacheProvider: true, // optional
+  cacheProvider: true,
   providerOptions: {
     walletconnect: {
       package: WalletConnectProvider, // required
@@ -55,6 +55,32 @@ function App(props) {
   // injecedProvider will be used when metamask connection is implemented
   const [injectedProvider, setInjectedProvider] = useState();
   const [address, setAddress] = useState();
+
+  const loadWeb3Modal = useCallback(async () => {
+    const provider = await web3Modal.connect();
+
+    setInjectedProvider(new ethers.providers.Web3Provider(provider));
+
+    provider.on("chainChanged", chainId => {
+      console.log(`chain changed to ${chainId}! updating providers`);
+      setInjectedProvider(new ethers.providers.Web3Provider(provider));
+    });
+
+    provider.on("accountsChanged", () => {
+      console.log(`account changed!`);
+      setInjectedProvider(new ethers.providers.Web3Provider(provider));
+    });
+
+    // Subscribe to session disconnection
+    provider.on("disconnect", (code, reason) => {
+      console.log(code, reason);
+      logoutOfWeb3Modal();
+    });
+  }, [setInjectedProvider]);
+
+  useEffect(() => {
+    loadWeb3Modal();
+  }, [loadWeb3Modal]);
 
   // Use your injected provider from 🦊 Metamask or if you don't have it then instantly generate a 🔥 burner wallet.
   const userSigner = useUserSigner(injectedProvider, localProvider);
@@ -118,36 +144,6 @@ function App(props) {
     };
     updateParcels();
   });
-
-  // |||||||||||||||||||||||||||||||||||||||||||||||||||||
-  //  To be used when implementing metamask connection!
-  // vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
-  // const loadWeb3Modal = useCallback(async () => {
-  //   const provider = await web3Modal.connect();
-  //   setInjectedProvider(new ethers.providers.Web3Provider(provider));
-
-  //   provider.on("chainChanged", chainId => {
-  //     console.log(`chain changed to ${chainId}! updating providers`);
-  //     setInjectedProvider(new ethers.providers.Web3Provider(provider));
-  //   });
-
-  //   provider.on("accountsChanged", () => {
-  //     console.log(`account changed!`);
-  //     setInjectedProvider(new ethers.providers.Web3Provider(provider));
-  //   });
-
-  //   // Subscribe to session disconnection
-  //   provider.on("disconnect", (code, reason) => {
-  //     console.log(code, reason);
-  //     logoutOfWeb3Modal();
-  //   });
-  // }, [setInjectedProvider]);
-
-  // useEffect(() => {
-  //   if (web3Modal.cachedProvider) {
-  //     loadWeb3Modal();
-  //   }
-  // }, [loadWeb3Modal]);
 
   const [route, setRoute] = useState();
   useEffect(() => {
