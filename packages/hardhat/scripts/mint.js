@@ -11,7 +11,7 @@ const delayMS = 1000; //sometimes xDAI needs a 6000ms break lol 😅
 
 const main = async () => {
   // ADDRESS TO MINT TO:
-  const toAddress = "0xb40A70Aa5C30215c44F27BF990cBf4D3E5Acb384"; // this will be the temporary address to hold the parcels on testnets, in practice will be owned by CityDAO
+  const toAddress = "0x2C68489f711eEf3e30fC0Cc20Bdaa436A3b4cc4a"; // this will be the temporary address to hold the parcels on testnets, in practice will be owned by CityDAO
 
   console.log("\n\n 🎫 Minting to " + toAddress + "...\n");
 

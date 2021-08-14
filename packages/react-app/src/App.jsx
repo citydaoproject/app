@@ -55,7 +55,7 @@ function App(props) {
   // injecedProvider will be used when metamask connection is implemented
   const [injectedProvider, setInjectedProvider] = useState();
   const [userAddress, setUserAddress] = useState();
-  const [cityDaoAddress, setCityDaoAddress] = useState("0xb40A70Aa5C30215c44F27BF990cBf4D3E5Acb384"); // this will be the temporary address to hold the parcels on testnets, in practice will be owned by CityDAO
+  const [cityDaoAddress, setCityDaoAddress] = useState("0x2C68489f711eEf3e30fC0Cc20Bdaa436A3b4cc4a"); // this will be the temporary address to hold the parcels on testnets, in practice will be owned by CityDAO
 
   const loadWeb3Modal = useCallback(async () => {
     const provider = await web3Modal.connect();
@@ -91,7 +91,6 @@ function App(props) {
       if (userSigner) {
         const newAddress = await userSigner.getAddress();
         setUserAddress(newAddress);
-        console.log(`Set address on line 14 of mint.js to ${newAddress}`);
       }
     }
     getAddress();
