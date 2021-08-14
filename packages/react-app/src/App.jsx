@@ -55,7 +55,7 @@ function App(props) {
   // injecedProvider will be used when metamask connection is implemented
   const [injectedProvider, setInjectedProvider] = useState();
   const [userAddress, setUserAddress] = useState();
-  const [cityDaoAddress, setCityDaoAddress] = useState("0x2C68489f711eEf3e30fC0Cc20Bdaa436A3b4cc4a"); // this will be the temporary address to hold the parcels on testnets, in practice will be owned by CityDAO
+  const [cityDaoAddress, setCityDaoAddress] = useState("0xb40A70Aa5C30215c44F27BF990cBf4D3E5Acb384"); // this will be the temporary address to hold the parcels on testnets, in practice will be owned by CityDAO
 
   const loadWeb3Modal = useCallback(async () => {
     const provider = await web3Modal.connect();
@@ -100,7 +100,7 @@ function App(props) {
   const readContracts = useContractLoader(localProvider);
 
   // keep track of a variable from the contract in the local React state:
-  const balance = useContractReader(readContracts, "Parcel", "balanceOf", [cityDaoAddress]);
+  const balance = useContractReader(readContracts, "Parcel0", "balanceOf", [cityDaoAddress]);
 
   const [parcels, setParcels] = useState([]);
 
@@ -122,8 +122,8 @@ function App(props) {
       var newParcels = [];
       for (let tokenIndex = 0; tokenIndex < balance; tokenIndex++) {
         try {
-          const tokenId = await readContracts.Parcel.tokenOfOwnerByIndex(cityDaoAddress, tokenIndex);
-          const tokenURI = await readContracts.Parcel.tokenURI(tokenId);
+          const tokenId = await readContracts.Parcel0.tokenOfOwnerByIndex(cityDaoAddress, tokenIndex);
+          const tokenURI = await readContracts.Parcel0.tokenURI(tokenId);
           const ipfsHash = tokenURI.replace("https://ipfs.io/ipfs/", "");
           const jsonManifestBuffer = await getFromIPFS(ipfsHash);
           try {
