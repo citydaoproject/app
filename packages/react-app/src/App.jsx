@@ -120,6 +120,7 @@ function App(props) {
   useEffect(() => {
     const updateParcels = async () => {
       var newParcels = [];
+      if (parcels.length > 0) return; // prevent excessive calls to IPFS
       for (let tokenIndex = 0; tokenIndex < balance; tokenIndex++) {
         try {
           const tokenId = await readContracts.Parcel0.tokenOfOwnerByIndex(cityDaoAddress, tokenIndex);
