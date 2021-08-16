@@ -74,7 +74,7 @@ function App(props) {
   const readContracts = useContractLoader(localProvider);
 
   // keep track of a variable from the contract in the local React state:
-  const balance = useContractReader(readContracts, "Parcel", "balanceOf", [address]);
+  const balance = useContractReader(readContracts, "CityDaoParcel", "balanceOf", [address]);
 
   const [parcels, setParcels] = useState([]);
 

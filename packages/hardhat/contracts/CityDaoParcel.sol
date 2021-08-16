@@ -1,9 +1,9 @@
-pragma solidity >=0.6.0 <0.7.0;
+pragma solidity >=0.6.0;
 //SPDX-License-Identifier: MIT
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
-import "@openzeppelin/contracts/access/Ownable.sol"//learn more: https://docs.openzeppelin.com/contracts/3.x/erc721
+import "@openzeppelin/contracts/access/Ownable.sol"; //learn more: https://docs.openzeppelin.com/contracts/3.x/erc721
 
 // GET LISTED ON OPENSEA: https://testnets.opensea.io/get-listed/step-two
 
@@ -12,21 +12,43 @@ contract CityDaoParcel is ERC721, Ownable {
   using Counters for Counters.Counter;
   Counters.Counter private _tokenIds;
 
-  constructor() public ERC721("Parcel", "YCB") {
+  mapping(uint256 => address) public parcelIdToOwners;
+  mapping(uint256 => Parcel) public parcelIdToParcels;
+
+  constructor() public ERC721("CityDaoParcel", "YCB") {
     _setBaseURI("https://ipfs.io/ipfs/");
   }
 
-  function mintItem(address to, string memory tokenURI)
+  struct Parcel {
+        uint16 leaseLength;
+        string metadataLocationHash;
+  }
+
+  function transferParcel(
+        address _toAddress,
+        address _fromAddress,
+        uint256 _parcelId
+    ) public onlyOwner {
+        safeTransferFrom(_toAddress, _fromAddress, _parcelId);
+        parcelIdToOwners[_parcelId] = _toAddress;
+  }
+
+  function mintItem(address _toAddress, string memory tokenURI)
       public
       onlyOwner
       returns (uint256)
   {
       _tokenIds.increment();
 
-      uint256 id = _tokenIds.current();
-      _mint(to, id);
-      _setTokenURI(id, tokenURI);
+      uint256 parcelId = _tokenIds.current();
+      parcelIdToOwners[parcelId] = _toAddress;
+      _safeMint(_toAddress, parcelId);
+      _setTokenURI(parcelId, tokenURI);
 
-      return id;
+      return parcelId;
+  }
+
+  function getParcelOwner(uint256 _parcelId) external view returns (address) {
+      return parcelIdToOwners[_parcelId];
   }
 }
