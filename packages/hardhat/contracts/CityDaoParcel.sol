@@ -38,9 +38,8 @@ contract CityDaoParcel is ERC721, Ownable {
       onlyOwner
       returns (uint256)
   {
-      _tokenIds.increment();
-
       uint256 parcelId = _tokenIds.current();
+      _tokenIds.increment();
       parcelIdToOwners[parcelId] = _toAddress;
       _safeMint(_toAddress, parcelId);
       _setTokenURI(parcelId, tokenURI);
