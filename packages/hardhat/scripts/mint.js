@@ -109,12 +109,6 @@ const main = async () => {
   });
 
   await sleep(delayMS);
-
-  console.log("Transferring Ownership of Parcel to " + toAddress + "...");
-
-  await parcel.transferOwnership(toAddress);
-
-  await sleep(delayMS);
 };
 
 function sleep(ms) {
