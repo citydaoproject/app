@@ -28,7 +28,7 @@ contract CityDaoParcel is ERC721, Ownable {
         address _toAddress,
         address _fromAddress,
         uint256 _parcelId
-    ) public onlyOwner {
+    ) public {
         safeTransferFrom(_toAddress, _fromAddress, _parcelId);
         parcelIdToOwners[_parcelId] = _toAddress;
   }

@@ -110,7 +110,10 @@ const main = async () => {
 
   await sleep(delayMS);
 
-  console.log("Transferring Ownership of Parcel0 to " + toAddress + "...");
+  // transfer contract to CityDAO
+  console.log(
+    "Transferring Ownership of CityDAO Parcel Contract to " + toAddress + "..."
+  );
 
   await parcel.transferOwnership(toAddress);
 
