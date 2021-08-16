@@ -1,12 +1,12 @@
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { Menu } from "antd";
 import "antd/dist/antd.css";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { BrowserRouter, Link, Route, Switch } from "react-router-dom";
 import Web3Modal from "web3modal";
 import "./App.css";
 import { Header, ThemeSwitch, ParcelMap } from "./components";
-import { INFURA_ID, NETWORK, NETWORKS } from "./constants";
+import { INFURA_ID, NETWORKS } from "./constants";
 import { useContractLoader, useContractReader, useUserSigner } from "./hooks";
 
 const { BufferList } = require("bl");
@@ -19,7 +19,7 @@ const { ethers } = require("ethers");
 const DEBUG = true;
 
 /// 📡 What chain are your contracts deployed to?
-const targetNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+const targetNetwork = NETWORKS.mumbai; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 🏠 Your local provider is usually pointed at your local blockchain
 const localProviderUrl = targetNetwork.rpcUrl;
@@ -33,7 +33,7 @@ const localProvider = new ethers.providers.StaticJsonRpcProvider(localProviderUr
 */
 const web3Modal = new Web3Modal({
   // network: "mainnet", // optional
-  cacheProvider: true, // optional
+  cacheProvider: true,
   providerOptions: {
     walletconnect: {
       package: WalletConnectProvider, // required
@@ -54,7 +54,34 @@ const logoutOfWeb3Modal = async () => {
 function App(props) {
   // injecedProvider will be used when metamask connection is implemented
   const [injectedProvider, setInjectedProvider] = useState();
-  const [address, setAddress] = useState();
+  const [userAddress, setUserAddress] = useState();
+  const [cityDaoAddress, setCityDaoAddress] = useState("0xb40A70Aa5C30215c44F27BF990cBf4D3E5Acb384"); // this will be the temporary address to hold the parcels on testnets, in practice will be owned by CityDAO
+
+  const loadWeb3Modal = useCallback(async () => {
+    const provider = await web3Modal.connect();
+
+    setInjectedProvider(new ethers.providers.Web3Provider(provider));
+
+    provider.on("chainChanged", chainId => {
+      console.log(`chain changed to ${chainId}! updating providers`);
+      setInjectedProvider(new ethers.providers.Web3Provider(provider));
+    });
+
+    provider.on("accountsChanged", () => {
+      console.log(`account changed!`);
+      setInjectedProvider(new ethers.providers.Web3Provider(provider));
+    });
+
+    // Subscribe to session disconnection
+    provider.on("disconnect", (code, reason) => {
+      console.log(code, reason);
+      logoutOfWeb3Modal();
+    });
+  }, [setInjectedProvider]);
+
+  useEffect(() => {
+    loadWeb3Modal();
+  }, [loadWeb3Modal]);
 
   // Use your injected provider from 🦊 Metamask or if you don't have it then instantly generate a 🔥 burner wallet.
   const userSigner = useUserSigner(injectedProvider, localProvider);
@@ -63,8 +90,7 @@ function App(props) {
     async function getAddress() {
       if (userSigner) {
         const newAddress = await userSigner.getAddress();
-        setAddress(newAddress);
-        console.log(`Set address on line 14 of mint.js to ${newAddress}`);
+        setUserAddress(newAddress);
       }
     }
     getAddress();
@@ -74,7 +100,7 @@ function App(props) {
   const readContracts = useContractLoader(localProvider);
 
   // keep track of a variable from the contract in the local React state:
-  const balance = useContractReader(readContracts, "CityDaoParcel", "balanceOf", [address]);
+  const balance = useContractReader(readContracts, "CityDaoParcel", "balanceOf", [cityDaoAddress]);
 
   const [parcels, setParcels] = useState([]);
 
@@ -94,15 +120,16 @@ function App(props) {
   useEffect(() => {
     const updateParcels = async () => {
       var newParcels = [];
+      if (parcels.length > 0) return; // prevent excessive calls to IPFS
       for (let tokenIndex = 0; tokenIndex < balance; tokenIndex++) {
         try {
-          const tokenId = await readContracts.Parcel.tokenOfOwnerByIndex(address, tokenIndex);
-          const tokenURI = await readContracts.Parcel.tokenURI(tokenId);
+          const tokenId = await readContracts.Parcel0.tokenOfOwnerByIndex(cityDaoAddress, tokenIndex);
+          const tokenURI = await readContracts.Parcel0.tokenURI(tokenId);
           const ipfsHash = tokenURI.replace("https://ipfs.io/ipfs/", "");
           const jsonManifestBuffer = await getFromIPFS(ipfsHash);
           try {
             const jsonManifest = JSON.parse(jsonManifestBuffer.toString());
-            newParcels.push({ id: tokenId, uri: tokenURI, owner: address, ...jsonManifest });
+            newParcels.push({ id: tokenId, uri: tokenURI, owner: cityDaoAddress, ...jsonManifest });
           } catch (e) {
             console.log(e);
           }
@@ -118,36 +145,6 @@ function App(props) {
     };
     updateParcels();
   });
-
-  // |||||||||||||||||||||||||||||||||||||||||||||||||||||
-  //  To be used when implementing metamask connection!
-  // vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
-  // const loadWeb3Modal = useCallback(async () => {
-  //   const provider = await web3Modal.connect();
-  //   setInjectedProvider(new ethers.providers.Web3Provider(provider));
-
-  //   provider.on("chainChanged", chainId => {
-  //     console.log(`chain changed to ${chainId}! updating providers`);
-  //     setInjectedProvider(new ethers.providers.Web3Provider(provider));
-  //   });
-
-  //   provider.on("accountsChanged", () => {
-  //     console.log(`account changed!`);
-  //     setInjectedProvider(new ethers.providers.Web3Provider(provider));
-  //   });
-
-  //   // Subscribe to session disconnection
-  //   provider.on("disconnect", (code, reason) => {
-  //     console.log(code, reason);
-  //     logoutOfWeb3Modal();
-  //   });
-  // }, [setInjectedProvider]);
-
-  // useEffect(() => {
-  //   if (web3Modal.cachedProvider) {
-  //     loadWeb3Modal();
-  //   }
-  // }, [loadWeb3Modal]);
 
   const [route, setRoute] = useState();
   useEffect(() => {

@@ -11,12 +11,12 @@ const delayMS = 1000; //sometimes xDAI needs a 6000ms break lol 😅
 
 const main = async () => {
   // ADDRESS TO MINT TO:
-  const toAddress = "0xb40A70Aa5C30215c44F27BF990cBf4D3E5Acb384";
+  const toAddress = "0xb40A70Aa5C30215c44F27BF990cBf4D3E5Acb384"; // this will be the temporary address to hold the parcels on testnets, in practice will be owned by CityDAO
 
   console.log("\n\n 🎫 Minting to " + toAddress + "...\n");
 
   const { deployer } = await getNamedAccounts();
-  const parcel = await ethers.getContract("Parcel", deployer);
+  const parcel = await ethers.getContract("Parcel0", deployer);
 
   const parcel0 = {
     id: "parcel0",
@@ -27,7 +27,7 @@ const main = async () => {
         type: "Polygon",
         coordinates: [
           [
-            [-106.32980346679686, 43.17263460564885],
+            [-106.32980346679687, 43.17263460564885],
             [-106.32843017578125, 43.14809207007617],
             [-106.29615783691406, 43.14458518880386],
             [-106.2604522705078, 43.19666671417641],
@@ -57,7 +57,7 @@ const main = async () => {
         type: "Polygon",
         coordinates: [
           [
-            [-106.31881713867188, 43.213683733553026],
+            [-106.31881713867189, 43.213683733553026],
             [-106.34902954101562, 43.22369152747339],
             [-106.35795593261719, 43.20867922062144],
             [-106.34696960449219, 43.182148446530114],
@@ -88,7 +88,7 @@ const main = async () => {
         type: "Polygon",
         coordinates: [
           [
-            [-106.36276245117188, 43.204675314614],
+            [-106.36276245117189, 43.204675314614],
             [-106.3861083984375, 43.203173782105814],
             [-106.37786865234375, 43.15360247702298],
             [-106.34078979492188, 43.144084189341605],
@@ -107,6 +107,12 @@ const main = async () => {
   await parcel.mintItem(toAddress, uploadedparcel2.path, {
     gasLimit: 400000,
   });
+
+  await sleep(delayMS);
+
+  console.log("Transferring Ownership of Parcel0 to " + toAddress + "...");
+
+  await parcel.transferOwnership(toAddress);
 
   await sleep(delayMS);
 };
