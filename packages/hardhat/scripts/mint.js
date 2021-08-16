@@ -19,7 +19,6 @@ const main = async () => {
   const parcel = await ethers.getContract("CityDaoParcel", deployer);
 
   const parcel0 = {
-    id: "parcel0",
     geojson: {
       type: "Feature",
       properties: {},
@@ -49,7 +48,6 @@ const main = async () => {
   await sleep(delayMS);
 
   const parcel1 = {
-    id: "parcel1",
     geojson: {
       type: "Feature",
       properties: {},
@@ -80,7 +78,6 @@ const main = async () => {
   await sleep(delayMS);
 
   const parcel2 = {
-    id: "parcel2",
     geojson: {
       type: "Feature",
       properties: {},
