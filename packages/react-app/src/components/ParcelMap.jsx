@@ -77,9 +77,10 @@ export default function ParcelMap({ parcels, startingCoordinates, startingZoom }
 
   useEffect(() => {
     parcels.forEach(parcel => {
+      const id = parcel.id.toNumber().toString(); // convert big number id to string
       try {
-        if (map.current.getSource(parcel.id)) return; // skip if already added
-        addParcelToMap(parcel.geojson, parcel.id);
+        if (map.current.getSource(id)) return; // skip if already added
+        addParcelToMap(parcel.geojson, id);
       } catch (e) {
         console.log(e);
       }
