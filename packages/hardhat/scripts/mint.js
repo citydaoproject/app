@@ -16,7 +16,7 @@ const main = async () => {
   console.log("\n\n 🎫 Minting to " + toAddress + "...\n");
 
   const { deployer } = await getNamedAccounts();
-  const parcel = await ethers.getContract("Parcel0", deployer);
+  const parcel = await ethers.getContract("CityDaoParcel", deployer);
 
   const parcel0 = {
     id: "parcel0",
