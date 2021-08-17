@@ -176,7 +176,7 @@ function App(props) {
     updateParcels();
   });
 
-  const transferParcel = id => {
+  const buyParcel = id => {
     tx(writeContracts.CityDaoParcel.buyParcel(userAddress, cityDaoAddress, id));
   };
 
@@ -210,7 +210,7 @@ function App(props) {
                 parcels={parcels}
                 startingCoordinates={[-106.331, 43.172]}
                 startingZoom={9}
-                transferParcel={id => transferParcel(id)}
+                transferParcel={id => buyParcel(id)}
               />
             </div>
           </Route>
