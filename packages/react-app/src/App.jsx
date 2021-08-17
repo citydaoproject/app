@@ -1,13 +1,21 @@
 import WalletConnectProvider from "@walletconnect/web3-provider";
-import { Menu } from "antd";
+import { Menu, Button } from "antd";
 import "antd/dist/antd.css";
 import React, { useEffect, useState, useCallback } from "react";
 import { BrowserRouter, Link, Route, Switch } from "react-router-dom";
 import Web3Modal from "web3modal";
 import "./App.css";
-import { Header, ThemeSwitch, ParcelMap } from "./components";
+import { Header, ThemeSwitch, ParcelMap, Faucet } from "./components";
 import { INFURA_ID, NETWORKS } from "./constants";
-import { useContractLoader, useContractReader, useUserSigner } from "./hooks";
+import {
+  useContractLoader,
+  useContractReader,
+  useUserSigner,
+  useExchangePrice,
+  useBalance,
+  useGasPrice,
+} from "./hooks";
+import { Transactor } from "./helpers";
 
 const { BufferList } = require("bl");
 // https://www.npmjs.com/package/ipfs-http-client
@@ -19,10 +27,17 @@ const { ethers } = require("ethers");
 const DEBUG = true;
 
 /// 📡 What chain are your contracts deployed to?
-const targetNetwork = NETWORKS.mumbai; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+const targetNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet, mumbai)
+const scaffoldEthProvider = navigator.onLine
+  ? new ethers.providers.StaticJsonRpcProvider("https://rpc.scaffoldeth.io:48544")
+  : null;
+const mainnetInfura = navigator.onLine
+  ? new ethers.providers.StaticJsonRpcProvider("https://mainnet.infura.io/v3/" + INFURA_ID)
+  : null;
 
 // 🏠 Your local provider is usually pointed at your local blockchain
 const localProviderUrl = targetNetwork.rpcUrl;
+
 // as you deploy to other networks you can set REACT_APP_PROVIDER=https://dai.poa.network in packages/react-app/.env
 const localProviderUrlFromEnv = process.env.REACT_APP_PROVIDER ? process.env.REACT_APP_PROVIDER : localProviderUrl;
 if (DEBUG) console.log("🏠 Connecting to provider:", localProviderUrlFromEnv);
@@ -52,10 +67,13 @@ const logoutOfWeb3Modal = async () => {
 };
 
 function App(props) {
+  const mainnetProvider = scaffoldEthProvider && scaffoldEthProvider._network ? scaffoldEthProvider : mainnetInfura;
   // injecedProvider will be used when metamask connection is implemented
   const [injectedProvider, setInjectedProvider] = useState();
   const [userAddress, setUserAddress] = useState();
   const [cityDaoAddress, setCityDaoAddress] = useState("0xb40A70Aa5C30215c44F27BF990cBf4D3E5Acb384"); // this will be the temporary address to hold the parcels on testnets, in practice will be owned by CityDAO
+
+  const price = useExchangePrice(targetNetwork, mainnetProvider);
 
   const loadWeb3Modal = useCallback(async () => {
     const provider = await web3Modal.connect();
@@ -83,21 +101,33 @@ function App(props) {
     loadWeb3Modal();
   }, [loadWeb3Modal]);
 
+  const gasPrice = useGasPrice(targetNetwork, "fast");
+
   // Use your injected provider from 🦊 Metamask or if you don't have it then instantly generate a 🔥 burner wallet.
   const userSigner = useUserSigner(injectedProvider, localProvider);
+
+  const tx = Transactor(userSigner, gasPrice);
 
   useEffect(() => {
     async function getAddress() {
       if (userSigner) {
         const newAddress = await userSigner.getAddress();
         setUserAddress(newAddress);
+        console.log("Your address: " + newAddress);
+        console.log("CityDAO's address: " + cityDaoAddress);
       }
     }
     getAddress();
   }, [userSigner]);
 
+  // You can warn the user if you would like them to be on a specific network
+  const localChainId = localProvider && localProvider._network && localProvider._network.chainId;
+
   // Load in your local 📝 contract and read a value from it:
   const readContracts = useContractLoader(localProvider);
+
+  // If you want to make 🔐 write transactions to your contracts, use the userSigner:
+  const writeContracts = useContractLoader(userSigner, { chainId: localChainId });
 
   // keep track of a variable from the contract in the local React state:
   const balance = useContractReader(readContracts, "CityDaoParcel", "balanceOf", [cityDaoAddress]);
@@ -123,13 +153,14 @@ function App(props) {
       if (parcels.length > 0) return; // prevent excessive calls to IPFS
       for (let tokenIndex = 0; tokenIndex < balance; tokenIndex++) {
         try {
-          const tokenId = await readContracts.Parcel0.tokenOfOwnerByIndex(cityDaoAddress, tokenIndex);
-          const tokenURI = await readContracts.Parcel0.tokenURI(tokenId);
+          const tokenId = await readContracts.CityDaoParcel.tokenByIndex(tokenIndex);
+          const tokenOwner = await readContracts.CityDaoParcel.getParcelOwner(tokenIndex);
+          const tokenURI = await readContracts.CityDaoParcel.tokenURI(tokenId);
           const ipfsHash = tokenURI.replace("https://ipfs.io/ipfs/", "");
           const jsonManifestBuffer = await getFromIPFS(ipfsHash);
           try {
             const jsonManifest = JSON.parse(jsonManifestBuffer.toString());
-            newParcels.push({ id: tokenId, uri: tokenURI, owner: cityDaoAddress, ...jsonManifest });
+            newParcels.push({ id: tokenId, uri: tokenURI, owner: tokenOwner, ...jsonManifest });
           } catch (e) {
             console.log(e);
           }
@@ -139,12 +170,15 @@ function App(props) {
       }
       if (newParcels.length !== parcels.length) {
         console.log("📦 Parcels:", newParcels);
-        console.log("Number of parcels:", newParcels.length);
         setParcels(newParcels);
       }
     };
     updateParcels();
   });
+
+  const transferParcel = id => {
+    tx(writeContracts.CityDaoParcel.buyParcel(userAddress, cityDaoAddress, id));
+  };
 
   const [route, setRoute] = useState();
   useEffect(() => {
@@ -167,11 +201,17 @@ function App(props) {
             </Link>
           </Menu.Item>
         </Menu>
+        <Faucet localProvider={localProvider} price={price} ensProvider={mainnetProvider} />
 
         <Switch>
           <Route exact path="/">
             <div style={{ width: "100%", margin: "auto", marginTop: 32, paddingBottom: 32 }}>
-              <ParcelMap parcels={parcels} startingCoordinates={[-106.331, 43.172]} startingZoom={9} />
+              <ParcelMap
+                parcels={parcels}
+                startingCoordinates={[-106.331, 43.172]}
+                startingZoom={9}
+                transferParcel={id => transferParcel(id)}
+              />
             </div>
           </Route>
         </Switch>
