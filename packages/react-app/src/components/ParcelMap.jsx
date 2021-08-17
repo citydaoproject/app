@@ -24,7 +24,7 @@ mapboxgl.accessToken = "pk.eyJ1IjoiZ3JlZ3JvbHdlcyIsImEiOiJja3J1cnhvbWEwMGQxMnZ0N
   - Provide startingZoom={9} as the maps beginning zoom level.
 */
 
-export default function ParcelMap({ parcels, startingCoordinates, startingZoom }) {
+export default function ParcelMap({ parcels, startingCoordinates, startingZoom, buyParcel }) {
   const mapContainer = useRef(null);
   const map = useRef(null);
   const [activeParcel, setActiveParcel] = useState(null);
@@ -54,15 +54,11 @@ export default function ParcelMap({ parcels, startingCoordinates, startingZoom }
         "line-width": 2,
       },
     });
-
-    // set click functionality
-    map.current.on("click", parcel_id, function (e) {
-      clickParcel(parcel_id);
-    });
   };
 
   const clickParcel = parcel_id => {
-    setActiveParcel(parcel_id);
+    // setActiveParcel(parcel_id);
+    buyParcel(parcel_id);
   };
 
   useEffect(() => {
@@ -77,10 +73,14 @@ export default function ParcelMap({ parcels, startingCoordinates, startingZoom }
 
   useEffect(() => {
     parcels.forEach(parcel => {
-      const id = parcel.id.toNumber().toString(); // convert big number id to string
+      const parcel_name = parcel.id.toNumber().toString(); // convert big number id to string
       try {
-        if (map.current.getSource(id)) return; // skip if already added
-        addParcelToMap(parcel.geojson, id);
+        if (map.current.getSource(parcel_name)) return; // skip if already added
+        addParcelToMap(parcel.geojson, parcel_name);
+        // set click functionality
+        map.current.on("click", parcel_name, function (e) {
+          clickParcel(parcel.id);
+        });
       } catch (e) {
         console.log(e);
       }
