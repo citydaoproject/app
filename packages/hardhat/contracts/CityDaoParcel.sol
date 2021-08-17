@@ -19,11 +19,6 @@ contract CityDaoParcel is ERC721, Ownable {
     _setBaseURI("https://ipfs.io/ipfs/");
   }
 
-  struct Parcel {
-        uint16 leaseLength;
-        string metadataLocationHash;
-  }
-
   function buyParcel(
         address _toAddress,
         uint256 _parcelId
