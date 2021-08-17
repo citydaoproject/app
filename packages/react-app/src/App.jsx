@@ -210,7 +210,7 @@ function App(props) {
                 parcels={parcels}
                 startingCoordinates={[-106.331, 43.172]}
                 startingZoom={9}
-                transferParcel={id => buyParcel(id)}
+                buyParcel={id => buyParcel(id)}
               />
             </div>
           </Route>
