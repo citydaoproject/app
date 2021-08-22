@@ -177,7 +177,7 @@ function App(props) {
   });
 
   const buyParcel = id => {
-    tx(writeContracts.CityDaoParcel.buyParcel(userAddress, cityDaoAddress, id));
+    tx(writeContracts.CityDaoParcel.mintParcel(userAddress, id));
   };
 
   const [route, setRoute] = useState();
