@@ -1,4 +1,5 @@
 pragma solidity >=0.6.0;
+pragma experimental ABIEncoderV2;
 //SPDX-License-Identifier: MIT
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
@@ -14,7 +15,7 @@ contract CityDaoParcel is ERC721, Ownable {
 
   mapping(uint256 => string) private _parcelIdToTokenURI;
   mapping(uint256 => string) private _parcelIdToPrice;
-  uint256[] private _parcelIds = [];
+  uint256[] private _parcelIds = new uint256[](0);
 
   constructor() public ERC721("CityDaoParcel", "YCB") {
     _setBaseURI("https://ipfs.io/ipfs/");
