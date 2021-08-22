@@ -33,13 +33,14 @@ contract CityDaoParcel is ERC721, Ownable {
 
   function mintParcel(address _toAddress, uint256 parcelId)
       public
-      onlyOwner
       returns (uint256)
   {
+      require(msg.sender == _toAddress);
+      
       _safeMint(_toAddress, parcelId);
       _setTokenURI(parcelId, _parcelIdToTokenURI[parcelId]);
 
-      delete _parcelIds[getIdIndex(parcelId)];
+      delete _parcelIdToPrice[parcelId];
       delete _parcelIdToTokenURI[parcelId];
 
       return parcelId;
@@ -53,16 +54,11 @@ contract CityDaoParcel is ERC721, Ownable {
     return ret;
   }
 
-  function getParcelIds() public view returns (uint256[] memory) {
-    return _parcelIds;
+  function getPrice(uint256 parcelId) public view returns (string memory) {
+    return _parcelIdToPrice[parcelId];
   }
 
-  function getIdIndex(uint256 parcelId) private view returns (uint256) {
-    for (uint256 i = 0; i < _parcelIds.length; i++) {
-      if (_parcelIds[i] == parcelId) {
-        return i;
-      }
-    }
-    return _parcelIds.length; // return length if not found
+  function getParcelIds() public view returns (uint256[] memory) {
+    return _parcelIds;
   }
 }

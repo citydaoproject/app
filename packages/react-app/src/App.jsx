@@ -144,21 +144,23 @@ function App(props) {
     }
   };
 
-  useEffect(() => {
-    const updateParcels = async () => {
-      var newParcels = [];
-      if (parcels.length > 0) return; // prevent excessive calls to IPFS
-      if (readContracts) {
-        const parcelIds = await readContracts.CityDaoParcel.getParcelIds();
-        const parcelURIs = await readContracts.CityDaoParcel.getListedParcels();
-        for (var index = 0; index < parcelIds.length; index++) {
-          const parcelId = parcelIds[index];
-          const ipfsHash = parcelURIs[parcelId];
+  const updateParcels = async (forceUpdate = false) => {
+    var newParcels = [];
+    if (parcels.length > 0 && !forceUpdate) return; // prevent excessive calls to IPFS
+    if (readContracts) {
+      const parcelIds = await readContracts.CityDaoParcel.getParcelIds();
+      const parcelURIs = await readContracts.CityDaoParcel.getListedParcels();
+      for (var index = 0; index < parcelIds.length; index++) {
+        const parcelId = parcelIds[index];
+        const ipfsHash = parcelURIs[parcelId];
+        const price = await readContracts.CityDaoParcel.getPrice(parcelId);
+        if (ipfsHash !== "") {
+          // skip sold parcels
           try {
             const jsonManifestBuffer = await getFromIPFS(ipfsHash);
             try {
               const jsonManifest = JSON.parse(jsonManifestBuffer.toString());
-              newParcels.push({ id: parcelId, uri: ipfsHash, ...jsonManifest });
+              newParcels.push({ id: parcelId, uri: ipfsHash, price: price, ...jsonManifest });
             } catch (e) {
               console.log(e);
             }
@@ -166,18 +168,23 @@ function App(props) {
             console.log(e);
           }
         }
-        if (newParcels.length !== parcels.length) {
-          console.log("📦 Parcels:", newParcels);
-          setParcels(newParcels);
-          console.log(newParcels);
-        }
       }
-    };
+      console.log(newParcels);
+      if (newParcels.length !== parcels.length) {
+        console.log("📦 Parcels:", newParcels);
+        setParcels(newParcels);
+      }
+    }
+  };
+
+  useEffect(() => {
     updateParcels();
   });
 
   const buyParcel = id => {
-    tx(writeContracts.CityDaoParcel.mintParcel(userAddress, id));
+    tx(writeContracts.CityDaoParcel.mintParcel(userAddress, id)).then(() => {
+      updateParcels(true);
+    });
   };
 
   const [route, setRoute] = useState();
@@ -205,7 +212,7 @@ function App(props) {
 
         <Switch>
           <Route exact path="/">
-            <div style={{ width: "100%", margin: "auto", marginTop: 32, paddingBottom: 32 }}>
+            <div key={parcels.length} style={{ width: "100%", margin: "auto", marginTop: 32, paddingBottom: 32 }}>
               <ParcelMap
                 parcels={parcels}
                 startingCoordinates={[-106.331, 43.172]}

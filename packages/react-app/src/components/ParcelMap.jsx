@@ -57,8 +57,7 @@ export default function ParcelMap({ parcels, startingCoordinates, startingZoom, 
   };
 
   const clickParcel = parcel_id => {
-    // setActiveParcel(parcel_id);
-    buyParcel(parcel_id);
+    setActiveParcel(parcel_id);
   };
 
   useEffect(() => {
@@ -72,18 +71,20 @@ export default function ParcelMap({ parcels, startingCoordinates, startingZoom, 
   });
 
   useEffect(() => {
-    parcels.forEach(parcel => {
-      const parcel_name = parcel.id.toNumber().toString(); // convert big number id to string
-      try {
-        if (map.current.getSource(parcel_name)) return; // skip if already added
-        addParcelToMap(parcel.geojson, parcel_name);
-        // set click functionality
-        map.current.on("click", parcel_name, function (e) {
-          clickParcel(parcel.id);
-        });
-      } catch (e) {
-        console.log(e);
-      }
+    map.current.on("load", function () {
+      parcels.forEach(parcel => {
+        const parcel_name = parcel.id.toNumber().toString(); // convert big number id to string
+        try {
+          if (map.current.getSource(parcel_name)) return; // skip if already added
+          addParcelToMap(parcel.geojson, parcel_name);
+          // set click functionality
+          map.current.on("click", parcel_name, function (e) {
+            clickParcel(parcel.id);
+          });
+        } catch (e) {
+          console.log(e);
+        }
+      });
     });
   });
 
@@ -93,8 +94,9 @@ export default function ParcelMap({ parcels, startingCoordinates, startingZoom, 
         Retrieving parcels...
       </div>
       <div style={{ display: parcels.length > 0 ? "block" : "none", margin: "20px", textAlign: "center" }}>
-        Selected parcel: {activeParcel}
+        Selected parcel: {activeParcel ? activeParcel.toNumber().toString() : null}
       </div>
+      <button onClick={() => (activeParcel ? buyParcel(activeParcel) : null)}>BUY</button>
       <div ref={mapContainer} className="map-container" />
     </div>
   );
