@@ -40,8 +40,8 @@ const main = async () => {
   console.log("Uploading parcel0...");
   const uploaded = await ipfs.add(JSON.stringify(parcel0));
 
-  console.log("Minting parcel0 with IPFS hash (" + uploaded.path + ")");
-  await parcel.mintItem(toAddress, uploaded.path, {
+  console.log("Listing parcel0 with IPFS hash (" + uploaded.path + ")");
+  await parcel.listParcel(uploaded.path, "0.01", {
     gasLimit: 400000,
   });
 
@@ -70,8 +70,8 @@ const main = async () => {
   console.log("Uploading parcel1...");
   const uploadedparcel1 = await ipfs.add(JSON.stringify(parcel1));
 
-  console.log("Minting parcel1 with IPFS hash (" + uploadedparcel1.path + ")");
-  await parcel.mintItem(toAddress, uploadedparcel1.path, {
+  console.log("Listing parcel1 with IPFS hash (" + uploadedparcel1.path + ")");
+  await parcel.listParcel(uploadedparcel1.path, "0.01", {
     gasLimit: 400000,
   });
 
@@ -100,8 +100,8 @@ const main = async () => {
   console.log("Uploading parcel2...");
   const uploadedparcel2 = await ipfs.add(JSON.stringify(parcel2));
 
-  console.log("Minting parcel2 with IPFS hash (" + uploadedparcel2.path + ")");
-  await parcel.mintItem(toAddress, uploadedparcel2.path, {
+  console.log("Listing parcel2 with IPFS hash (" + uploadedparcel2.path + ")");
+  await parcel.listParcel(uploadedparcel2.path, "0.01", {
     gasLimit: 400000,
   });
 
@@ -109,7 +109,7 @@ const main = async () => {
 
   // transfer contract to CityDAO
   console.log(
-    "Transferring Ownership of CityDAO Parcel Contract to " + toAddress + "..."
+    "Transferring ownership of CityDAO Parcel Contract to " + toAddress + "..."
   );
 
   await parcel.transferOwnership(toAddress);
