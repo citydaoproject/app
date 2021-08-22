@@ -129,9 +129,6 @@ function App(props) {
   // If you want to make 🔐 write transactions to your contracts, use the userSigner:
   const writeContracts = useContractLoader(userSigner, { chainId: localChainId });
 
-  // keep track of a variable from the contract in the local React state:
-  const balance = useContractReader(readContracts, "CityDaoParcel", "balanceOf", [cityDaoAddress]);
-
   const [parcels, setParcels] = useState([]);
 
   // helper function to "Get" from IPFS
@@ -151,26 +148,29 @@ function App(props) {
     const updateParcels = async () => {
       var newParcels = [];
       if (parcels.length > 0) return; // prevent excessive calls to IPFS
-      for (let tokenIndex = 0; tokenIndex < balance; tokenIndex++) {
-        try {
-          const tokenId = await readContracts.CityDaoParcel.tokenByIndex(tokenIndex);
-          const tokenOwner = await readContracts.CityDaoParcel.getParcelOwner(tokenIndex);
-          const tokenURI = await readContracts.CityDaoParcel.tokenURI(tokenId);
-          const ipfsHash = tokenURI.replace("https://ipfs.io/ipfs/", "");
-          const jsonManifestBuffer = await getFromIPFS(ipfsHash);
+      if (readContracts) {
+        const parcelIds = await readContracts.CityDaoParcel.getParcelIds();
+        const parcelURIs = await readContracts.CityDaoParcel.getListedParcels();
+        for (var index = 0; index < parcelIds.length; index++) {
+          const parcelId = parcelIds[index];
+          const ipfsHash = parcelURIs[parcelId];
           try {
-            const jsonManifest = JSON.parse(jsonManifestBuffer.toString());
-            newParcels.push({ id: tokenId, uri: tokenURI, owner: tokenOwner, ...jsonManifest });
+            const jsonManifestBuffer = await getFromIPFS(ipfsHash);
+            try {
+              const jsonManifest = JSON.parse(jsonManifestBuffer.toString());
+              newParcels.push({ id: parcelId, uri: ipfsHash, ...jsonManifest });
+            } catch (e) {
+              console.log(e);
+            }
           } catch (e) {
             console.log(e);
           }
-        } catch (e) {
-          console.log(e);
         }
-      }
-      if (newParcels.length !== parcels.length) {
-        console.log("📦 Parcels:", newParcels);
-        setParcels(newParcels);
+        if (newParcels.length !== parcels.length) {
+          console.log("📦 Parcels:", newParcels);
+          setParcels(newParcels);
+          console.log(newParcels);
+        }
       }
     };
     updateParcels();
