@@ -7,41 +7,39 @@ import "@openzeppelin/contracts/access/Ownable.sol"; //learn more: https://docs.
 
 // GET LISTED ON OPENSEA: https://testnets.opensea.io/get-listed/step-two
 
-contract CityDaoParcel is ERC721, Ownable {
+contract CityDaoParcel is ERC721, Ownable, ERC721Tradable {
 
   using Counters for Counters.Counter;
   Counters.Counter private _tokenIds;
 
-  mapping(uint256 => address) public parcelIdToOwners;
-  mapping(uint256 => Parcel) public parcelIdToParcels;
+  mapping(uint256 => string) public parcelIdToTokenURI;
+  mapping(uint256 => string) public parcelIdToPrice;
 
   constructor() public ERC721("CityDaoParcel", "YCB") {
     _setBaseURI("https://ipfs.io/ipfs/");
   }
 
-  function buyParcel(
-        address _toAddress,
-        uint256 _parcelId
-    ) public {
-        safeTransferFrom(ownerOf(_parcelId), _toAddress, _parcelId);
-        parcelIdToOwners[_parcelId] = _toAddress;
+  function listParcel(string memory tokenURI, string memory price) public onlyOwner returns (uint256) {
+    uint256 parcelId = _tokenIds.current();
+    _tokenIds.increment();
+    parcelIdToTokenURI[parcelId] = tokenURI;
+    parcelIdToPrice[parcelId] = price;
+
+    return parcelId;
   }
 
-  function mintItem(address _toAddress, string memory tokenURI)
+  function mintItem(address _toAddress, uint256 parcelId)
       public
       onlyOwner
       returns (uint256)
   {
-      uint256 parcelId = _tokenIds.current();
-      _tokenIds.increment();
-      parcelIdToOwners[parcelId] = _toAddress;
       _safeMint(_toAddress, parcelId);
-      _setTokenURI(parcelId, tokenURI);
+      _setTokenURI(parcelId, parcelIdToTokenURI[parcelId]);
 
       return parcelId;
   }
 
-  function getParcelOwner(uint256 _parcelId) external view returns (address) {
-      return parcelIdToOwners[_parcelId];
+  function getListedParcels() public view returns (mapping(uint256 => string)) {
+    return parcelIdToTokenURI;
   }
 }
