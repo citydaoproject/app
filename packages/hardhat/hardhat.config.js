@@ -92,6 +92,13 @@ module.exports = {
         mnemonic: mnemonic(),
       },
     },
+    mumbai: {
+      url: "https://rpc-mumbai.maticvigil.com/",
+      gasPrice: 1100000000,
+      accounts: {
+        mnemonic: mnemonic(),
+      },
+    },
     matic: {
       url: "https://rpc-mainnet.maticvigil.com/",
       gasPrice: 1000000000,

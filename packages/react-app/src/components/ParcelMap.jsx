@@ -24,7 +24,7 @@ mapboxgl.accessToken = "pk.eyJ1IjoiZ3JlZ3JvbHdlcyIsImEiOiJja3J1cnhvbWEwMGQxMnZ0N
   - Provide startingZoom={9} as the maps beginning zoom level.
 */
 
-export default function ParcelMap({ parcels, startingCoordinates, startingZoom }) {
+export default function ParcelMap({ parcels, startingCoordinates, startingZoom, buyParcel }) {
   const mapContainer = useRef(null);
   const map = useRef(null);
   const [activeParcel, setActiveParcel] = useState(null);
@@ -54,11 +54,6 @@ export default function ParcelMap({ parcels, startingCoordinates, startingZoom }
         "line-width": 2,
       },
     });
-
-    // set click functionality
-    map.current.on("click", parcel_id, function (e) {
-      clickParcel(parcel_id);
-    });
   };
 
   const clickParcel = parcel_id => {
@@ -76,13 +71,20 @@ export default function ParcelMap({ parcels, startingCoordinates, startingZoom }
   });
 
   useEffect(() => {
-    parcels.forEach(parcel => {
-      try {
-        if (map.current.getSource(parcel.id)) return; // skip if already added
-        addParcelToMap(parcel.geojson, parcel.id);
-      } catch (e) {
-        console.log(e);
-      }
+    map.current.on("load", function () {
+      parcels.forEach(parcel => {
+        const parcel_name = parcel.id.toNumber().toString(); // convert big number id to string
+        try {
+          if (map.current.getSource(parcel_name)) return; // skip if already added
+          addParcelToMap(parcel.geojson, parcel_name);
+          // set click functionality
+          map.current.on("click", parcel_name, function (e) {
+            clickParcel(parcel.id);
+          });
+        } catch (e) {
+          console.log(e);
+        }
+      });
     });
   });
 
@@ -92,8 +94,9 @@ export default function ParcelMap({ parcels, startingCoordinates, startingZoom }
         Retrieving parcels...
       </div>
       <div style={{ display: parcels.length > 0 ? "block" : "none", margin: "20px", textAlign: "center" }}>
-        Selected parcel: {activeParcel}
+        Selected parcel: {activeParcel ? activeParcel.toNumber().toString() : null}
       </div>
+      <button onClick={() => (activeParcel ? buyParcel(activeParcel) : null)}>BUY</button>
       <div ref={mapContainer} className="map-container" />
     </div>
   );
