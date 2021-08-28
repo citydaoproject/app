@@ -64,7 +64,7 @@ export default function ParcelMap({ parcels, startingCoordinates, startingZoom, 
     if (map.current) return; // initialize map only once
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
-      style: "mapbox://styles/gregrolwes/ckruwxiwk20cf18o0x218571b",
+      style: "mapbox://styles/gregrolwes/cksuzrjba5nsx17nkuv02r4rq",
       center: startingCoordinates,
       zoom: startingZoom,
     });
