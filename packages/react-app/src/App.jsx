@@ -1,21 +1,14 @@
 import WalletConnectProvider from "@walletconnect/web3-provider";
-import { Menu, Button } from "antd";
 import "antd/dist/antd.css";
 import React, { useEffect, useState, useCallback } from "react";
-import { BrowserRouter, Link, Route, Switch } from "react-router-dom";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
 import Web3Modal from "web3modal";
 import "./App.css";
-import { Header, ThemeSwitch, ParcelMap, Faucet } from "./components";
+import { Faucet } from "./components";
 import { INFURA_ID, NETWORKS } from "./constants";
-import {
-  useContractLoader,
-  useContractReader,
-  useUserSigner,
-  useExchangePrice,
-  useBalance,
-  useGasPrice,
-} from "./hooks";
+import { useContractLoader, useUserSigner, useExchangePrice, useGasPrice } from "./hooks";
 import { Transactor } from "./helpers";
+import { BrowseParcels } from "./views";
 
 const { BufferList } = require("bl");
 // https://www.npmjs.com/package/ipfs-http-client
@@ -27,7 +20,7 @@ const { ethers } = require("ethers");
 const DEBUG = true;
 
 /// 📡 What chain are your contracts deployed to?
-const targetNetwork = NETWORKS.ropsten; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet, mumbai)
+const targetNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet, mumbai)
 const scaffoldEthProvider = navigator.onLine
   ? new ethers.providers.StaticJsonRpcProvider("https://rpc.scaffoldeth.io:48544")
   : null;
@@ -194,37 +187,14 @@ function App(props) {
 
   return (
     <div className="App">
-      <Header />
       <BrowserRouter>
-        <Menu style={{ textAlign: "center" }} selectedKeys={[route]} mode="horizontal">
-          <Menu.Item key="/">
-            <Link
-              onClick={() => {
-                setRoute("/");
-              }}
-              to="/"
-            >
-              Parcel Map
-            </Link>
-          </Menu.Item>
-        </Menu>
         <Faucet localProvider={localProvider} price={price} ensProvider={mainnetProvider} />
-
         <Switch>
           <Route exact path="/">
-            <div key={parcels.length} style={{ width: "100%", margin: "auto", marginTop: 32, paddingBottom: 32 }}>
-              <ParcelMap
-                parcels={parcels}
-                startingCoordinates={[-106.331, 43.172]}
-                startingZoom={9}
-                buyParcel={id => buyParcel(id)}
-              />
-            </div>
+            <BrowseParcels parcels={parcels} buyParcel={buyParcel} />
           </Route>
         </Switch>
       </BrowserRouter>
-
-      <ThemeSwitch />
     </div>
   );
 }
