@@ -6,14 +6,10 @@ import Web3Modal from "web3modal";
 import "./App.css";
 import { Faucet } from "./components";
 import { INFURA_ID, NETWORKS } from "./constants";
-import { useContractLoader, useUserSigner, useExchangePrice, useGasPrice } from "./hooks";
+import { useContractLoader, useUserSigner, useExchangePrice, useGasPrice, useUpdateParcels } from "./hooks";
 import { Transactor } from "./helpers";
 import { BrowseParcels } from "./views";
-
-const { BufferList } = require("bl");
-// https://www.npmjs.com/package/ipfs-http-client
-const ipfsAPI = require("ipfs-http-client");
-const ipfs = ipfsAPI({ host: "ipfs.infura.io", port: "5001", protocol: "https" });
+import { fetchParcelMetadata } from "./data";
 
 const { ethers } = require("ethers");
 
@@ -124,60 +120,11 @@ function App(props) {
 
   const [parcels, setParcels] = useState([]);
 
-  // helper function to "Get" from IPFS
-  // you usually go content.toString() after this...
-  const getFromIPFS = async hashToGet => {
-    for await (const file of ipfs.get(hashToGet)) {
-      if (!file.content) continue;
-      const content = new BufferList();
-      for await (const chunk of file.content) {
-        content.append(chunk);
-      }
-      return content;
-    }
-  };
+  useUpdateParcels(parcels, setParcels, readContracts);
 
-  const updateParcels = async (forceUpdate = false) => {
-    var newParcels = [];
-    if (parcels.length > 0 && !forceUpdate) return; // prevent excessive calls to IPFS
-    if (readContracts) {
-      const parcelIds = await readContracts.CityDaoParcel.getParcelIds();
-      const parcelURIs = await readContracts.CityDaoParcel.getListedParcels();
-      for (var index = 0; index < parcelIds.length; index++) {
-        const parcelId = parcelIds[index];
-        const ipfsHash = parcelURIs[parcelId];
-        const price = await readContracts.CityDaoParcel.getPrice(parcelId);
-        if (ipfsHash !== "") {
-          // skip sold parcels
-          try {
-            const jsonManifestBuffer = await getFromIPFS(ipfsHash);
-            try {
-              const jsonManifest = JSON.parse(jsonManifestBuffer.toString());
-              newParcels.push({ id: parcelId, uri: ipfsHash, price: price, ...jsonManifest });
-            } catch (e) {
-              console.log(e);
-            }
-          } catch (e) {
-            console.log(e);
-          }
-        }
-      }
-      console.log(newParcels);
-      if (newParcels.length !== parcels.length) {
-        console.log("📦 Parcels:", newParcels);
-        setParcels(newParcels);
-      }
-    }
-  };
-
-  useEffect(() => {
-    updateParcels();
-  });
-
-  const buyParcel = id => {
-    tx(writeContracts.CityDaoParcel.mintParcel(userAddress, id)).then(() => {
-      updateParcels(true);
-    });
+  const useBuyParcel = async id => {
+    await tx(writeContracts.CityDaoParcel.mintParcel(userAddress, id));
+    useUpdateParcels(parcels, setParcels, readContracts, true);
   };
 
   const [route, setRoute] = useState();
@@ -191,7 +138,7 @@ function App(props) {
         <Faucet localProvider={localProvider} price={price} ensProvider={mainnetProvider} />
         <Switch>
           <Route exact path="/">
-            <BrowseParcels parcels={parcels} buyParcel={buyParcel} />
+            <BrowseParcels parcels={parcels} buyParcel={useBuyParcel} />
           </Route>
         </Switch>
       </BrowserRouter>
