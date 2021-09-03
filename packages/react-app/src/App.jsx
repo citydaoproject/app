@@ -3,6 +3,8 @@ import "antd/dist/antd.css";
 import React, { useEffect, useState, useCallback } from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import Web3Modal from "web3modal";
+import { useSelector, useDispatch } from "react-redux";
+import { setUserAddress } from "./actions";
 import "./App.css";
 import { Faucet } from "./components";
 import { INFURA_ID, NETWORKS } from "./constants";
@@ -55,11 +57,13 @@ const logoutOfWeb3Modal = async () => {
   }, 1);
 };
 
-function App(props) {
+function App() {
+  const userAddress = useSelector(state => state.user.address);
+  const dispatch = useDispatch();
+
   const mainnetProvider = scaffoldEthProvider && scaffoldEthProvider._network ? scaffoldEthProvider : mainnetInfura;
   // injecedProvider will be used when metamask connection is implemented
   const [injectedProvider, setInjectedProvider] = useState();
-  const [userAddress, setUserAddress] = useState();
   const [cityDaoAddress, setCityDaoAddress] = useState("0xb40A70Aa5C30215c44F27BF990cBf4D3E5Acb384"); // this will be the temporary address to hold the parcels on testnets, in practice will be owned by CityDAO
 
   const price = useExchangePrice(targetNetwork, mainnetProvider);
@@ -101,12 +105,13 @@ function App(props) {
     async function getAddress() {
       if (userSigner) {
         const newAddress = await userSigner.getAddress();
-        setUserAddress(newAddress);
-        console.log("Your address: " + newAddress);
+        dispatch(setUserAddress(newAddress));
+        console.log("Your address: " + userAddress);
         console.log("CityDAO's address: " + cityDaoAddress);
       }
     }
     getAddress();
+    console.log(userAddress);
   }, [userSigner]);
 
   // You can warn the user if you would like them to be on a specific network
