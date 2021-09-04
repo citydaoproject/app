@@ -4,12 +4,11 @@ import React, { useEffect, useState, useCallback } from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import Web3Modal from "web3modal";
 import { useSelector, useDispatch } from "react-redux";
-import { setUserAddress, setExchangePrice } from "./actions";
+import { setUserAddress, setExchangePrice, setGasPrice } from "./actions";
 import "./App.css";
 import { Wallet } from "./components";
 import { INFURA_ID, NETWORKS } from "./constants";
 import { useContractLoader, useUserSigner, useExchangePrice, useGasPrice, useUpdateParcels } from "./hooks";
-import { Transactor } from "./helpers";
 import { BrowseParcels } from "./views";
 
 const { ethers } = require("ethers");
@@ -94,12 +93,10 @@ function App() {
     loadWeb3Modal();
   }, [loadWeb3Modal]);
 
-  const gasPrice = useGasPrice(targetNetwork, "fast");
+  dispatch(setGasPrice(useGasPrice(targetNetwork, "fast")));
 
   // Use your injected provider from 🦊 Metamask or if you don't have it then instantly generate a 🔥 burner wallet.
   const userSigner = useUserSigner(injectedProvider, localProvider);
-
-  const tx = Transactor(userSigner, gasPrice);
 
   useEffect(() => {
     async function getAddress() {
@@ -121,15 +118,6 @@ function App() {
   // If you want to make 🔐 write transactions to your contracts, use the userSigner:
   const writeContracts = useContractLoader(userSigner, { chainId: localChainId });
 
-  const [parcels, setParcels] = useState([]);
-
-  useUpdateParcels(parcels, setParcels, readContracts);
-
-  const useBuyParcel = async id => {
-    await tx(writeContracts.CityDaoParcel.mintParcel(userAddress, id));
-    useUpdateParcels(parcels, setParcels, readContracts, true);
-  };
-
   const [route, setRoute] = useState();
   useEffect(() => {
     setRoute(window.location.pathname);
@@ -141,7 +129,7 @@ function App() {
         <Wallet price={price} toAddress={userAddress} provider={localProvider} />
         <Switch>
           <Route exact path="/">
-            <BrowseParcels parcels={parcels} buyParcel={useBuyParcel} />
+            <BrowseParcels readContracts={readContracts} writeContracts={writeContracts} userSigner={userSigner} />
           </Route>
         </Switch>
       </BrowserRouter>
