@@ -14,7 +14,7 @@ const useUserSigner = injectedProvider => {
       setSigner(injectedSigner);
       dispatch(setUserAddress(await injectedSigner.getAddress()));
     } else setSigner();
-  }, [injectedProvider, DEBUG, dispatch]);
+  }, [injectedProvider]);
 
   return signer;
 };

@@ -120,7 +120,7 @@ export default function useContractLoader(providerOrSigner, config = {}) {
     return () => {
       active = false;
     };
-  }, [providerOrSigner, config]);
+  }, [providerOrSigner]);
 
   return contracts;
 }
