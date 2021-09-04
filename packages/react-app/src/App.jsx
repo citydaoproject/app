@@ -4,14 +4,13 @@ import React, { useEffect, useState, useCallback } from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import Web3Modal from "web3modal";
 import { useSelector, useDispatch } from "react-redux";
-import { setUserAddress } from "./actions";
+import { setUserAddress, setExchangePrice } from "./actions";
 import "./App.css";
 import { Faucet } from "./components";
 import { INFURA_ID, NETWORKS } from "./constants";
 import { useContractLoader, useUserSigner, useExchangePrice, useGasPrice, useUpdateParcels } from "./hooks";
 import { Transactor } from "./helpers";
 import { BrowseParcels } from "./views";
-import { fetchParcelMetadata } from "./data";
 
 const { ethers } = require("ethers");
 
@@ -59,6 +58,7 @@ const logoutOfWeb3Modal = async () => {
 
 function App() {
   const userAddress = useSelector(state => state.user.address);
+  const price = useSelector(state => state.network.exchangePrice);
   const dispatch = useDispatch();
 
   const mainnetProvider = scaffoldEthProvider && scaffoldEthProvider._network ? scaffoldEthProvider : mainnetInfura;
@@ -66,7 +66,7 @@ function App() {
   const [injectedProvider, setInjectedProvider] = useState();
   const [cityDaoAddress, setCityDaoAddress] = useState("0xb40A70Aa5C30215c44F27BF990cBf4D3E5Acb384"); // this will be the temporary address to hold the parcels on testnets, in practice will be owned by CityDAO
 
-  const price = useExchangePrice(targetNetwork, mainnetProvider);
+  dispatch(setExchangePrice(useExchangePrice(targetNetwork, mainnetProvider)));
 
   const loadWeb3Modal = useCallback(async () => {
     const provider = await web3Modal.connect();
