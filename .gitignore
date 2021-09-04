@@ -11,8 +11,6 @@ packages/hardhat/deployments
 !packages/react-app/src/contracts/external_contracts.js
 packages/hardhat/cache*
 
-packages/**/data
-
 packages/subgraph/config/config.json
 tenderly.yaml
 
