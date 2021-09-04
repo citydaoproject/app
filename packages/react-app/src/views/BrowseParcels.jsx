@@ -2,20 +2,23 @@ import React, { useState } from "react";
 import { useSelector } from "react-redux";
 
 import { Transactor } from "../helpers";
-import { useUpdateParcels } from "../hooks";
+import { useUpdateParcels, useUserSigner, useContractLoader } from "../hooks";
 import { ParcelMap } from "../components";
 
-export default function BrowseParcels({ readContracts, writeContracts, userSigner }) {
+export default function BrowseParcels({ injectedProvider }) {
   const [parcels, setParcels] = useState([]);
   const userAddress = useSelector(state => state.user.address);
   const gasPrice = useSelector(state => state.network.gasPrice);
 
+  const userSigner = useUserSigner(injectedProvider);
+  const contracts = useContractLoader(injectedProvider);
+
   const tx = Transactor(userSigner, gasPrice);
-  useUpdateParcels(parcels, setParcels, readContracts);
+  useUpdateParcels(parcels, setParcels, contracts);
 
   const useBuyParcel = async id => {
-    await tx(writeContracts.CityDaoParcel.mintParcel(userAddress, id));
-    useUpdateParcels(parcels, setParcels, readContracts, true);
+    await tx(contracts.CityDaoParcel.mintParcel(userAddress, id));
+    useUpdateParcels(parcels, setParcels, contracts, true);
   };
 
   return (
