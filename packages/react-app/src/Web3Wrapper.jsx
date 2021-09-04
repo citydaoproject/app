@@ -13,8 +13,6 @@ import { BrowseParcels } from "./views";
 
 const { ethers } = require("ethers");
 
-const DEBUG = true;
-
 /// 📡 What chain are your contracts deployed to?
 const targetNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet, mumbai)
 const scaffoldEthProvider = navigator.onLine
@@ -29,7 +27,6 @@ const localProviderUrl = targetNetwork.rpcUrl;
 
 // as you deploy to other networks you can set REACT_APP_PROVIDER=https://dai.poa.network in packages/react-app/.env
 const localProviderUrlFromEnv = process.env.REACT_APP_PROVIDER ? process.env.REACT_APP_PROVIDER : localProviderUrl;
-if (DEBUG) console.log("🏠 Connecting to provider:", localProviderUrlFromEnv);
 const localProvider = new ethers.providers.StaticJsonRpcProvider(localProviderUrlFromEnv);
 
 /*
@@ -54,6 +51,7 @@ function Web3Wrapper() {
 
   const userAddress = useSelector(state => state.user.address);
   const price = useSelector(state => state.network.exchangePrice);
+  const DEBUG = useSelector(state => state.debug.debug);
   const dispatch = useDispatch();
 
   const mainnetProvider = scaffoldEthProvider && scaffoldEthProvider._network ? scaffoldEthProvider : mainnetInfura;
@@ -67,21 +65,21 @@ function Web3Wrapper() {
     setInjectedProvider(new ethers.providers.Web3Provider(provider));
 
     provider.on("chainChanged", chainId => {
-      console.log(`chain changed to ${chainId}! updating providers`);
+      DEBUG && console.log(`chain changed to ${chainId}! updating providers`);
       setInjectedProvider(new ethers.providers.Web3Provider(provider));
     });
 
     provider.on("accountsChanged", () => {
-      console.log(`account changed!`);
+      DEBUG && console.log(`account changed!`);
       setInjectedProvider(new ethers.providers.Web3Provider(provider));
     });
 
     // Subscribe to session disconnection
     provider.on("disconnect", (code, reason) => {
-      console.log(code, reason);
+      DEBUG && console.log(code, reason);
       logoutOfWeb3Modal(web3Modal);
     });
-  }, [setInjectedProvider]);
+  }, [setInjectedProvider, DEBUG]);
 
   useEffect(() => {
     loadWeb3Modal();
