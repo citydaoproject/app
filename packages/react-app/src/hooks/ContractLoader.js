@@ -1,6 +1,7 @@
 /* eslint-disable import/no-dynamic-require */
 /* eslint-disable global-require */
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 
 const { ethers } = require("ethers");
 
@@ -35,12 +36,14 @@ const { ethers } = require("ethers");
 
 export default function useContractLoader(providerOrSigner, config = {}) {
   const [contracts, setContracts] = useState();
+
+  const DEBUG = useSelector(state => state.debug.debug);
+
   useEffect(() => {
     let active = true;
 
     async function loadContracts() {
       if (providerOrSigner && typeof providerOrSigner !== "undefined") {
-        console.log(`loading contracts`);
         try {
           // we need to check to see if this providerOrSigner has a signer or not
           let signer;
@@ -71,12 +74,12 @@ export default function useContractLoader(providerOrSigner, config = {}) {
           try {
             contractList = config.hardhatContracts || require("../contracts/hardhat_contracts.json");
           } catch (e) {
-            console.log(e);
+            DEBUG && console.log(e);
           }
           try {
             externalContractList = config.externalContracts || require("../contracts/external_contracts.js");
           } catch (e) {
-            console.log(e);
+            DEBUG && console.log(e);
           }
 
           let combinedContracts = {};
@@ -108,7 +111,7 @@ export default function useContractLoader(providerOrSigner, config = {}) {
           }, {});
           if (active) setContracts(newContracts);
         } catch (e) {
-          console.log("ERROR LOADING CONTRACTS!!", e);
+          DEBUG && console.log("ERROR LOADING CONTRACTS!!", e);
         }
       }
     }
@@ -117,7 +120,7 @@ export default function useContractLoader(providerOrSigner, config = {}) {
     return () => {
       active = false;
     };
-  }, [providerOrSigner, config.chainId, config.hardhatNetworkName]);
+  }, [providerOrSigner]);
 
   return contracts;
 }
