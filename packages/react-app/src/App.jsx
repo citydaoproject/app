@@ -6,7 +6,7 @@ import Web3Modal from "web3modal";
 import { useSelector, useDispatch } from "react-redux";
 import { setUserAddress, setExchangePrice } from "./actions";
 import "./App.css";
-import { Faucet } from "./components";
+import { Wallet } from "./components";
 import { INFURA_ID, NETWORKS } from "./constants";
 import { useContractLoader, useUserSigner, useExchangePrice, useGasPrice, useUpdateParcels } from "./hooks";
 import { Transactor } from "./helpers";
@@ -57,14 +57,14 @@ const logoutOfWeb3Modal = async () => {
 };
 
 function App() {
+  // injecedProvider will be used when metamask connection is implemented
+  const [injectedProvider, setInjectedProvider] = useState();
+
   const userAddress = useSelector(state => state.user.address);
   const price = useSelector(state => state.network.exchangePrice);
   const dispatch = useDispatch();
 
   const mainnetProvider = scaffoldEthProvider && scaffoldEthProvider._network ? scaffoldEthProvider : mainnetInfura;
-  // injecedProvider will be used when metamask connection is implemented
-  const [injectedProvider, setInjectedProvider] = useState();
-  const [cityDaoAddress, setCityDaoAddress] = useState("0xb40A70Aa5C30215c44F27BF990cBf4D3E5Acb384"); // this will be the temporary address to hold the parcels on testnets, in practice will be owned by CityDAO
 
   dispatch(setExchangePrice(useExchangePrice(targetNetwork, mainnetProvider)));
 
@@ -107,11 +107,9 @@ function App() {
         const newAddress = await userSigner.getAddress();
         dispatch(setUserAddress(newAddress));
         console.log("Your address: " + userAddress);
-        console.log("CityDAO's address: " + cityDaoAddress);
       }
     }
     getAddress();
-    console.log(userAddress);
   }, [userSigner]);
 
   // You can warn the user if you would like them to be on a specific network
@@ -140,7 +138,7 @@ function App() {
   return (
     <div className="App">
       <BrowserRouter>
-        <Faucet localProvider={localProvider} price={price} ensProvider={mainnetProvider} />
+        <Wallet price={price} toAddress={userAddress} provider={localProvider} />
         <Switch>
           <Route exact path="/">
             <BrowseParcels parcels={parcels} buyParcel={useBuyParcel} />
