@@ -1,11 +1,11 @@
 {
-  "3": {
-    "ropsten": {
-      "name": "ropsten",
-      "chainId": "3",
+  "31337": {
+    "localhost": {
+      "name": "localhost",
+      "chainId": "31337",
       "contracts": {
         "CityDaoParcel": {
-          "address": "0x86Cc03fCE2e7Cd455388de4C7582c31f3D82b440",
+          "address": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
           "abi": [
             {
               "inputs": [],
