@@ -97,7 +97,7 @@ export default function ParcelMap({ parcels, startingCoordinates, startingZoom, 
         Selected parcel: {activeParcel ? activeParcel.toNumber().toString() : null}
       </div>
       <button onClick={() => (activeParcel ? buyParcel(activeParcel) : null)}>BUY</button>
-      <div ref={mapContainer} className="map-container" />
+      <div ref={mapContainer} className="w-full h-screen" />
     </div>
   );
 }
