@@ -11,7 +11,7 @@ function App() {
   const dispatch = useDispatch();
   dispatch(setDebugMode(true));
   return (
-    <div className="App">
+    <div className="App text-center">
       <Web3Wrapper />
     </div>
   );
