@@ -1,14 +1,12 @@
-import React, { useState } from "react";
-import { BigNumber } from "@ethersproject/bignumber";
+import React from "react";
 import { Col, Layout } from "antd";
 import { Content } from "antd/lib/layout/layout";
 
 import { Transactor } from "../helpers";
 import { useUpdateParcels, useUserSigner, useContractLoader, useAppSelector, useAppDispatch } from "../hooks";
 import { ParcelMap } from "../components";
-import { Parcel } from "../models/Parcel";
-import ParcelList from "../components/ParcelList";
 import { setParcels } from "../actions";
+import ParcelTabs from "../components/ParcelTabs";
 
 interface Props {
   injectedProvider: any;
@@ -39,7 +37,7 @@ export default function BrowseParcels({ injectedProvider }: Props) {
   return (
     <div className="flex flex-row flex-grow">
       <Col span={6}>
-        <ParcelList />
+        <ParcelTabs />
       </Col>
       <Layout className="site-layout">
         <Content className="flex flex-col">

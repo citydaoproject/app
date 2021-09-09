@@ -1,14 +1,11 @@
 import React from "react";
-import { useAppSelector } from "../hooks";
+import { List } from "antd";
+import { Parcel } from "../models/Parcel";
 
-export default function ParcelList() {
-  const parcels = useAppSelector(state => state.parcels.parcels);
+interface Props {
+  parcels: Parcel[];
+}
 
-  return (
-    <div className="w-full">
-      {parcels.map(parcel => {
-        return <div key={parcel.id}>{parcel.id}</div>;
-      })}
-    </div>
-  );
+export default function ParcelList({ parcels }: Props) {
+  return <List dataSource={parcels} renderItem={parcel => <List.Item>{parcel.id}</List.Item>} />;
 }
