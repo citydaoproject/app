@@ -12,7 +12,6 @@ function App() {
   dispatch(setDebugMode(true));
   return (
     <div className="App text-center">
-      <Button type="primary">Hey there!</Button>
       <Web3Wrapper />
     </div>
   );
