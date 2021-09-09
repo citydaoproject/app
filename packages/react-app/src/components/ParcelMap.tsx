@@ -105,7 +105,7 @@ export default function ParcelMap({ parcels, startingCoordinates, startingZoom, 
   });
 
   return (
-    <div>
+    <div className="flex-grow flex flex-col">
       <div style={{ display: parcels.length > 0 ? "none" : "block", margin: "20px", textAlign: "center" }}>
         Retrieving parcels...
       </div>
@@ -113,7 +113,7 @@ export default function ParcelMap({ parcels, startingCoordinates, startingZoom, 
         Selected parcel: {activeParcel ? activeParcel.toNumber().toString() : null}
       </div>
       <button onClick={() => (activeParcel ? buyParcel(activeParcel) : null)}>BUY</button>
-      <div ref={mapContainer} className="w-full h-screen" />
+      <div ref={mapContainer} className="flex-grow" />
     </div>
   );
 }

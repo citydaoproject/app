@@ -1,10 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { BigNumber } from "@ethersproject/bignumber";
+import { Col, Layout } from "antd";
+import { Content } from "antd/lib/layout/layout";
 
 import { Transactor } from "../helpers";
 import { useUpdateParcels, useUserSigner, useContractLoader, useAppSelector } from "../hooks";
 import { ParcelMap } from "../components";
 import { Parcel } from "../models/Parcel";
+import ParcelList from "../components/ParcelList";
 
 interface Props {
   injectedProvider: any;
@@ -32,15 +35,22 @@ export default function BrowseParcels({ injectedProvider }: Props) {
   };
 
   return (
-    <div style={{ width: "100%", margin: "auto", marginTop: 32, paddingBottom: 32 }}>
-      {/* key prop is to cause rerendering whenever it changes */}
-      <ParcelMap
-        key={parcels.length}
-        parcels={parcels}
-        startingCoordinates={[-106.331, 43.172]}
-        startingZoom={9}
-        buyParcel={useBuyParcel}
-      />
+    <div className="flex flex-row flex-grow">
+      <Col span={6}>
+        <ParcelList />
+      </Col>
+      <Layout className="site-layout">
+        <Content className="flex flex-col">
+          {/* key prop is to cause rerendering whenever it changes */}
+          <ParcelMap
+            key={parcels.length}
+            parcels={parcels}
+            startingCoordinates={[-106.331, 43.172]}
+            startingZoom={9}
+            buyParcel={useBuyParcel}
+          />
+        </Content>
+      </Layout>
     </div>
   );
 }
