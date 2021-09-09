@@ -9,26 +9,6 @@ import { useAppSelector } from "../hooks";
 (mapboxgl as any).accessToken =
   "pk.eyJ1IjoiZ3JlZ3JvbHdlcyIsImEiOiJja3J1cnhvbWEwMGQxMnZ0NjJ4OW80emZ6In0.XPrRJMSMXwdIC6k83O4lew";
 
-/*
-  ~ What it does? ~
-
-  Displays map with parcel overlays for each given geojson feature.
-
-  ~ How can I use? ~
-
-  <ParcelMap
-    parcels={parcels}
-    startingCoordinates={[-106.331, 43.172]}
-    startingZoom={9}
-  />
-
-  ~ Features ~
-
-  - Provide parcels={parcels}. parcels is an array of objects with id and geojson properties.
-  - Provide startingCoordinates={[latitude, longitude]} for the maps starting position.
-  - Provide startingZoom={9} as the maps beginning zoom level.
-*/
-
 interface Props {
   parcels: Parcel[];
   startingCoordinates: [number, number];
@@ -76,6 +56,7 @@ export default function ParcelMap({ parcels, startingCoordinates, startingZoom, 
     });
   });
 
+  // Draw initial parcels
   useEffect(() => {
     if (map?.current) {
       map.current.on("load", function () {
@@ -97,6 +78,7 @@ export default function ParcelMap({ parcels, startingCoordinates, startingZoom, 
     }
   });
 
+  // Add/remove parcel highlight when highlighted parcel changes
   useEffect(() => {
     for (let parcel of parcels) {
       if (highlightedParcel?.id === parcel.id && map?.current) {
