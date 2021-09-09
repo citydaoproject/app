@@ -36,7 +36,7 @@ export default function BrowseParcels({ injectedProvider }: Props) {
 
   return (
     <div className="flex flex-row flex-grow">
-      <Col span={6}>
+      <Col>
         <ParcelTabs />
       </Col>
       <Layout className="site-layout">

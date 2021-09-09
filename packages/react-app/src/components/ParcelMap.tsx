@@ -4,6 +4,7 @@ import "mapbox-gl/dist/mapbox-gl.css";
 
 import { Parcel } from "../models/Parcel";
 import { BigNumber } from "@ethersproject/bignumber";
+import { useAppSelector } from "../hooks";
 
 (mapboxgl as any).accessToken =
   "pk.eyJ1IjoiZ3JlZ3JvbHdlcyIsImEiOiJja3J1cnhvbWEwMGQxMnZ0NjJ4OW80emZ6In0.XPrRJMSMXwdIC6k83O4lew";
@@ -40,21 +41,13 @@ export default function ParcelMap({ parcels, startingCoordinates, startingZoom, 
   const map: Ref<mapboxgl.Map> = useRef(null);
   const [activeParcel, setActiveParcel] = useState("-1");
 
+  const highlightedParcel = useAppSelector(state => state.parcels.highlightedParcel);
+
   const addParcelToMap = (geojson: any, string_id: string) => {
     if (map?.current) {
       map.current.addSource(string_id, {
         type: "geojson",
         data: geojson,
-      });
-      map.current.addLayer({
-        id: string_id,
-        source: string_id,
-        type: "fill",
-        paint: {
-          "fill-color": "#eff551",
-          "fill-opacity": 0.2,
-          "fill-outline-color": "#eff551",
-        },
       });
       // add parcel outline
       map.current.addLayer({
@@ -101,6 +94,25 @@ export default function ParcelMap({ parcels, startingCoordinates, startingZoom, 
           }
         });
       });
+    }
+  });
+
+  useEffect(() => {
+    for (let parcel of parcels) {
+      if (highlightedParcel?.id === parcel.id && map?.current) {
+        map.current.addLayer({
+          id: parcel.id.toString(),
+          source: parcel.id.toString(),
+          type: "fill",
+          paint: {
+            "fill-color": "#eff551",
+            "fill-opacity": 0.5,
+            "fill-outline-color": "#eff551",
+          },
+        });
+      } else if (map?.current && map.current.getLayer(parcel.id.toString())) {
+        map.current.removeLayer(parcel.id.toString());
+      }
     }
   });
 

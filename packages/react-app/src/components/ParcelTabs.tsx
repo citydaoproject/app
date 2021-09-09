@@ -10,7 +10,7 @@ export default function ParcelTabs() {
   const parcels = useAppSelector(state => state.parcels.parcels);
 
   return (
-    <Tabs defaultActiveKey="1" className="p-4">
+    <Tabs defaultActiveKey="1" className="p-4 w-96">
       <TabPane tab="Remaining" key="1">
         <ParcelList parcels={parcels} />
       </TabPane>
