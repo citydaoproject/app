@@ -1,11 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
-import { networkReducer, userReducer, debugReducer } from "./actions";
+import { networkReducer, userReducer, debugReducer, parcelsReducer } from "./actions";
 
 const store = configureStore({
   reducer: {
     user: userReducer,
     network: networkReducer,
     debug: debugReducer,
+    parcels: parcelsReducer,
   },
 });
 

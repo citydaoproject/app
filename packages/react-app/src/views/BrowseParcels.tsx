@@ -4,17 +4,19 @@ import { Col, Layout } from "antd";
 import { Content } from "antd/lib/layout/layout";
 
 import { Transactor } from "../helpers";
-import { useUpdateParcels, useUserSigner, useContractLoader, useAppSelector } from "../hooks";
+import { useUpdateParcels, useUserSigner, useContractLoader, useAppSelector, useAppDispatch } from "../hooks";
 import { ParcelMap } from "../components";
 import { Parcel } from "../models/Parcel";
 import ParcelList from "../components/ParcelList";
+import { setParcels } from "../actions";
 
 interface Props {
   injectedProvider: any;
 }
 
 export default function BrowseParcels({ injectedProvider }: Props) {
-  const [parcels, setParcels] = useState([] as Parcel[]);
+  const dispatch = useAppDispatch();
+  const parcels = useAppSelector(state => state.parcels.parcels);
   const userAddress = useAppSelector(state => state.user.address);
   const DEBUG = useAppSelector(state => state.debug.debug);
   const gasPrice = useAppSelector(state => state.network.gasPrice);
@@ -24,13 +26,13 @@ export default function BrowseParcels({ injectedProvider }: Props) {
 
   const tx = Transactor(userSigner, gasPrice);
   useUpdateParcels(contracts, DEBUG).then(newParcels => {
-    if (newParcels.length !== parcels.length) setParcels(newParcels);
+    if (newParcels.length !== parcels.length) dispatch(setParcels(newParcels));
   });
 
   const useBuyParcel = async (id: BigNumber) => {
     tx && (await tx(contracts.CityDaoParcel.mintParcel(userAddress, id)));
     useUpdateParcels(contracts, DEBUG).then(newParcels => {
-      setParcels(newParcels);
+      dispatch(setParcels(newParcels));
     });
   };
 
