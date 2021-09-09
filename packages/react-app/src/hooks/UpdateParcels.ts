@@ -16,7 +16,7 @@ const useUpdateParcels = async (readContracts: any, DEBUG = false) => {
           const jsonManifestBuffer = await fetchParcelMetadata(ipfsHash);
           try {
             const jsonManifest = JSON.parse(jsonManifestBuffer.toString());
-            newParcels.push({ id: parcelId, uri: ipfsHash, price: price, ...jsonManifest });
+            newParcels.push({ id: parcelId.toNumber(), uri: ipfsHash, price: price, ...jsonManifest });
           } catch (e) {
             DEBUG && console.log(e);
           }

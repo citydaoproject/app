@@ -32,13 +32,13 @@ interface Props {
   parcels: Parcel[];
   startingCoordinates: [number, number];
   startingZoom: number;
-  buyParcel: (id: BigNumber) => void;
+  buyParcel: (id: number) => void;
 }
 
 export default function ParcelMap({ parcels, startingCoordinates, startingZoom, buyParcel }: Props) {
   const mapContainer = useRef(null);
   const map: Ref<mapboxgl.Map> = useRef(null);
-  const [activeParcel, setActiveParcel] = useState(BigNumber.from("-1"));
+  const [activeParcel, setActiveParcel] = useState("-1");
 
   const addParcelToMap = (geojson: any, string_id: string) => {
     if (map?.current) {
@@ -69,7 +69,7 @@ export default function ParcelMap({ parcels, startingCoordinates, startingZoom, 
     }
   };
 
-  const clickParcel = (parcel_id: BigNumber) => {
+  const clickParcel = (parcel_id: string) => {
     setActiveParcel(parcel_id);
   };
 
@@ -87,14 +87,14 @@ export default function ParcelMap({ parcels, startingCoordinates, startingZoom, 
     if (map?.current) {
       map.current.on("load", function () {
         parcels.forEach(parcel => {
-          const id = parcel.id.toNumber().toString(); // convert big number id to string
+          const id = parcel.id.toString(); // convert big number id to string
           try {
             if (map.current && map.current.getSource(id)) return; // skip if already added
             addParcelToMap(parcel.geojson, id);
             // set click functionality
             map.current &&
               map.current.on("click", id, function (e) {
-                clickParcel(parcel.id);
+                clickParcel(parcel.id.toString());
               });
           } catch (e) {
             console.log(e);
@@ -110,9 +110,9 @@ export default function ParcelMap({ parcels, startingCoordinates, startingZoom, 
         Retrieving parcels...
       </div>
       <div style={{ display: parcels.length > 0 ? "block" : "none", margin: "20px", textAlign: "center" }}>
-        Selected parcel: {activeParcel ? activeParcel.toNumber().toString() : null}
+        Selected parcel: {activeParcel ? activeParcel.toString() : null}
       </div>
-      <button onClick={() => (activeParcel ? buyParcel(activeParcel) : null)}>BUY</button>
+      <button onClick={() => (activeParcel ? buyParcel(parseInt(activeParcel)) : null)}>BUY</button>
       <div ref={mapContainer} className="flex-grow" />
     </div>
   );

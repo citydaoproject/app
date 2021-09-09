@@ -29,7 +29,7 @@ export default function BrowseParcels({ injectedProvider }: Props) {
     if (newParcels.length !== parcels.length) dispatch(setParcels(newParcels));
   });
 
-  const useBuyParcel = async (id: BigNumber) => {
+  const useBuyParcel = async (id: number) => {
     tx && (await tx(contracts.CityDaoParcel.mintParcel(userAddress, id)));
     useUpdateParcels(contracts, DEBUG).then(newParcels => {
       dispatch(setParcels(newParcels));
