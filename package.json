@@ -37,20 +37,7 @@
     "fundedwallet": "cd packages/hardhat && npx hardhat fundedwallet",
     "flatten": "cd packages/hardhat && npx hardhat flatten",
     "clean": "cd packages/hardhat && npx hardhat clean",
-    "run-graph-node": "yarn workspace @scaffold-eth/services run-graph-node",
-    "remove-graph-node": "yarn workspace @scaffold-eth/services remove-graph-node",
-    "clean-graph-node": "yarn workspace @scaffold-eth/services clean-graph-node",
-    "graph-prepare": "mustache packages/subgraph/config/config.json packages/subgraph/src/subgraph.template.yaml > packages/subgraph/subgraph.yaml",
-    "graph-codegen": "yarn workspace @scaffold-eth/subgraph graph codegen",
-    "graph-build": "yarn workspace @scaffold-eth/subgraph graph build",
-    "graph-create-local": "yarn workspace @scaffold-eth/subgraph graph create --node http://localhost:8020/ scaffold-eth/your-contract",
-    "graph-remove-local": "yarn workspace @scaffold-eth/subgraph graph remove --node http://localhost:8020/ scaffold-eth/your-contract",
-    "graph-deploy-local": "yarn workspace @scaffold-eth/subgraph graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 scaffold-eth/your-contract",
-    "graph-ship-local": "yarn graph-prepare && yarn graph-codegen && yarn graph-deploy-local",
-    "deploy-and-graph": "yarn deploy && yarn graph-ship-local",
-    "list-parcels": "yarn workspace @scaffold-eth/hardhat list-parcels",
-    "theme": "yarn workspace @scaffold-eth/react-app theme",
-    "watch-theme": "yarn workspace @scaffold-eth/react-app watch"
+    "list-parcels": "yarn workspace @scaffold-eth/hardhat list-parcels"
   },
   "workspaces": {
     "packages": [
