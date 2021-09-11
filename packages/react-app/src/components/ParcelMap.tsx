@@ -5,8 +5,7 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import { Parcel } from "../models/Parcel";
 import { BigNumber } from "@ethersproject/bignumber";
 
-(mapboxgl as any).accessToken =
-  "pk.eyJ1IjoiZ3JlZ3JvbHdlcyIsImEiOiJja3J1cnhvbWEwMGQxMnZ0NjJ4OW80emZ6In0.XPrRJMSMXwdIC6k83O4lew";
+(mapboxgl as any).accessToken = process.env.REACT_APP_MAPBOX_TOKEN;
 
 /*
   ~ What it does? ~
