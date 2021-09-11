@@ -5,8 +5,8 @@ import { useAppDispatch } from "./hooks";
 import { setDebugMode } from "./actions";
 import { Layout } from "antd";
 
-import "antd/dist/antd.css";
-import "./App.css";
+import "./App.less";
+import { Button } from "antd";
 
 function App() {
   const dispatch = useAppDispatch();
