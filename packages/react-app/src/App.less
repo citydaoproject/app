@@ -20,13 +20,21 @@
 }
 
 /* List styles */
-.ant-list-item {
-  padding: 2px 0px;
-  border-bottom: none !important;
-  .ant-btn {
-    background-color: @primary;
-    color: @white;
-    border: none;
-    border-radius: 4px;
+.ant-list {
+  .ant-empty {
+    display: none;
+  }
+  .ant-list-item {
+    padding: 2px 0px;
+    border-bottom: none !important;
+    .ant-btn {
+      color: @white;
+      background-color: #00000000;
+      border: 2px solid @primary;
+      border-radius: 4px;
+    }
+    .highlight {
+      background-color: @primary;
+    }
   }
 }

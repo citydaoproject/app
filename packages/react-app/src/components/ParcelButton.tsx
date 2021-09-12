@@ -6,16 +6,17 @@ import { setHighlightedParcel } from "../actions";
 
 interface Props {
   parcel: Parcel;
+  highlight?: boolean;
 }
 
-export default function ParcelButton({ parcel }: Props) {
+export default function ParcelButton({ parcel, highlight }: Props) {
   const dispatch = useAppDispatch();
 
   return (
     <Button
       onMouseEnter={() => dispatch(setHighlightedParcel(parcel))}
       onMouseLeave={() => dispatch(setHighlightedParcel(undefined))}
-      className="w-full"
+      className={`w-full ${highlight ? "highlight" : ""}`}
     >
       {parcel.id}
     </Button>
