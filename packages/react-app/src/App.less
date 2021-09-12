@@ -1,14 +1,22 @@
 @import "~antd/dist/antd.less";
 
+@white: #fff;
+@primary: #06be7f;
+@gray-1: #141414;
+
+* {
+  background-color: @gray-1;
+  color: @white;
+}
 /* Tab styles */
 .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
-  color: @primary-color;
+  color: @primary;
 }
 .ant-tabs-tab .ant-tabs-tab-btn {
   height: 15px;
 }
 .ant-tabs-ink-bar {
-  background: @primary-color !important;
+  background: @primary !important;
 }
 
 /* List styles */
