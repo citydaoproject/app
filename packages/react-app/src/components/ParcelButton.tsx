@@ -13,12 +13,14 @@ export default function ParcelButton({ parcel }: Props) {
   const highlightedParcel = useAppSelector(state => state.parcels.highlightedParcel);
 
   return (
-    <Button
+    // Don't use the antd Button class here as that adds subcomponents that mess with styling
+    // Instead, we use a standard button tag with the ant-btn class name, giving the same style attributes
+    <button
       onMouseEnter={() => dispatch(setHighlightedParcel(parcel))}
       onMouseLeave={() => dispatch(setHighlightedParcel(undefined))}
-      className={`w-full ${highlightedParcel === parcel ? "highlight" : ""}`}
+      className={`ant-btn w-full ${highlightedParcel === parcel ? "highlight" : ""}`}
     >
       Parcel #000{parcel.id}
-    </Button>
+    </button>
   );
 }
