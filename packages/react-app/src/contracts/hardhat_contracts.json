@@ -5,7 +5,7 @@
       "chainId": "31337",
       "contracts": {
         "CityDaoParcel": {
-          "address": "0x4ed7c70F96B99c776995fB64377f0d4aB3B0e1C1",
+          "address": "0x0165878A594ca255338adfa4d48449f69242Eb8F",
           "abi": [
             {
               "inputs": [],
@@ -176,8 +176,27 @@
               "type": "function"
             },
             {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "parcelId",
+                  "type": "uint256"
+                }
+              ],
+              "name": "getIndex",
+              "outputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
               "inputs": [],
-              "name": "getListedParcelIds",
+              "name": "getParcelIds",
               "outputs": [
                 {
                   "internalType": "uint256[]",
@@ -190,7 +209,7 @@
             },
             {
               "inputs": [],
-              "name": "getListedParcelURIs",
+              "name": "getParcelURIs",
               "outputs": [
                 {
                   "internalType": "string[]",
@@ -215,32 +234,6 @@
                   "internalType": "string",
                   "name": "",
                   "type": "string"
-                }
-              ],
-              "stateMutability": "view",
-              "type": "function"
-            },
-            {
-              "inputs": [],
-              "name": "getSoldParcelIds",
-              "outputs": [
-                {
-                  "internalType": "uint256[]",
-                  "name": "",
-                  "type": "uint256[]"
-                }
-              ],
-              "stateMutability": "view",
-              "type": "function"
-            },
-            {
-              "inputs": [],
-              "name": "getSoldParcelURIs",
-              "outputs": [
-                {
-                  "internalType": "string[]",
-                  "name": "",
-                  "type": "string[]"
                 }
               ],
               "stateMutability": "view",

@@ -13,10 +13,10 @@ contract CityDaoParcel is ERC721, Ownable {
   using Counters for Counters.Counter;
   Counters.Counter private _tokenIds;
 
-  mapping(uint256 => string) private _parcelIdToTokenURI;
   mapping(uint256 => bool) private _parcelIdToSoldStatus;
   mapping(uint256 => string) private _parcelIdToPrice;
   uint256[] private _parcelIds = new uint256[](0);
+  string[] private _parcelURIs = new string[](0);
 
   constructor() public ERC721("CityDaoParcel", "YCB") {
     _setBaseURI("https://ipfs.io/ipfs/");
@@ -26,10 +26,10 @@ contract CityDaoParcel is ERC721, Ownable {
   function listParcel(string memory tokenURI, string memory price) public onlyOwner returns (uint256) {
     uint256 parcelId = _tokenIds.current();
     _tokenIds.increment();
-    _parcelIdToTokenURI[parcelId] = tokenURI;
     _parcelIdToPrice[parcelId] = price;
     _parcelIdToSoldStatus[parcelId] = false;
     _parcelIds.push(parcelId);
+    _parcelURIs.push(tokenURI);
 
     return parcelId;
   }
@@ -38,11 +38,13 @@ contract CityDaoParcel is ERC721, Ownable {
       public
       returns (uint256)
   {
-      if(msg.sender != _toAddress) revert("You must purchase the parcel for yourself!");
-      if(isSold(parcelId)) revert("This parcel has already been sold!");
+      require(msg.sender == _toAddress, "You must purchase the parcel for yourself!");
+      require(!isSold(parcelId), "This parcel has already been sold!");
       
       _safeMint(_toAddress, parcelId);
-      _setTokenURI(parcelId, _parcelIdToTokenURI[parcelId]);
+
+      uint256 _idx = getIndex(parcelId);
+      _setTokenURI(parcelId, _parcelURIs[_idx]);
 
       delete _parcelIdToPrice[parcelId];
       _parcelIdToSoldStatus[parcelId] = true;
@@ -57,43 +59,17 @@ contract CityDaoParcel is ERC721, Ownable {
     return _parcelIdToPrice[parcelId];
   }
 
-  function getListedParcelURIs() public view returns (string[] memory) {
-    uint256[] memory listedParcelIds = getListedParcelIds();
-    string[] memory ret = new string[](listedParcelIds.length);
-    for (uint i = 0; i < listedParcelIds.length; i++) {
-      if (_parcelIdToSoldStatus[listedParcelIds[i]] == false) {
-        ret[i] = _parcelIdToTokenURI[listedParcelIds[i]];
-      }
-    }
-    return ret;
-  }
-  function getSoldParcelURIs() public view returns (string[] memory) {
-    uint256[] memory soldParcelIds = getSoldParcelIds();
-    string[] memory ret = new string[](soldParcelIds.length);
-    for (uint i = 0; i < soldParcelIds.length; i++) {
-      if (_parcelIdToSoldStatus[soldParcelIds[i]] == true) {
-        ret[i] = _parcelIdToTokenURI[soldParcelIds[i]];
-      }
-    }
-    return ret;
+  function getParcelURIs() public view returns (string[] memory) {
+    return _parcelURIs;
   }
 
-  function getListedParcelIds() public view returns (uint256[] memory) {
-    uint256[] memory ret = new uint256[](_parcelIds.length);
-    for (uint i = 0; i < _parcelIds.length; i++) {
-      if (_parcelIdToSoldStatus[_parcelIds[i]] == false) {
-        ret[i] = _parcelIds[i];
-      }
-    }
-    return ret;
+  function getParcelIds() public view returns (uint256[] memory) {
+    return _parcelIds;
   }
-  function getSoldParcelIds() public view returns (uint256[] memory) {
-    uint256[] memory ret = new uint256[](_parcelIds.length);
-    for (uint i = 0; i < _parcelIds.length; i++) {
-      if (_parcelIdToSoldStatus[_parcelIds[i]] == true) {
-        ret[i] = _parcelIds[i];
-      }
+
+  function getIndex(uint256 parcelId) public view returns (uint256) {
+    for(uint i = 0; i < _parcelIds.length; i++){
+      if(parcelId == _parcelIds[i]) return i;
     }
-    return ret;
   }
 }
