@@ -1,6 +1,7 @@
 export interface Parcel {
   id: number;
   uri: string;
-  price: number;
+  sold: boolean;
+  price?: number;
   geojson?: any;
 }

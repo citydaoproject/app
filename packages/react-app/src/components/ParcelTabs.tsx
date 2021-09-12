@@ -12,10 +12,10 @@ export default function ParcelTabs() {
   return (
     <Tabs defaultActiveKey="1" className="p-4 w-96">
       <TabPane tab="Remaining" key="1">
-        <ParcelList parcels={parcels} />
+        <ParcelList parcels={parcels.filter(parcel => !parcel.sold)} />
       </TabPane>
       <TabPane tab="Sold" key="2">
-        <ParcelList parcels={parcels} />
+        <ParcelList parcels={parcels.filter(parcel => parcel.sold)} />
       </TabPane>
       <TabPane tab="All" key="3">
         <ParcelList parcels={parcels} />
