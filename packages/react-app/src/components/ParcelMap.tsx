@@ -3,7 +3,8 @@ import * as mapboxgl from "mapbox-gl"; // eslint-disable-line import/no-webpack-
 import "mapbox-gl/dist/mapbox-gl.css";
 
 import { Parcel } from "../models/Parcel";
-import { useAppSelector } from "../hooks";
+import { useAppDispatch, useAppSelector } from "../hooks";
+import { setHighlightedParcel } from "../actions";
 
 (mapboxgl as any).accessToken =
   "pk.eyJ1IjoiZ3JlZ3JvbHdlcyIsImEiOiJja3J1cnhvbWEwMGQxMnZ0NjJ4OW80emZ6In0.XPrRJMSMXwdIC6k83O4lew";
@@ -20,6 +21,7 @@ export default function ParcelMap({ parcels, startingCoordinates, startingZoom, 
   const map: Ref<mapboxgl.Map> = useRef(null);
   const [activeParcel, setActiveParcel] = useState("-1");
 
+  const dispatch = useAppDispatch();
   const highlightedParcel = useAppSelector(state => state.parcels.highlightedParcel);
 
   const addParcelToMap = (geojson: any, string_id: string) => {
@@ -54,6 +56,12 @@ export default function ParcelMap({ parcels, startingCoordinates, startingZoom, 
   const clickParcel = (parcel_id: string) => {
     setActiveParcel(parcel_id);
   };
+  const hoverParcel = (parcel: Parcel) => {
+    dispatch(setHighlightedParcel(parcel));
+  };
+  const removeHoverParcel = () => {
+    dispatch(setHighlightedParcel(undefined));
+  };
 
   useEffect(() => {
     if (map.current) return; // only render map once
@@ -79,6 +87,14 @@ export default function ParcelMap({ parcels, startingCoordinates, startingZoom, 
               map.current.on("click", id, function (e) {
                 clickParcel(parcel.id.toString());
               });
+            map.current &&
+              map.current.on("mousemove", id, function (e) {
+                hoverParcel(parcel);
+              });
+            map.current &&
+              map.current.on("mouseleave", id, function (e) {
+                removeHoverParcel();
+              });
           } catch (e) {
             console.log(e);
           }
@@ -91,7 +107,7 @@ export default function ParcelMap({ parcels, startingCoordinates, startingZoom, 
   useEffect(() => {
     for (let parcel of parcels) {
       const fill_id = `${parcel.id.toString()}_fill`;
-      if (highlightedParcel?.id === parcel.id && map?.current) {
+      if (highlightedParcel?.id === parcel.id && map?.current && !map.current.getLayer(fill_id)) {
         map.current.addLayer({
           id: fill_id,
           source: parcel.id.toString(),
@@ -102,7 +118,7 @@ export default function ParcelMap({ parcels, startingCoordinates, startingZoom, 
             "fill-outline-color": "#eff551",
           },
         });
-      } else if (map?.current && map.current.getLayer(fill_id)) {
+      } else if (highlightedParcel?.id !== parcel.id && map?.current && map.current.getLayer(fill_id)) {
         map.current.removeLayer(fill_id);
       }
     }
