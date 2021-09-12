@@ -3,7 +3,6 @@ import * as mapboxgl from "mapbox-gl"; // eslint-disable-line import/no-webpack-
 import "mapbox-gl/dist/mapbox-gl.css";
 
 import { Parcel } from "../models/Parcel";
-import { BigNumber } from "@ethersproject/bignumber";
 import { useAppSelector } from "../hooks";
 
 (mapboxgl as any).accessToken =
@@ -28,6 +27,16 @@ export default function ParcelMap({ parcels, startingCoordinates, startingZoom, 
       map.current.addSource(string_id, {
         type: "geojson",
         data: geojson,
+      });
+      // add parcel click area
+      map.current.addLayer({
+        id: string_id,
+        source: string_id,
+        type: "fill",
+        paint: {
+          "fill-color": "#000000",
+          "fill-opacity": 0,
+        },
       });
       // add parcel outline
       map.current.addLayer({
@@ -81,9 +90,10 @@ export default function ParcelMap({ parcels, startingCoordinates, startingZoom, 
   // Add/remove parcel highlight when highlighted parcel changes
   useEffect(() => {
     for (let parcel of parcels) {
+      const fill_id = `${parcel.id.toString()}_fill`;
       if (highlightedParcel?.id === parcel.id && map?.current) {
         map.current.addLayer({
-          id: parcel.id.toString(),
+          id: fill_id,
           source: parcel.id.toString(),
           type: "fill",
           paint: {
@@ -92,8 +102,8 @@ export default function ParcelMap({ parcels, startingCoordinates, startingZoom, 
             "fill-outline-color": "#eff551",
           },
         });
-      } else if (map?.current && map.current.getLayer(parcel.id.toString())) {
-        map.current.removeLayer(parcel.id.toString());
+      } else if (map?.current && map.current.getLayer(fill_id)) {
+        map.current.removeLayer(fill_id);
       }
     }
   });

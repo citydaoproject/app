@@ -6,7 +6,6 @@ import { setDebugMode } from "./actions";
 import { Layout } from "antd";
 
 import "./App.less";
-import { Button } from "antd";
 
 function App() {
   const dispatch = useAppDispatch();
