@@ -5,7 +5,7 @@ interface DebugState {
 }
 
 const initialState: DebugState = {
-  debug: false,
+  debug: process.env.REACT_APP_DEBUG === "1",
 };
 
 export const debugSlice = createSlice({
