@@ -1,12 +1,8 @@
-import { useSelector } from "react-redux";
-
 import { fetchParcelMetadata } from "../data";
+import { Parcel } from "../models/Parcel";
 
-const useUpdateParcels = async (currentParcels, setParcels, readContracts, forceUpdate = false) => {
-  const DEBUG = useSelector(state => state.debug.debug);
-
-  var newParcels = [];
-  if (currentParcels.length > 0 && !forceUpdate) return; // prevent excessive calls to IPFS
+const useUpdateParcels = async (readContracts: any, DEBUG = false) => {
+  var newParcels: Parcel[] = [];
   if (readContracts) {
     const parcelIds = await readContracts.CityDaoParcel.getParcelIds();
     const parcelURIs = await readContracts.CityDaoParcel.getListedParcels();
@@ -29,11 +25,8 @@ const useUpdateParcels = async (currentParcels, setParcels, readContracts, force
         }
       }
     }
-    if (newParcels.length !== currentParcels.length) {
-      DEBUG && console.log("📦 Parcels:", newParcels);
-      setParcels(newParcels);
-    }
   }
+  return newParcels;
 };
 
 export default useUpdateParcels;
