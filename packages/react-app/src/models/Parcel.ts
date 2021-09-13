@@ -1,8 +1,7 @@
-import { BigNumber } from "@ethersproject/bignumber";
-
 export interface Parcel {
-  id: BigNumber;
+  id: number;
   uri: string;
-  price: number;
+  sold: boolean;
+  price?: number;
   geojson?: any;
 }

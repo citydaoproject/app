@@ -3,41 +3,25 @@ import * as mapboxgl from "mapbox-gl"; // eslint-disable-line import/no-webpack-
 import "mapbox-gl/dist/mapbox-gl.css";
 
 import { Parcel } from "../models/Parcel";
-import { BigNumber } from "@ethersproject/bignumber";
+import { useAppDispatch, useAppSelector } from "../hooks";
+import { setHighlightedParcel } from "../actions";
 
 (mapboxgl as any).accessToken = process.env.REACT_APP_MAPBOX_TOKEN;
-
-/*
-  ~ What it does? ~
-
-  Displays map with parcel overlays for each given geojson feature.
-
-  ~ How can I use? ~
-
-  <ParcelMap
-    parcels={parcels}
-    startingCoordinates={[-106.331, 43.172]}
-    startingZoom={9}
-  />
-
-  ~ Features ~
-
-  - Provide parcels={parcels}. parcels is an array of objects with id and geojson properties.
-  - Provide startingCoordinates={[latitude, longitude]} for the maps starting position.
-  - Provide startingZoom={9} as the maps beginning zoom level.
-*/
 
 interface Props {
   parcels: Parcel[];
   startingCoordinates: [number, number];
   startingZoom: number;
-  buyParcel: (id: BigNumber) => void;
+  buyParcel: (id: number) => void;
 }
 
 export default function ParcelMap({ parcels, startingCoordinates, startingZoom, buyParcel }: Props) {
   const mapContainer = useRef(null);
   const map: Ref<mapboxgl.Map> = useRef(null);
-  const [activeParcel, setActiveParcel] = useState(BigNumber.from("-1"));
+  const [activeParcel, setActiveParcel] = useState("-1");
+
+  const dispatch = useAppDispatch();
+  const highlightedParcel = useAppSelector(state => state.parcels.highlightedParcel);
 
   const addParcelToMap = (geojson: any, string_id: string) => {
     if (map?.current) {
@@ -45,14 +29,14 @@ export default function ParcelMap({ parcels, startingCoordinates, startingZoom, 
         type: "geojson",
         data: geojson,
       });
+      // add parcel click area
       map.current.addLayer({
         id: string_id,
         source: string_id,
         type: "fill",
         paint: {
-          "fill-color": "#eff551",
-          "fill-opacity": 0.2,
-          "fill-outline-color": "#eff551",
+          "fill-color": "#000000",
+          "fill-opacity": 0,
         },
       });
       // add parcel outline
@@ -68,8 +52,14 @@ export default function ParcelMap({ parcels, startingCoordinates, startingZoom, 
     }
   };
 
-  const clickParcel = (parcel_id: BigNumber) => {
+  const clickParcel = (parcel_id: string) => {
     setActiveParcel(parcel_id);
+  };
+  const hoverParcel = (parcel: Parcel) => {
+    dispatch(setHighlightedParcel(parcel));
+  };
+  const removeHoverParcel = () => {
+    dispatch(setHighlightedParcel(undefined));
   };
 
   useEffect(() => {
@@ -82,18 +72,27 @@ export default function ParcelMap({ parcels, startingCoordinates, startingZoom, 
     });
   });
 
+  // Draw initial parcels
   useEffect(() => {
     if (map?.current) {
       map.current.on("load", function () {
         parcels.forEach(parcel => {
-          const id = parcel.id.toNumber().toString(); // convert big number id to string
+          const id = parcel.id.toString(); // convert big number id to string
           try {
             if (map.current && map.current.getSource(id)) return; // skip if already added
             addParcelToMap(parcel.geojson, id);
             // set click functionality
             map.current &&
               map.current.on("click", id, function (e) {
-                clickParcel(parcel.id);
+                clickParcel(parcel.id.toString());
+              });
+            map.current &&
+              map.current.on("mousemove", id, function (e) {
+                hoverParcel(parcel);
+              });
+            map.current &&
+              map.current.on("mouseleave", id, function (e) {
+                removeHoverParcel();
               });
           } catch (e) {
             console.log(e);
@@ -103,16 +102,37 @@ export default function ParcelMap({ parcels, startingCoordinates, startingZoom, 
     }
   });
 
+  // Add/remove parcel highlight when highlighted parcel changes
+  useEffect(() => {
+    for (let parcel of parcels) {
+      const fill_id = `${parcel.id.toString()}_fill`;
+      if (highlightedParcel?.id === parcel.id && map?.current && !map.current.getLayer(fill_id)) {
+        map.current.addLayer({
+          id: fill_id,
+          source: parcel.id.toString(),
+          type: "fill",
+          paint: {
+            "fill-color": "#eff551",
+            "fill-opacity": 0.5,
+            "fill-outline-color": "#eff551",
+          },
+        });
+      } else if (highlightedParcel?.id !== parcel.id && map?.current && map.current.getLayer(fill_id)) {
+        map.current.removeLayer(fill_id);
+      }
+    }
+  });
+
   return (
-    <div>
+    <div className="flex-grow flex flex-col">
       <div style={{ display: parcels.length > 0 ? "none" : "block", margin: "20px", textAlign: "center" }}>
         Retrieving parcels...
       </div>
       <div style={{ display: parcels.length > 0 ? "block" : "none", margin: "20px", textAlign: "center" }}>
-        Selected parcel: {activeParcel ? activeParcel.toNumber().toString() : null}
+        Selected parcel: {activeParcel ? activeParcel.toString() : null}
       </div>
-      <button onClick={() => (activeParcel ? buyParcel(activeParcel) : null)}>BUY</button>
-      <div ref={mapContainer} className="w-full h-screen" />
+      <button onClick={() => (activeParcel ? buyParcel(parseInt(activeParcel)) : null)}>BUY</button>
+      <div ref={mapContainer} className="flex-grow" />
     </div>
   );
 }

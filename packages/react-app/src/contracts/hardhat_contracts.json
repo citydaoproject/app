@@ -176,13 +176,19 @@
               "type": "function"
             },
             {
-              "inputs": [],
-              "name": "getListedParcels",
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "parcelId",
+                  "type": "uint256"
+                }
+              ],
+              "name": "getIndex",
               "outputs": [
                 {
-                  "internalType": "string[]",
+                  "internalType": "uint256",
                   "name": "",
-                  "type": "string[]"
+                  "type": "uint256"
                 }
               ],
               "stateMutability": "view",
@@ -196,6 +202,19 @@
                   "internalType": "uint256[]",
                   "name": "",
                   "type": "uint256[]"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [],
+              "name": "getParcelURIs",
+              "outputs": [
+                {
+                  "internalType": "string[]",
+                  "name": "",
+                  "type": "string[]"
                 }
               ],
               "stateMutability": "view",
@@ -234,6 +253,25 @@
                 }
               ],
               "name": "isApprovedForAll",
+              "outputs": [
+                {
+                  "internalType": "bool",
+                  "name": "",
+                  "type": "bool"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "parcelId",
+                  "type": "uint256"
+                }
+              ],
+              "name": "isSold",
               "outputs": [
                 {
                   "internalType": "bool",
