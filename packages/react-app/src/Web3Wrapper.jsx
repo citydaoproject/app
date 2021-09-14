@@ -22,12 +22,14 @@ const mainnetInfura = navigator.onLine
   ? new ethers.providers.StaticJsonRpcProvider("https://mainnet.infura.io/v3/" + INFURA_ID)
   : null;
 
+const usingLocalhost = process.env.REACT_APP_NETWORK === "localhost";
 // 🏠 Your local provider is usually pointed at your local blockchain
-const localProviderUrl = targetNetwork.rpcUrl;
+const localProviderUrl = usingLocalhost && targetNetwork.rpcUrl;
 
 // as you deploy to other networks you can set REACT_APP_PROVIDER=https://dai.poa.network in packages/react-app/.env
-const localProviderUrlFromEnv = process.env.REACT_APP_PROVIDER ? process.env.REACT_APP_PROVIDER : localProviderUrl;
-const localProvider = new ethers.providers.StaticJsonRpcProvider(localProviderUrlFromEnv);
+const localProviderUrlFromEnv =
+  usingLocalhost && process.env.REACT_APP_PROVIDER ? process.env.REACT_APP_PROVIDER : localProviderUrl;
+const localProvider = usingLocalhost && new ethers.providers.StaticJsonRpcProvider(localProviderUrlFromEnv);
 
 /*
   Web3 modal helps us "connect" external wallets:
