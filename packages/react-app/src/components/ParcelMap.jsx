@@ -1,29 +1,22 @@
 import React, { useRef, useEffect, useState, Ref } from "react";
-import * as mapboxgl from "mapbox-gl"; // eslint-disable-line import/no-webpack-loader-syntax
+import mapboxgl from "!mapbox-gl"; // eslint-disable-line import/no-webpack-loader-syntax
 import "mapbox-gl/dist/mapbox-gl.css";
 
 import { Parcel } from "../models/Parcel";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import { setHighlightedParcel } from "../actions";
 
-(mapboxgl as any).accessToken = process.env.REACT_APP_MAPBOX_TOKEN;
+mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_TOKEN;
 
-interface Props {
-  parcels: Parcel[];
-  startingCoordinates: [number, number];
-  startingZoom: number;
-  buyParcel: (id: number) => void;
-}
-
-export default function ParcelMap({ parcels, startingCoordinates, startingZoom, buyParcel }: Props) {
+export default function ParcelMap({ parcels, startingCoordinates, startingZoom, buyParcel }) {
   const mapContainer = useRef(null);
-  const map: Ref<mapboxgl.Map> = useRef(null);
+  const map = useRef(null);
   const [activeParcel, setActiveParcel] = useState("-1");
 
   const dispatch = useAppDispatch();
   const highlightedParcel = useAppSelector(state => state.parcels.highlightedParcel);
 
-  const addParcelToMap = (geojson: any, string_id: string) => {
+  const addParcelToMap = (geojson, string_id) => {
     if (map?.current) {
       map.current.addSource(string_id, {
         type: "geojson",
@@ -52,10 +45,10 @@ export default function ParcelMap({ parcels, startingCoordinates, startingZoom, 
     }
   };
 
-  const clickParcel = (parcel_id: string) => {
+  const clickParcel = parcel_id => {
     setActiveParcel(parcel_id);
   };
-  const hoverParcel = (parcel: Parcel) => {
+  const hoverParcel = parcel => {
     dispatch(setHighlightedParcel(parcel));
   };
   const removeHoverParcel = () => {
@@ -64,7 +57,7 @@ export default function ParcelMap({ parcels, startingCoordinates, startingZoom, 
 
   useEffect(() => {
     if (map.current) return; // only render map once
-    (map as any).current = new mapboxgl.Map({
+    map.current = new mapboxgl.Map({
       container: mapContainer.current ?? "", // should never need the fallback
       style: "mapbox://styles/gregrolwes/cksuzrjba5nsx17nkuv02r4rq",
       center: startingCoordinates,
