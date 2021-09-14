@@ -6,7 +6,9 @@
     "production": [
       ">0.2%",
       "not dead",
-      "not op_mini all"
+      "not op_mini all",
+      "not chrome < 51",
+      "not safari < 10"
     ],
     "development": [
       "last 1 chrome version",
@@ -41,6 +43,7 @@
     "graphiql": "^1.0.5",
     "graphql": "^15.3.0",
     "isomorphic-fetch": "^3.0.0",
+    "mapbox-gl": "^2.4.1",
     "node-watch": "^0.7.1",
     "postcss": "7",
     "qrcode.react": "^1.0.0",
