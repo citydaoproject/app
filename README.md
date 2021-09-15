@@ -44,8 +44,8 @@ packages
 └── subgraph
 ```  
 
-`hardhat` - The CityDAO parcel contracts and related code.  
-`react-app` - The frontend web application for interacting with CityDAO contracts. It's written in [React.js](https://reactjs.org).  
+`hardhat` - The CityDAO parcel contracts and related code  
+`react-app` - The frontend web application for interacting with CityDAO contracts. It's written in [React.js](https://reactjs.org). 
 `services` - Miscellaneous services needed for the web app, such as a [Graph](https://thegraph.com) node  
 `subgraph` - Files needed to define useful subgraphs   
 
