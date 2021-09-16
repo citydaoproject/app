@@ -60,7 +60,7 @@ export default function Wallet(props) {
   };
 
   return (
-    <span>
+    <span className="absolute bottom-0 left-0 z-10">
       {providerSend}
       <Modal
         visible={open}
