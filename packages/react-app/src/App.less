@@ -4,12 +4,19 @@
 @primary: #06be7f;
 @primary-4: #0c6e4d;
 @gray-1: #141414;
+@gray-2: #1d1d1d;
 @gray-4: #303030;
+@gray-5: #434343;
 @gray-9: #dbdbdb;
 
 * {
-  background-color: @gray-1;
+  background-color: @gray-2;
   color: @white;
+}
+.ant-divider {
+  width: 100%;
+  background-color: @gray-4;
+  height: 2px;
 }
 
 /* Colors */
@@ -30,6 +37,9 @@
 }
 .bg-gray-9 {
   background-color: @gray-9;
+}
+.text-gray-9 {
+  color: @gray-9;
 }
 
 /* Fonts */
@@ -69,4 +79,9 @@
       background-color: @primary;
     }
   }
+}
+
+/* Parcel detail styles */
+.parcel-detail > div.flex {
+  margin: 24px;
 }
