@@ -1,12 +1,11 @@
 import React from "react";
-import { Col, Layout } from "antd";
+import { Layout } from "antd";
 import { Content } from "antd/lib/layout/layout";
 
 import { Transactor } from "../helpers";
 import { useUpdateParcels, useUserSigner, useContractLoader, useAppSelector, useAppDispatch } from "../hooks";
-import { ParcelMap } from "../components";
+import { ParcelMap, Sidebar } from "../components";
 import { setParcels } from "../actions";
-import ParcelTabs from "../components/ParcelTabs";
 
 interface Props {
   injectedProvider: any;
@@ -36,9 +35,7 @@ export default function BrowseParcels({ injectedProvider }: Props) {
 
   return (
     <div className="flex flex-row flex-grow">
-      <Col>
-        <ParcelTabs />
-      </Col>
+      <Sidebar />
       <Layout className="site-layout">
         <Content className="flex flex-col">
           {/* key prop is to cause rerendering whenever it changes */}

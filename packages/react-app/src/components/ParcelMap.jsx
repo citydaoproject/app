@@ -2,16 +2,15 @@ import React, { useRef, useEffect, useState, Ref } from "react";
 import mapboxgl from "!mapbox-gl"; // eslint-disable-line import/no-webpack-loader-syntax
 import "mapbox-gl/dist/mapbox-gl.css";
 
-import { Parcel } from "../models/Parcel";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import { setHighlightedParcel } from "../actions";
+import { setActiveParcel } from "../actions/parcelsSlice";
 
 mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_TOKEN;
 
 export default function ParcelMap({ parcels, startingCoordinates, startingZoom, startingPitch, buyParcel }) {
   const mapContainer = useRef(null);
   const map = useRef(null);
-  const [activeParcel, setActiveParcel] = useState("-1");
 
   const dispatch = useAppDispatch();
   const highlightedParcel = useAppSelector(state => state.parcels.highlightedParcel);
@@ -45,8 +44,8 @@ export default function ParcelMap({ parcels, startingCoordinates, startingZoom, 
     }
   };
 
-  const clickParcel = parcel_id => {
-    setActiveParcel(parcel_id);
+  const clickParcel = parcel => {
+    dispatch(setActiveParcel(parcel));
   };
   const hoverParcel = parcel => {
     dispatch(setHighlightedParcel(parcel));
@@ -78,7 +77,7 @@ export default function ParcelMap({ parcels, startingCoordinates, startingZoom, 
             // set click functionality
             map.current &&
               map.current.on("click", id, function (e) {
-                clickParcel(parcel.id.toString());
+                clickParcel(parcel);
               });
             map.current &&
               map.current.on("mousemove", id, function (e) {
@@ -119,13 +118,6 @@ export default function ParcelMap({ parcels, startingCoordinates, startingZoom, 
 
   return (
     <div className="flex-grow flex flex-col">
-      {/* <div style={{ display: parcels.length > 0 ? "none" : "block", margin: "20px", textAlign: "center" }}>
-        Retrieving parcels...
-      </div>
-      <div style={{ display: parcels.length > 0 ? "block" : "none", margin: "20px", textAlign: "center" }}>
-        Selected parcel: {activeParcel ? activeParcel.toString() : null}
-      </div>
-      <button onClick={() => (activeParcel ? buyParcel(parseInt(activeParcel)) : null)}>BUY</button> */}
       <div ref={mapContainer} className="flex-grow parcel-map" />
     </div>
   );
