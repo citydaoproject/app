@@ -4,7 +4,7 @@ import { Content } from "antd/lib/layout/layout";
 
 import { Transactor } from "../helpers";
 import { useUpdateParcels, useUserSigner, useContractLoader, useAppSelector, useAppDispatch } from "../hooks";
-import { ParcelMap, Sidebar } from "../components";
+import { ParcelMap, Sidebar, ProgressBar } from "../components";
 import { setParcels } from "../actions";
 
 interface Props {
@@ -34,21 +34,24 @@ export default function BrowseParcels({ injectedProvider }: Props) {
   };
 
   return (
-    <div className="flex flex-row flex-grow">
-      <Sidebar />
-      <Layout className="site-layout">
-        <Content className="flex flex-col">
-          {/* key prop is to cause rerendering whenever it changes */}
-          <ParcelMap
-            key={parcels.length}
-            parcels={parcels}
-            startingCoordinates={[-106.331, 43.172]}
-            startingZoom={9}
-            startingPitch={60}
-            buyParcel={useBuyParcel}
-          />
-        </Content>
-      </Layout>
+    <div className="flex flex-col flex-grow">
+      <ProgressBar />
+      <div className="flex flex-row flex-grow">
+        <Sidebar />
+        <Layout className="site-layout">
+          <Content className="flex flex-col">
+            {/* key prop is to cause rerendering whenever it changes */}
+            <ParcelMap
+              key={parcels.length}
+              parcels={parcels}
+              startingCoordinates={[-106.331, 43.172]}
+              startingZoom={9}
+              startingPitch={60}
+              buyParcel={useBuyParcel}
+            />
+          </Content>
+        </Layout>
+      </div>
     </div>
   );
 }

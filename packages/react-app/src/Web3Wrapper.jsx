@@ -90,13 +90,13 @@ function Web3Wrapper() {
   return (
     <div className="Web3Wrapper flex flex-col flex-grow">
       <BrowserRouter>
-        {DEBUG ? <Wallet price={price} toAddress={userAddress} provider={localProvider} /> : null}
         <Switch>
           <Route exact path="/">
             <BrowseParcels injectedProvider={injectedProvider} />
           </Route>
         </Switch>
       </BrowserRouter>
+      {DEBUG ? <Wallet price={price} toAddress={userAddress} provider={localProvider} /> : null}
     </div>
   );
 }
