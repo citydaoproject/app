@@ -8,7 +8,7 @@ import { setHighlightedParcel } from "../actions";
 
 mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_TOKEN;
 
-export default function ParcelMap({ parcels, startingCoordinates, startingZoom, buyParcel }) {
+export default function ParcelMap({ parcels, startingCoordinates, startingZoom, startingPitch, buyParcel }) {
   const mapContainer = useRef(null);
   const map = useRef(null);
   const [activeParcel, setActiveParcel] = useState("-1");
@@ -62,6 +62,7 @@ export default function ParcelMap({ parcels, startingCoordinates, startingZoom, 
       style: "mapbox://styles/gregrolwes/cksuzrjba5nsx17nkuv02r4rq",
       center: startingCoordinates,
       zoom: startingZoom,
+      pitch: startingPitch,
     });
   });
 
@@ -118,14 +119,14 @@ export default function ParcelMap({ parcels, startingCoordinates, startingZoom, 
 
   return (
     <div className="flex-grow flex flex-col">
-      <div style={{ display: parcels.length > 0 ? "none" : "block", margin: "20px", textAlign: "center" }}>
+      {/* <div style={{ display: parcels.length > 0 ? "none" : "block", margin: "20px", textAlign: "center" }}>
         Retrieving parcels...
       </div>
       <div style={{ display: parcels.length > 0 ? "block" : "none", margin: "20px", textAlign: "center" }}>
         Selected parcel: {activeParcel ? activeParcel.toString() : null}
       </div>
-      <button onClick={() => (activeParcel ? buyParcel(parseInt(activeParcel)) : null)}>BUY</button>
-      <div ref={mapContainer} className="flex-grow" />
+      <button onClick={() => (activeParcel ? buyParcel(parseInt(activeParcel)) : null)}>BUY</button> */}
+      <div ref={mapContainer} className="flex-grow parcel-map" />
     </div>
   );
 }

@@ -47,6 +47,7 @@ export default function BrowseParcels({ injectedProvider }: Props) {
             parcels={parcels}
             startingCoordinates={[-106.331, 43.172]}
             startingZoom={9}
+            startingPitch={60}
             buyParcel={useBuyParcel}
           />
         </Content>
