@@ -19,7 +19,7 @@ export default function ParcelButton({ parcel }: Props) {
       onMouseEnter={() => dispatch(setHighlightedParcel(parcel))}
       onMouseLeave={() => dispatch(setHighlightedParcel(undefined))}
       onClick={() => dispatch(setActiveParcel(parcel))}
-      className={`ant-btn w-full ${highlightedParcel === parcel ? "highlight" : ""}`}
+      className={`btn w-full ${highlightedParcel === parcel ? "highlight" : ""}`}
     >
       Parcel #000{parcel.id}
     </button>

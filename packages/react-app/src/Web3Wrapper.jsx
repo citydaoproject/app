@@ -13,7 +13,7 @@ import { BrowseParcels } from "./views";
 
 const { ethers } = require("ethers");
 
-/// 📡 What chain are your contracts deployed to?
+console.log(process.env.REACT_APP_THING);
 const targetNetwork = NETWORKS[process.env.REACT_APP_NETWORK]; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet, mumbai)
 const scaffoldEthProvider = navigator.onLine
   ? new ethers.providers.StaticJsonRpcProvider("https://rpc.scaffoldeth.io:48544")
