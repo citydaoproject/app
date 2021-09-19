@@ -9,9 +9,10 @@ import LAND_IMG from "../assets/images/SampleLandImage.png";
 
 interface Props {
   parcel?: Parcel;
+  buyParcel: (parcel_id: number) => void;
 }
 
-export default function ParcelDetail({ parcel }: Props) {
+export default function ParcelDetail({ parcel, buyParcel }: Props) {
   const dispatch = useAppDispatch();
   return (
     <div className="parcel-detail">
@@ -34,7 +35,9 @@ export default function ParcelDetail({ parcel }: Props) {
 
       <div className="flex flex-col space-y-4 primary-font text-lg">
         <img src={LAND_IMG} alt={parcel?.id.toString()} />
-        <button className="btn highlight">Buy Now</button>
+        <button onClick={() => parcel && buyParcel(parcel.id)} className="btn highlight">
+          Buy Now
+        </button>
 
         <div className="border-gray-4 text-left">
           <div className="p-4">Properties</div>

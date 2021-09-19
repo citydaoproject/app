@@ -8,7 +8,7 @@ import { setActiveParcel } from "../actions/parcelsSlice";
 
 mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_TOKEN;
 
-export default function ParcelMap({ parcels, startingCoordinates, startingZoom, startingPitch, buyParcel }) {
+export default function ParcelMap({ parcels, startingCoordinates, startingZoom, startingPitch }) {
   const mapContainer = useRef(null);
   const map = useRef(null);
 
