@@ -5,3 +5,5 @@ export { default as ParcelButton } from "./ParcelButton";
 export { default as ParcelDetail } from "./ParcelDetail";
 export { default as ParcelList } from "./ParcelList";
 export { default as ProgressBar } from "./ProgressBar";
+export { default as BuyParcel } from "./BuyParcel";
+export { default as ViewParcel } from "./ViewParcel";

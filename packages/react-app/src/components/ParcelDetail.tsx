@@ -6,7 +6,7 @@ import { useAppDispatch } from "../hooks";
 import { setActiveParcel } from "../actions/parcelsSlice";
 
 import LAND_IMG from "../assets/images/SampleLandImage.png";
-import BuyParcel from "./BuyParcel";
+import { BuyParcel, ViewParcel } from ".";
 
 interface Props {
   parcel?: Parcel;
@@ -25,7 +25,7 @@ export default function ParcelDetail({ parcel, injectedProvider }: Props) {
             {parcel?.id}
           </span>
           <span className="parcel-price secondary-font text-base font-light text-gray-9 leading-6">
-            ({parcel?.price?.toString() ?? "--"} ETH)
+            {parcel?.price && `(${parcel.price.toString()} ETH)`}
           </span>
         </div>
         <a onClick={() => dispatch(setActiveParcel(undefined))}>
@@ -36,7 +36,11 @@ export default function ParcelDetail({ parcel, injectedProvider }: Props) {
 
       <div className="flex flex-col space-y-4 primary-font text-lg">
         <img src={LAND_IMG} alt={parcel?.id.toString()} />
-        <BuyParcel injectedProvider={injectedProvider} parcel={parcel} />
+        {parcel?.sold ? (
+          <ViewParcel parcel={parcel} />
+        ) : (
+          <BuyParcel parcel={parcel} injectedProvider={injectedProvider} />
+        )}
 
         <div className="border-gray-4 text-left">
           <div className="p-4">Properties</div>
