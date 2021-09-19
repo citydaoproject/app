@@ -6,8 +6,6 @@ import { Transactor } from "../helpers";
 import { useUpdateParcels, useUserSigner, useContractLoader, useAppSelector, useAppDispatch } from "../hooks";
 import { ParcelMap } from "../components";
 import { setParcels } from "../actions";
-import ParcelTabs from "../components/ParcelTabs";
-import ProgressBar from "../components/ProgressBar";
 
 interface Props {
   injectedProvider: any;
@@ -36,25 +34,21 @@ export default function BrowseParcels({ injectedProvider }: Props) {
   };
 
   return (
-    <div className="flex flex-col flex-grow">
-      <ProgressBar />
-      <div className="flex flex-row flex-grow">
-        <Col>
-          <ParcelTabs />
-        </Col>
-        <Layout className="site-layout">
-          <Content className="flex flex-col">
-            {/* key prop is to cause rerendering whenever it changes */}
-            <ParcelMap
-              key={parcels.length}
-              parcels={parcels}
-              startingCoordinates={[-106.331, 43.172]}
-              startingZoom={9}
-              buyParcel={useBuyParcel}
-            />
-          </Content>
-        </Layout>
-      </div>
+    <div className="flex flex-row flex-grow">
+      <Sidebar />
+      <Layout className="site-layout">
+        <Content className="flex flex-col">
+          {/* key prop is to cause rerendering whenever it changes */}
+          <ParcelMap
+            key={parcels.length}
+            parcels={parcels}
+            startingCoordinates={[-106.331, 43.172]}
+            startingZoom={9}
+            startingPitch={60}
+            buyParcel={useBuyParcel}
+          />
+        </Content>
+      </Layout>
     </div>
   );
 }
