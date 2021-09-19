@@ -63,7 +63,5 @@
       "**/hardhat/**"
     ]
   },
-  "dependencies": {
-    "mapbox-gl": "^2.4.0"
-  }
+  "dependencies": {}
 }
