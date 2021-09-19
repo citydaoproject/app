@@ -1,18 +1,19 @@
 import React from "react";
-import { Button, Divider } from "antd";
+import { Divider } from "antd";
 import { CloseOutlined } from "@ant-design/icons";
 import { Parcel } from "../models/Parcel";
 import { useAppDispatch } from "../hooks";
 import { setActiveParcel } from "../actions/parcelsSlice";
 
 import LAND_IMG from "../assets/images/SampleLandImage.png";
+import BuyParcel from "./BuyParcel";
 
 interface Props {
   parcel?: Parcel;
-  buyParcel: (parcel_id: number) => void;
+  injectedProvider: any;
 }
 
-export default function ParcelDetail({ parcel, buyParcel }: Props) {
+export default function ParcelDetail({ parcel, injectedProvider }: Props) {
   const dispatch = useAppDispatch();
   return (
     <div className="parcel-detail">
@@ -35,9 +36,7 @@ export default function ParcelDetail({ parcel, buyParcel }: Props) {
 
       <div className="flex flex-col space-y-4 primary-font text-lg">
         <img src={LAND_IMG} alt={parcel?.id.toString()} />
-        <button onClick={() => parcel && buyParcel(parcel.id)} className="btn highlight">
-          Buy Now
-        </button>
+        <BuyParcel injectedProvider={injectedProvider} parcel={parcel} />
 
         <div className="border-gray-4 text-left">
           <div className="p-4">Properties</div>
