@@ -1,8 +1,8 @@
 import React from "react";
+import { Button } from "antd";
 import { Parcel } from "../models/Parcel";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import { setHighlightedParcel } from "../actions";
-import { setActiveParcel } from "../actions/parcelsSlice";
 
 interface Props {
   parcel: Parcel;
@@ -18,7 +18,6 @@ export default function ParcelButton({ parcel }: Props) {
     <button
       onMouseEnter={() => dispatch(setHighlightedParcel(parcel))}
       onMouseLeave={() => dispatch(setHighlightedParcel(undefined))}
-      onClick={() => dispatch(setActiveParcel(parcel))}
       className={`ant-btn w-full ${highlightedParcel === parcel ? "highlight" : ""}`}
     >
       Parcel #000{parcel.id}

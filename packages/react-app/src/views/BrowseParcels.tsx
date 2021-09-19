@@ -4,7 +4,7 @@ import { Content } from "antd/lib/layout/layout";
 
 import { Transactor } from "../helpers";
 import { useUpdateParcels, useUserSigner, useContractLoader, useAppSelector, useAppDispatch } from "../hooks";
-import { ParcelMap, Sidebar } from "../components";
+import { ParcelMap } from "../components";
 import { setParcels } from "../actions";
 
 interface Props {

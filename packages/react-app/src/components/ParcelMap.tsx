@@ -1,21 +1,29 @@
 import React, { useRef, useEffect, useState, Ref } from "react";
-import mapboxgl from "!mapbox-gl"; // eslint-disable-line import/no-webpack-loader-syntax
+import * as mapboxgl from "mapbox-gl"; // eslint-disable-line import/no-webpack-loader-syntax
 import "mapbox-gl/dist/mapbox-gl.css";
 
+import { Parcel } from "../models/Parcel";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import { setHighlightedParcel } from "../actions";
-import { setActiveParcel } from "../actions/parcelsSlice";
 
-mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_TOKEN;
+(mapboxgl as any).accessToken = process.env.REACT_APP_MAPBOX_TOKEN;
 
-export default function ParcelMap({ parcels, startingCoordinates, startingZoom, startingPitch, buyParcel }) {
+interface Props {
+  parcels: Parcel[];
+  startingCoordinates: [number, number];
+  startingZoom: number;
+  buyParcel: (id: number) => void;
+}
+
+export default function ParcelMap({ parcels, startingCoordinates, startingZoom, buyParcel }: Props) {
   const mapContainer = useRef(null);
-  const map = useRef(null);
+  const map: Ref<mapboxgl.Map> = useRef(null);
+  const [activeParcel, setActiveParcel] = useState("-1");
 
   const dispatch = useAppDispatch();
   const highlightedParcel = useAppSelector(state => state.parcels.highlightedParcel);
 
-  const addParcelToMap = (geojson, string_id) => {
+  const addParcelToMap = (geojson: any, string_id: string) => {
     if (map?.current) {
       map.current.addSource(string_id, {
         type: "geojson",
@@ -44,10 +52,10 @@ export default function ParcelMap({ parcels, startingCoordinates, startingZoom, 
     }
   };
 
-  const clickParcel = parcel => {
-    dispatch(setActiveParcel(parcel));
+  const clickParcel = (parcel_id: string) => {
+    setActiveParcel(parcel_id);
   };
-  const hoverParcel = parcel => {
+  const hoverParcel = (parcel: Parcel) => {
     dispatch(setHighlightedParcel(parcel));
   };
   const removeHoverParcel = () => {
@@ -56,12 +64,11 @@ export default function ParcelMap({ parcels, startingCoordinates, startingZoom, 
 
   useEffect(() => {
     if (map.current) return; // only render map once
-    map.current = new mapboxgl.Map({
+    (map as any).current = new mapboxgl.Map({
       container: mapContainer.current ?? "", // should never need the fallback
       style: "mapbox://styles/gregrolwes/cksuzrjba5nsx17nkuv02r4rq",
       center: startingCoordinates,
       zoom: startingZoom,
-      pitch: startingPitch,
     });
   });
 
@@ -77,7 +84,7 @@ export default function ParcelMap({ parcels, startingCoordinates, startingZoom, 
             // set click functionality
             map.current &&
               map.current.on("click", id, function (e) {
-                clickParcel(parcel);
+                clickParcel(parcel.id.toString());
               });
             map.current &&
               map.current.on("mousemove", id, function (e) {
@@ -118,7 +125,14 @@ export default function ParcelMap({ parcels, startingCoordinates, startingZoom, 
 
   return (
     <div className="flex-grow flex flex-col">
-      <div ref={mapContainer} className="flex-grow parcel-map" />
+      <div style={{ display: parcels.length > 0 ? "none" : "block", margin: "20px", textAlign: "center" }}>
+        Retrieving parcels...
+      </div>
+      <div style={{ display: parcels.length > 0 ? "block" : "none", margin: "20px", textAlign: "center" }}>
+        Selected parcel: {activeParcel ? activeParcel.toString() : null}
+      </div>
+      <button onClick={() => (activeParcel ? buyParcel(parseInt(activeParcel)) : null)}>BUY</button>
+      <div ref={mapContainer} className="flex-grow" />
     </div>
   );
 }
