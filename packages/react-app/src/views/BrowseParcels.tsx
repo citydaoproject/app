@@ -1,5 +1,5 @@
 import React from "react";
-import { Col, Layout } from "antd";
+import { Layout } from "antd";
 import { Content } from "antd/lib/layout/layout";
 
 import { Transactor } from "../helpers";
