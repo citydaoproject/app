@@ -8,12 +8,11 @@ import { setExchangePrice, setGasPrice } from "./actions";
 import { logoutOfWeb3Modal } from "./helpers";
 import { Wallet } from "./components";
 import { INFURA_ID, NETWORKS } from "./constants";
-import { useExchangePrice, useGasPrice } from "./hooks";
+import { useExchangePrice, useGasPrice, useUserSigner } from "./hooks";
 import { BrowseParcels } from "./views";
 
 const { ethers } = require("ethers");
 
-console.log(process.env.REACT_APP_THING);
 const targetNetwork = NETWORKS[process.env.REACT_APP_NETWORK]; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet, mumbai)
 const scaffoldEthProvider = navigator.onLine
   ? new ethers.providers.StaticJsonRpcProvider("https://rpc.scaffoldeth.io:48544")
@@ -54,6 +53,7 @@ function Web3Wrapper() {
   const userAddress = useSelector(state => state.user.address);
   const price = useSelector(state => state.network.exchangePrice);
   const DEBUG = useSelector(state => state.debug.debug);
+  useUserSigner(injectedProvider); // initialize signer
   const dispatch = useDispatch();
 
   const mainnetProvider = scaffoldEthProvider && scaffoldEthProvider._network ? scaffoldEthProvider : mainnetInfura;

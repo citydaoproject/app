@@ -2,8 +2,7 @@ import React from "react";
 import { Col, Layout } from "antd";
 import { Content } from "antd/lib/layout/layout";
 
-import { Transactor } from "../helpers";
-import { useUpdateParcels, useUserSigner, useContractLoader, useAppSelector, useAppDispatch } from "../hooks";
+import { useUpdateParcels, useContractLoader, useAppSelector, useAppDispatch } from "../hooks";
 import { ParcelMap, ProgressBar, ParcelDetail } from "../components";
 import { setParcels } from "../actions";
 import ParcelTabs from "../components/ParcelTabs";
