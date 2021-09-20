@@ -9,7 +9,7 @@ import "./App.less";
 
 function App() {
   const dispatch = useAppDispatch();
-  dispatch(setDebugMode(true));
+  dispatch(setDebugMode(process.env.REACT_APP_DEBUG));
   return (
     <div className="App text-center">
       <Layout style={{ minHeight: "100vh" }}>
