@@ -2,23 +2,23 @@ import React from "react";
 import { Tabs } from "antd";
 
 import { useAppSelector } from "../hooks";
-import ParcelList from "./ParcelList";
+import PlotList from "./PlotList";
 
 const { TabPane } = Tabs;
 
-export default function ParcelTabs() {
-  const parcels = useAppSelector(state => state.parcels.parcels);
+export default function PlotTabs() {
+  const plots = useAppSelector(state => state.plots.plots);
 
   return (
     <Tabs defaultActiveKey="1" className="p-4 w-96">
       <TabPane tab="Remaining" key="1">
-        <ParcelList parcels={parcels.filter(parcel => !parcel.sold)} />
+        <PlotList plots={plots.filter(plot => !plot.sold)} />
       </TabPane>
       <TabPane tab="Sold" key="2">
-        <ParcelList parcels={parcels.filter(parcel => parcel.sold)} />
+        <PlotList plots={plots.filter(plot => plot.sold)} />
       </TabPane>
       <TabPane tab="All" key="3">
-        <ParcelList parcels={parcels} />
+        <PlotList plots={plots} />
       </TabPane>
     </Tabs>
   );

@@ -9,7 +9,7 @@ import { logoutOfWeb3Modal } from "./helpers";
 import { Wallet } from "./components";
 import { INFURA_ID, NETWORKS } from "./constants";
 import { useExchangePrice, useGasPrice, useUserSigner } from "./hooks";
-import { BrowseParcels } from "./views";
+import { BrowsePlots } from "./views";
 
 const { ethers } = require("ethers");
 
@@ -90,7 +90,7 @@ function Web3Wrapper() {
       <BrowserRouter>
         <Switch>
           <Route exact path="/">
-            <BrowseParcels injectedProvider={injectedProvider} />
+            <BrowsePlots injectedProvider={injectedProvider} />
           </Route>
         </Switch>
       </BrowserRouter>
