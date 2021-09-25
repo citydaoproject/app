@@ -5,8 +5,10 @@
 @primary-4: #0c6e4d;
 @gray-1: #141414;
 @gray-2: #1d1d1d;
+@gray-3: #262626;
 @gray-4: #303030;
 @gray-5: #434343;
+@gray-6: #5a5a5a;
 @gray-9: #dbdbdb;
 
 * {
@@ -81,13 +83,14 @@
 /* Button styles */
 .btn {
   color: @white;
-  background-color: #00000000;
   border: 1px solid @gray-5;
   border-radius: 4px;
   padding: 8px 16px;
 }
-.highlight {
-  background-color: #dbdbdb1a;
+.highlight,
+.highlight * {
+  background-color: @gray-3;
+  border-color: @gray-6;
 }
 
 /* Plot detail styles */
