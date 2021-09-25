@@ -10,7 +10,7 @@ export default function PlotTabs() {
   const plots = useAppSelector(state => state.plots.plots);
 
   return (
-    <Tabs defaultActiveKey="1" className="p-4 w-96">
+    <Tabs defaultActiveKey="1" className="p-4 w-full">
       <TabPane tab="Remaining" key="1">
         <PlotList plots={plots.filter(plot => !plot.sold)} />
       </TabPane>

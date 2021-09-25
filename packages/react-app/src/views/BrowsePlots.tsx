@@ -27,7 +27,7 @@ export default function BrowsePlots({ injectedProvider }: Props) {
     <div className="flex flex-col flex-grow">
       <ProgressBar />
       <div className="flex flex-row flex-grow">
-        <Col className="w-96">
+        <Col className="sidebar">
           {activePlot !== undefined ? (
             <PlotDetail plot={activePlot} injectedProvider={injectedProvider} />
           ) : (
