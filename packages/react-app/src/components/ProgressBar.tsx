@@ -2,8 +2,8 @@ import React from "react";
 import { useAppSelector } from "../hooks";
 
 export default function ProgressBar() {
-  const parcels = useAppSelector(state => state.parcels.parcels);
-  const percent_sold = Math.floor((parcels.filter(parcel => parcel.sold).length / parcels.length) * 100);
+  const plots = useAppSelector(state => state.plots.plots);
+  const percent_sold = Math.floor((plots.filter(plot => plot.sold).length / plots.length) * 100);
   return (
     <div className="header w-full bg-primary h-12 z-10 text-gray-1 flex items-center justify-center text-base primary-font font-semibold">
       {percent_sold < 100 ? "Parcel 0 sale is live!" : "Parcel 0 sale is sold out!"}

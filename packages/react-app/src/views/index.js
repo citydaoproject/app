@@ -1,1 +1,1 @@
-export { default as BrowseParcels } from "./BrowseParcels";
+export { default as BrowsePlots } from "./BrowsePlots";

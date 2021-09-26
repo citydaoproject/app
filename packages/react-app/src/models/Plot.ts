@@ -1,5 +1,6 @@
-export interface Parcel {
+export interface Plot {
   id: number;
+  parcel: number;
   uri: string;
   sold: boolean;
   price?: number;
