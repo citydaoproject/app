@@ -179,7 +179,7 @@
               "inputs": [
                 {
                   "internalType": "uint256",
-                  "name": "parcelId",
+                  "name": "plotId",
                   "type": "uint256"
                 }
               ],
@@ -196,7 +196,7 @@
             },
             {
               "inputs": [],
-              "name": "getParcelIds",
+              "name": "getPlotIds",
               "outputs": [
                 {
                   "internalType": "uint256[]",
@@ -209,7 +209,7 @@
             },
             {
               "inputs": [],
-              "name": "getParcelURIs",
+              "name": "getPlotURIs",
               "outputs": [
                 {
                   "internalType": "string[]",
@@ -224,7 +224,7 @@
               "inputs": [
                 {
                   "internalType": "uint256",
-                  "name": "parcelId",
+                  "name": "plotId",
                   "type": "uint256"
                 }
               ],
@@ -267,7 +267,7 @@
               "inputs": [
                 {
                   "internalType": "uint256",
-                  "name": "parcelId",
+                  "name": "plotId",
                   "type": "uint256"
                 }
               ],
@@ -295,7 +295,7 @@
                   "type": "string"
                 }
               ],
-              "name": "listParcel",
+              "name": "listPlot",
               "outputs": [
                 {
                   "internalType": "uint256",
@@ -315,11 +315,11 @@
                 },
                 {
                   "internalType": "uint256",
-                  "name": "parcelId",
+                  "name": "plotId",
                   "type": "uint256"
                 }
               ],
-              "name": "mintParcel",
+              "name": "mintPlot",
               "outputs": [
                 {
                   "internalType": "uint256",

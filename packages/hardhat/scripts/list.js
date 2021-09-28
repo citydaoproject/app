@@ -11,14 +11,14 @@ const delayMS = 1000; //sometimes xDAI needs a 6000ms break lol 😅
 
 const main = async () => {
   // ADDRESS TO MINT TO:
-  const toAddress = "0xb40A70Aa5C30215c44F27BF990cBf4D3E5Acb384"; // this will be the temporary address to hold the parcels on testnets, in practice will be owned by CityDAO
+  const toAddress = "0xb40A70Aa5C30215c44F27BF990cBf4D3E5Acb384"; // this will be the temporary address to hold the plots on testnets, in practice will be owned by CityDAO
 
   console.log("\n\n 🎫 Minting to " + toAddress + "...\n");
 
   const { deployer } = await getNamedAccounts();
-  const parcel = await ethers.getContract("CityDaoParcel", deployer);
+  const plot = await ethers.getContract("CityDaoParcel", deployer);
 
-  const parcel0 = {
+  const plot0 = {
     geojson: {
       type: "Feature",
       properties: {},
@@ -37,17 +37,17 @@ const main = async () => {
       },
     },
   };
-  console.log("Uploading parcel0...");
-  const uploaded = await ipfs.add(JSON.stringify(parcel0));
+  console.log("Uploading plot0...");
+  const uploaded = await ipfs.add(JSON.stringify(plot0));
 
-  console.log("Listing parcel0 with IPFS hash (" + uploaded.path + ")");
-  await parcel.listParcel(uploaded.path, "0.01", {
+  console.log("Listing plot0 with IPFS hash (" + uploaded.path + ")");
+  await plot.listPlot(uploaded.path, "0.01", {
     gasLimit: 400000,
   });
 
   await sleep(delayMS);
 
-  const parcel1 = {
+  const plot1 = {
     geojson: {
       type: "Feature",
       properties: {},
@@ -67,17 +67,17 @@ const main = async () => {
       },
     },
   };
-  console.log("Uploading parcel1...");
-  const uploadedparcel1 = await ipfs.add(JSON.stringify(parcel1));
+  console.log("Uploading plot1...");
+  const uploadedplot1 = await ipfs.add(JSON.stringify(plot1));
 
-  console.log("Listing parcel1 with IPFS hash (" + uploadedparcel1.path + ")");
-  await parcel.listParcel(uploadedparcel1.path, "0.01", {
+  console.log("Listing plot1 with IPFS hash (" + uploadedplot1.path + ")");
+  await plot.listPlot(uploadedplot1.path, "0.01", {
     gasLimit: 400000,
   });
 
   await sleep(delayMS);
 
-  const parcel2 = {
+  const plot2 = {
     geojson: {
       type: "Feature",
       properties: {},
@@ -97,11 +97,11 @@ const main = async () => {
       },
     },
   };
-  console.log("Uploading parcel2...");
-  const uploadedparcel2 = await ipfs.add(JSON.stringify(parcel2));
+  console.log("Uploading plot2...");
+  const uploadedplot2 = await ipfs.add(JSON.stringify(plot2));
 
-  console.log("Listing parcel2 with IPFS hash (" + uploadedparcel2.path + ")");
-  await parcel.listParcel(uploadedparcel2.path, "0.01", {
+  console.log("Listing plot2 with IPFS hash (" + uploadedplot2.path + ")");
+  await plot.listPlot(uploadedplot2.path, "0.01", {
     gasLimit: 400000,
   });
 
@@ -109,10 +109,10 @@ const main = async () => {
 
   // transfer contract to CityDAO
   console.log(
-    "Transferring ownership of CityDAO Parcel Contract to " + toAddress + "..."
+    "Transferring ownership of CityDAO Plot Contract to " + toAddress + "..."
   );
 
-  await parcel.transferOwnership(toAddress);
+  await plot.transferOwnership(toAddress);
 
   await sleep(delayMS);
 };

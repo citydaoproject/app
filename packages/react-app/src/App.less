@@ -5,8 +5,10 @@
 @primary-4: #0c6e4d;
 @gray-1: #141414;
 @gray-2: #1d1d1d;
+@gray-3: #262626;
 @gray-4: #303030;
 @gray-5: #434343;
+@gray-6: #5a5a5a;
 @gray-9: #dbdbdb;
 
 * {
@@ -18,6 +20,9 @@
   background-color: @gray-4;
   height: 2px;
   margin: 0;
+}
+.sidebar {
+  width: 400px;
 }
 
 /* Colors */
@@ -55,6 +60,9 @@
 .secondary-font {
   font-family: "Roboto Mono", monospace;
 }
+.third-font {
+  font-family: "Source Sans Pro", sans-serif;
+}
 
 /* Tab styles */
 .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
@@ -73,7 +81,7 @@
     display: none;
   }
   .ant-list-item {
-    padding: 2px 0px;
+    padding: 4px 0px;
     border-bottom: none !important;
   }
 }
@@ -81,16 +89,28 @@
 /* Button styles */
 .btn {
   color: @white;
-  background-color: #00000000;
-  border: 2px solid @primary;
+  border: 1px solid @gray-5;
   border-radius: 4px;
   padding: 8px 16px;
 }
-.highlight {
-  background-color: @primary;
+.highlight,
+.highlight * {
+  background-color: @gray-3;
+  border-color: @gray-6;
+}
+.img-small {
+  width: 31px;
+  height: 31px;
+  border-radius: 4px;
 }
 
-/* Parcel detail styles */
-.parcel-detail > div.flex {
+/* Plot detail styles */
+.plot-detail > div.flex {
   margin: 24px;
+}
+
+/* Notification styles */
+.ant-notification * {
+  color: #000;
+  background-color: #fff;
 }

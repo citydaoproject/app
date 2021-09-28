@@ -1,1 +1,1 @@
-export { default as fetchParcelMetadata } from "./fetchParcelMetadata";
+export { default as fetchPlotMetadata } from "./fetchPlotMetadata";
