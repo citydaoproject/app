@@ -1,4 +1,5 @@
 import React from "react";
+import { toast } from "react-toastify";
 import { setPlots } from "../actions";
 import { Transactor } from "../helpers";
 import { useAppDispatch, useAppSelector, useContractLoader, useUpdatePlots, useUserSigner } from "../hooks";
@@ -20,7 +21,12 @@ export default function BuyPlot({ plot, injectedProvider }: Props) {
 
   const tx = Transactor(userSigner, gasPrice);
   const useBuyPlot = async () => {
-    tx && plot && (await tx(contracts.CityDaoParcel.mintPlot(userAddress, plot.id)));
+    const mintPromise = plot && contracts.CityDaoParcel.mintPlot(userAddress, plot.id);
+    toast.promise(mintPromise, {
+      pending: { render: () => "Purchasing plot", className: "toast" },
+      success: { render: () => "Purchase complete", className: "toast" },
+      error: { render: () => "Oops! Something went wrong.", className: "toast" },
+    });
     useUpdatePlots(contracts, DEBUG).then(newPlots => {
       dispatch(setPlots(newPlots));
     });
