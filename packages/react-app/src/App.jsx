@@ -1,4 +1,6 @@
 import React from "react";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import Web3Wrapper from "./Web3Wrapper";
 import { useAppDispatch } from "./hooks";
@@ -15,6 +17,7 @@ function App() {
       <Layout style={{ minHeight: "100vh" }}>
         <Web3Wrapper />
       </Layout>
+      <ToastContainer />
     </div>
   );
 }
