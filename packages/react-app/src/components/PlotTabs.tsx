@@ -1,16 +1,21 @@
 import React from "react";
 import { Tabs } from "antd";
 
+import { RootState } from "../store";
 import { useAppSelector } from "../hooks";
 import PlotList from "./PlotList";
+import { stringifyPlotId } from "../helpers/stringifyPlotId";
 
 const { TabPane } = Tabs;
 
 export default function PlotTabs() {
-  const plots = useAppSelector(state => state.plots.plots);
+  const idFilter = useAppSelector((state: RootState) => state.plots.idFilter);
+  const plots = useAppSelector((state: RootState) => state.plots.plots).filter(plot => {
+    return stringifyPlotId(plot.id).includes(idFilter ?? "");
+  });
 
   return (
-    <Tabs defaultActiveKey="1" className="p-4 w-full">
+    <Tabs defaultActiveKey="1" className="px-4 w-full overflow-visible">
       <TabPane tab="Remaining" key="1">
         <PlotList plots={plots.filter(plot => !plot.sold)} />
       </TabPane>

@@ -3,6 +3,7 @@ import { List } from "antd";
 
 import { Plot } from "../models/Plot";
 import PlotButton from "./PlotButton";
+import { motion } from "framer-motion";
 
 interface Props {
   plots: Plot[];
@@ -10,13 +11,12 @@ interface Props {
 
 export default function PlotList({ plots }: Props) {
   return (
-    <List
-      dataSource={plots}
-      renderItem={plot => (
-        <List.Item>
-          <PlotButton plot={plot} />
-        </List.Item>
-      )}
-    />
+    <div className="list">
+      {plots.map((plot: Plot, idx: number) => (
+        <motion.div className="list-item" key={idx} layout>
+          <PlotButton plot={plot} delay={idx} />
+        </motion.div>
+      ))}
+    </div>
   );
 }

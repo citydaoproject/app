@@ -5,6 +5,7 @@ interface PlotsState {
   plots: Plot[];
   highlightedPlot?: Plot;
   activePlot?: Plot;
+  idFilter?: string;
 }
 
 const initialState: PlotsState = {
@@ -29,9 +30,12 @@ export const plotsState = createSlice({
       state.activePlot = action.payload;
       state.highlightedPlot = action.payload;
     },
+    setIdFilter: (state, action: PayloadAction<string | undefined>) => {
+      state.idFilter = action.payload;
+    },
   },
 });
 
-export const { setPlots, setHighlightedPlot, setActivePlot } = plotsState.actions;
+export const { setPlots, setHighlightedPlot, setActivePlot, setIdFilter } = plotsState.actions;
 
 export default plotsState.reducer;

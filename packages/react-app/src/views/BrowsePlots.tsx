@@ -3,7 +3,7 @@ import { Col, Layout } from "antd";
 import { Content } from "antd/lib/layout/layout";
 
 import { useUpdatePlots, useContractLoader, useAppSelector, useAppDispatch } from "../hooks";
-import { PlotMap, ProgressBar, PlotDetail } from "../components";
+import { PlotMap, ProgressBar, PlotDetail, LogoDisplay, Header } from "../components";
 import { setPlots } from "../actions";
 import { PlotTabs } from "../components";
 import { Plot } from "../models/Plot";
@@ -28,6 +28,7 @@ export default function BrowsePlots({ injectedProvider }: Props) {
       <ProgressBar />
       <div className="flex flex-row flex-grow">
         <Col className="sidebar">
+          <LogoDisplay />
           {activePlot !== undefined ? (
             <PlotDetail plot={activePlot} injectedProvider={injectedProvider} />
           ) : (
@@ -36,6 +37,7 @@ export default function BrowsePlots({ injectedProvider }: Props) {
         </Col>
         <Layout className="site-layout">
           <Content className="flex flex-col">
+            <Header />
             {/* key prop is to cause rerendering whenever it changes */}
             <PlotMap
               key={plots.length}
