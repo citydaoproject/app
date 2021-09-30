@@ -27,7 +27,7 @@ export default function BuyPlot({ plot, injectedProvider }: Props) {
   };
 
   return (
-    <button onClick={useBuyPlot} className="btn bg-primary">
+    <button onClick={useBuyPlot} className="btn bg-primary w-full">
       Buy Now
     </button>
   );
