@@ -9,15 +9,16 @@ import { PlotTabs } from "../components";
 import { Plot } from "../models/Plot";
 
 interface Props {
+  networkProvider: any;
   injectedProvider: any;
 }
 
-export default function BrowsePlots({ injectedProvider }: Props) {
+export default function BrowsePlots({ networkProvider, injectedProvider }: Props) {
   const dispatch = useAppDispatch();
   const DEBUG = useAppSelector(state => state.debug.debug);
   const plots = useAppSelector(state => state.plots.plots);
   const activePlot = useAppSelector(state => state.plots.activePlot);
-  const contracts: any = useContractLoader(injectedProvider);
+  const contracts: any = useContractLoader(networkProvider);
 
   useUpdatePlots(contracts, DEBUG).then((newPlots: Plot[]) => {
     if (newPlots.length !== plots.length) dispatch(setPlots(newPlots));

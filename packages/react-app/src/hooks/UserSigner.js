@@ -12,6 +12,7 @@ const useUserSigner = injectedProvider => {
       DEBUG && console.log("🦊 Using injected provider");
       const injectedSigner = injectedProvider._isProvider ? injectedProvider.getSigner() : injectedProvider;
       setSigner(injectedSigner);
+      console.log(await injectedSigner.getAddress());
       dispatch(setUserAddress(await injectedSigner.getAddress()));
     } else setSigner();
   }, [injectedProvider]);

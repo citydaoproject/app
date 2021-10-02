@@ -14,19 +14,16 @@ import { BrowsePlots } from "./views";
 const { ethers } = require("ethers");
 
 const targetNetwork = NETWORKS[process.env.REACT_APP_NETWORK]; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet, mumbai)
-const scaffoldEthProvider = navigator.onLine
-  ? new ethers.providers.StaticJsonRpcProvider("https://rpc.scaffoldeth.io:48544")
-  : null;
 const mainnetInfura = navigator.onLine
   ? new ethers.providers.StaticJsonRpcProvider("https://mainnet.infura.io/v3/" + INFURA_ID)
   : null;
 
 // 🏠 Your local provider is usually pointed at your local blockchain
-const localProviderUrl = targetNetwork.rpcUrl;
-
-// as you deploy to other networks you can set REACT_APP_PROVIDER=https://dai.poa.network in packages/react-app/.env
-const localProviderUrlFromEnv = process.env.REACT_APP_PROVIDER ? process.env.REACT_APP_PROVIDER : localProviderUrl;
-const localProvider = new ethers.providers.StaticJsonRpcProvider(localProviderUrlFromEnv);
+const providerUrl = targetNetwork.rpcUrl;
+const networkProvider =
+  process.env.REACT_APP_NETWORK === "localhost"
+    ? new ethers.providers.StaticJsonRpcProvider(providerUrl)
+    : new ethers.providers.InfuraProvider(process.env.REACT_APP_NETWORK, INFURA_ID);
 
 /*
   Web3 modal helps us "connect" external wallets:
@@ -54,7 +51,7 @@ function Web3Wrapper() {
   useUserSigner(injectedProvider); // initialize signer
   const dispatch = useDispatch();
 
-  const mainnetProvider = scaffoldEthProvider && scaffoldEthProvider._network ? scaffoldEthProvider : mainnetInfura;
+  const mainnetProvider = mainnetInfura;
 
   dispatch(setExchangePrice(useExchangePrice(targetNetwork, mainnetProvider)));
   dispatch(setGasPrice(useGasPrice(targetNetwork, "fast")));
@@ -90,11 +87,11 @@ function Web3Wrapper() {
       <BrowserRouter>
         <Switch>
           <Route exact path="/">
-            <BrowsePlots injectedProvider={localProvider} />
+            <BrowsePlots injectedProvider={injectedProvider} networkProvider={networkProvider} />
           </Route>
         </Switch>
       </BrowserRouter>
-      {DEBUG ? <Wallet price={price} toAddress={userAddress} provider={localProvider} /> : null}
+      {DEBUG ? <Wallet price={price} toAddress={userAddress} provider={networkProvider} /> : null}
     </div>
   );
 }
