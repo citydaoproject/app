@@ -42,9 +42,9 @@ export default function BrowsePlots({ injectedProvider }: Props) {
             <PlotMap
               key={plots.length}
               plots={plots}
-              startingCoordinates={[-106.331, 43.172]}
-              startingZoom={9}
-              startingPitch={60}
+              startingCoordinates={[-109.25792011522043, 44.92118759558491]}
+              startingZoom={15.825123438299038}
+              startingPitch={52.499999999999964}
             />
           </Content>
         </Layout>

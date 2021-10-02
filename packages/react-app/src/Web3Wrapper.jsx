@@ -90,7 +90,7 @@ function Web3Wrapper() {
       <BrowserRouter>
         <Switch>
           <Route exact path="/">
-            <BrowsePlots injectedProvider={injectedProvider} />
+            <BrowsePlots injectedProvider={localProvider} />
           </Route>
         </Switch>
       </BrowserRouter>
