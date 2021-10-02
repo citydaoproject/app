@@ -6,12 +6,14 @@ interface PlotsState {
   highlightedPlot?: Plot;
   activePlot?: Plot;
   idFilter?: string;
+  fetching: boolean;
 }
 
 const initialState: PlotsState = {
   plots: [],
   highlightedPlot: undefined,
   activePlot: undefined,
+  fetching: true,
 };
 
 export const plotsState = createSlice({
@@ -33,9 +35,12 @@ export const plotsState = createSlice({
     setIdFilter: (state, action: PayloadAction<string | undefined>) => {
       state.idFilter = action.payload;
     },
+    fetchedPlots: state => {
+      state.fetching = false;
+    },
   },
 });
 
-export const { setPlots, setHighlightedPlot, setActivePlot, setIdFilter } = plotsState.actions;
+export const { setPlots, setHighlightedPlot, setActivePlot, setIdFilter, fetchedPlots } = plotsState.actions;
 
 export default plotsState.reducer;

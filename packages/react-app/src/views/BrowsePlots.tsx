@@ -7,6 +7,7 @@ import { PlotMap, ProgressBar, PlotDetail, LogoDisplay, Header } from "../compon
 import { setPlots } from "../actions";
 import { PlotTabs } from "../components";
 import { Plot } from "../models/Plot";
+import { fetchedPlots } from "../actions/plotsSlice";
 
 interface Props {
   networkProvider: any;
@@ -21,7 +22,10 @@ export default function BrowsePlots({ networkProvider, injectedProvider }: Props
   const contracts: any = useContractLoader(networkProvider);
 
   useUpdatePlots(contracts, DEBUG).then((newPlots: Plot[]) => {
-    if (newPlots.length !== plots.length) dispatch(setPlots(newPlots));
+    if (newPlots.length !== plots.length) {
+      dispatch(setPlots(newPlots));
+      dispatch(fetchedPlots());
+    }
   });
 
   return (
