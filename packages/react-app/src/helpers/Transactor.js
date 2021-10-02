@@ -29,10 +29,10 @@ export default function Transactor(providerOrSigner, gasPrice, etherscan) {
       }
 
       console.log("network", network);
-      
-      var options = null;
-      var notify = null;
-      if(navigator.onLine){
+
+      let options = null;
+      let notify = null;
+      if (navigator.onLine) {
         options = {
           dappId: BLOCKNATIVE_DAPPID, // GET YOUR OWN KEY AT https://account.blocknative.com
           system: "ethereum",
@@ -45,11 +45,10 @@ export default function Transactor(providerOrSigner, gasPrice, etherscan) {
               possibleFunction(txInformation.transaction);
             }
           },
-        };  
+        };
 
         notify = Notify(options);
       }
-       
 
       let etherscanNetwork = "";
       if (network.name && network.chainId > 1) {

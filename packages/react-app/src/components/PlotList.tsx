@@ -13,7 +13,7 @@ export default function PlotList({ plots }: Props) {
   return (
     <div className="list">
       {plots.map((plot: Plot, idx: number) => (
-        <motion.div className="list-item" key={idx} layout>
+        <motion.div className="list-item" key={plot.id} layout>
           <PlotButton plot={plot} delay={idx} />
         </motion.div>
       ))}

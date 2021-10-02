@@ -9,6 +9,7 @@ import { stringifyPlotId } from "../helpers/stringifyPlotId";
 const { TabPane } = Tabs;
 
 export default function PlotTabs() {
+  const userAddress = useAppSelector((state: RootState) => state.user.address);
   const idFilter = useAppSelector((state: RootState) => state.plots.idFilter);
   const plots = useAppSelector((state: RootState) => state.plots.plots).filter(plot => {
     return stringifyPlotId(plot.id).includes(idFilter ?? "");
@@ -24,6 +25,9 @@ export default function PlotTabs() {
       </TabPane>
       <TabPane tab="All" key="3">
         <PlotList plots={plots} />
+      </TabPane>
+      <TabPane tab="Owned" key="4">
+        <PlotList plots={plots.filter(plot => plot.owner === userAddress)} />
       </TabPane>
     </Tabs>
   );

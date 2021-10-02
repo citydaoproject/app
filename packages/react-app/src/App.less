@@ -79,6 +79,7 @@
   color: @primary;
 }
 .ant-tabs-tab .ant-tabs-tab-btn {
+  @apply secondary-font;
   height: 15px;
 }
 .ant-tabs-ink-bar {
@@ -142,7 +143,9 @@ select:focus {
   }
 }
 
-.toast {
-  background-color: @gray-2;
+:root {
+  --toastify-color-light: @gray-2;
+}
+.error * {
   color: white;
 }

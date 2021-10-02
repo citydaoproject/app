@@ -3,16 +3,17 @@ import { fetchPlotMetadata } from "../data";
 import { Plot } from "../models/Plot";
 
 const useUpdatePlots = async (readContracts: any, DEBUG = false) => {
-  let newPlots: Plot[] = [];
+  const newPlots: Plot[] = [];
   if (readContracts) {
     try {
       const plotIds = await readContracts.CityDaoParcel.getPlotIds();
       const plotURIs = await readContracts.CityDaoParcel.getPlotURIs();
-      for (var index = 0; index < plotIds.length; index++) {
+      for (let index = 0; index < plotIds.length; index++) {
         const plotId = plotIds[index];
         const ipfsHash = plotURIs[index];
         const isSold = await readContracts.CityDaoParcel.isSold(plotId);
         const price = !isSold ? await readContracts.CityDaoParcel.getPrice(plotId) : undefined;
+        const owner = isSold ? await readContracts.CityDaoParcel.ownerOf(plotId) : undefined;
         try {
           const jsonManifestBuffer = await fetchPlotMetadata(ipfsHash);
           const jsonManifest = JSON.parse(jsonManifestBuffer.toString());
@@ -22,6 +23,7 @@ const useUpdatePlots = async (readContracts: any, DEBUG = false) => {
             uri: ipfsHash,
             price: price,
             sold: isSold,
+            owner: owner,
             ...jsonManifest,
           });
         } catch (e) {
@@ -32,10 +34,13 @@ const useUpdatePlots = async (readContracts: any, DEBUG = false) => {
         }
       }
     } catch (e) {
-      toast.error("Failed to find CityDAO's contract. Are you sure you're on the right network?", {
-        toastId: "contract-fail",
-        className: "error",
-      });
+      toast.error(
+        `Failed to find CityDAO's contract. Make sure you're on the ${process.env.REACT_APP_NETWORK} network.`,
+        {
+          toastId: "contract-fail",
+          className: "error",
+        },
+      );
       DEBUG && console.log(e);
     }
   }

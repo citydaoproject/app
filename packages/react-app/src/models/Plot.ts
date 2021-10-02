@@ -3,6 +3,7 @@ export interface Plot {
   parcel: number;
   uri: string;
   sold: boolean;
+  owner: string;
   price?: number;
   geojson?: any;
   sqft?: number;
