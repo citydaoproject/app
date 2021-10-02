@@ -63,23 +63,26 @@ export default function PlotDetail({ plot, injectedProvider }: Props) {
             <div className="p-4 text-white">Properties</div>
             <Divider />
             <div className="flex flex-col justify-between p-4">
-              {plot.sqft && plot.acres && (
+              {plot.metadata.sqft && plot.metadata.acres && (
                 <div className="py-2 secondary-font text-base font-light text-gray-9">
-                  Size: {plot.sqft && `${plot.sqft} Sqft`} {plot.acres && `${plot.acres} Acres`}
+                  Size: {plot.metadata.sqft && `${plot.metadata.sqft} Sqft`}{" "}
+                  {plot.metadata.acres && `${plot.metadata.acres} Acres`}
                 </div>
               )}
-              {plot.location && (
-                <div className="py-2 secondary-font text-base font-light text-gray-9">Location: {plot.location}</div>
+              {plot.metadata.location && (
+                <div className="py-2 secondary-font text-base font-light text-gray-9">
+                  Location: {plot.metadata.location}
+                </div>
               )}
-              {plot.coordinates && (
+              {plot.metadata.coordinates && (
                 <div className="py-2 secondary-font text-base font-light text-gray-9">
                   Coordinates:
                   <br />
-                  {plot.coordinates}
+                  {plot.metadata.coordinates}
                 </div>
               )}
               {/* Fallback text */}
-              {!plot.sqft && !plot.acres && !plot.location && !plot.coordinates && (
+              {!plot.metadata.sqft && !plot.metadata.acres && !plot.metadata.location && !plot.metadata.coordinates && (
                 <div className="py-2 secondary-font text-base font-light text-gray-9">
                   No plot properties available.
                 </div>

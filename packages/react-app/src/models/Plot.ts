@@ -5,6 +5,10 @@ export interface Plot {
   sold: boolean;
   owner: string;
   price?: number;
+  metadata: PlotMetadata;
+}
+
+export interface PlotMetadata {
   geojson?: any;
   sqft?: number;
   acres?: number;
