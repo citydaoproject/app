@@ -99,7 +99,12 @@ export default function PlotMap({ plots, startingCoordinates, startingZoom, star
   useEffect(() => {
     for (let plot of plots) {
       const fill_id = `${plot.id.toString()}_fill`;
-      if (highlightedPlot?.id === plot.id && map?.current && !map.current.getLayer(fill_id)) {
+      if (
+        highlightedPlot?.id === plot.id &&
+        map?.current &&
+        !map.current.getLayer(fill_id) &&
+        map.current.getSource(plot.id.toString())
+      ) {
         map.current.addLayer({
           id: fill_id,
           source: plot.id.toString(),
