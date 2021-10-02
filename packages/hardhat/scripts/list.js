@@ -20,11 +20,13 @@ const main = async () => {
   const parcelContract = await ethers.getContract("CityDaoParcel", deployer);
 
   try {
-    await Promise.all(
-      parcel0.plots.map(async (plot, idx) => {
-        await listPlot(plot, idx, parcelContract);
-      })
-    );
+    let idx = 0;
+    for (const plot of parcel0.plots) {
+      console.log(await parcelContract.getPlotIds());
+      await listPlot(plot, idx, parcelContract);
+      await sleep(delayMS);
+      idx++;
+    }
   } catch (err) {
     console.log(err);
   }
@@ -34,7 +36,12 @@ const main = async () => {
     "Transferring ownership of CityDAO Plot Contract to " + toAddress + "..."
   );
 
-  await parcelContract.transferOwnership(toAddress);
+  await parcelContract.transferOwnership(toAddress, {
+    gasLimit: 400000,
+  });
+
+  console.log("\n\n 🎫 Done!\n");
+  console.log(await parcelContract.getPlotIds());
 
   await sleep(delayMS);
 };
@@ -44,7 +51,7 @@ async function listPlot(plot, idx, contract) {
   const uploaded = await ipfs.add(JSON.stringify({ geojson: plot }));
 
   console.log(`Listing plot${idx} with IPFS hash (${uploaded.path})`);
-  await contract.listPlot(uploaded.path, "0.01", {
+  const res = await contract.listPlot(uploaded.path, "0.01", {
     gasLimit: 400000,
   });
 }
