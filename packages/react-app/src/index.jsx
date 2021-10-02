@@ -1,8 +1,8 @@
 import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
 import React from "react";
 import ReactDOM from "react-dom";
-import store from "./store";
 import { Provider } from "react-redux";
+import store from "./store";
 import App from "./App";
 import "./index.css";
 

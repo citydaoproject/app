@@ -2,10 +2,10 @@ import React from "react";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+import { Layout } from "antd";
 import Web3Wrapper from "./Web3Wrapper";
 import { useAppDispatch } from "./hooks";
 import { setDebugMode } from "./actions";
-import { Layout } from "antd";
 
 import "./App.less";
 
