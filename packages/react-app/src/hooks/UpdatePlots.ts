@@ -29,6 +29,7 @@ const useUpdatePlots = async (readContracts: any, DEBUG = false) => {
         } catch (e) {
           toast.error("Failed to read plot metadata. Please try again or contact CityDAO support.", {
             className: "error",
+            toastId: "error-reading-metadata",
           });
           DEBUG && console.log(e);
         }
@@ -37,8 +38,8 @@ const useUpdatePlots = async (readContracts: any, DEBUG = false) => {
       toast.error(
         `Failed to find CityDAO's contract. Make sure you're on the ${process.env.REACT_APP_NETWORK} network.`,
         {
-          toastId: "contract-fail",
           className: "error",
+          toastId: "contract-fail",
         },
       );
       DEBUG && console.log(e);

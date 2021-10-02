@@ -110,6 +110,16 @@
   height: 31px;
   border-radius: 4px;
 }
+.connect-wallet {
+  background-color: @primary;
+}
+.connected {
+  background-color: transparent;
+  border: 1px solid @primary;
+  :hover {
+    cursor: default;
+  }
+}
 
 /* Plot detail styles */
 .plot-detail > div.flex {
@@ -148,6 +158,7 @@ select:focus {
 }
 .error * {
   color: white;
+  @apply secondary-font;
 }
 
 /* Web3 Modal styles */
@@ -155,6 +166,13 @@ select:focus {
   background-color: @gray-1;
 }
 .web3modal-provider-container {
+  background-color: @gray-2 !important;
+  * {
+    color: white;
+    background-color: inherit !important;
+  }
+}
+#walletconnect-wrapper {
   background-color: @gray-2 !important;
   * {
     color: white;
