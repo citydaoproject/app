@@ -23,10 +23,7 @@ export default function PlotTabs() {
       <TabPane tab="Sold" key="2">
         <PlotList plots={plots.filter(plot => plot.sold)} />
       </TabPane>
-      <TabPane tab="All" key="3">
-        <PlotList plots={plots} />
-      </TabPane>
-      <TabPane tab="Owned" key="4">
+      <TabPane tab="Your Land" key="3">
         <PlotList plots={plots.filter(plot => plot.owner === userAddress)} />
       </TabPane>
     </Tabs>
