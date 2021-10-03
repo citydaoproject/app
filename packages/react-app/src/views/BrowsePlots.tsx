@@ -48,7 +48,7 @@ export default function BrowsePlots({ networkProvider, web3Modal }: Props) {
     });
   }, [setInjectedProvider, DEBUG]);
 
-  useUpdatePlots(contracts, DEBUG).then((newPlots: Plot[]) => {
+  useUpdatePlots(contracts, plots, DEBUG).then((newPlots: Plot[]) => {
     if (newPlots.length !== plots.length) {
       dispatch(setPlots(newPlots));
       dispatch(fetchedPlots());

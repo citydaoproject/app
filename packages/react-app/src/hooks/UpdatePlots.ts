@@ -1,8 +1,8 @@
 import { toast } from "react-toastify";
 import { fetchPlotMetadata } from "../data";
-import { Plot } from "../models/Plot";
+import { Plot, PlotMetadata } from "../models/Plot";
 
-const useUpdatePlots = async (readContracts: any, DEBUG = false) => {
+const useUpdatePlots = async (readContracts: any, currentPlots = [] as Plot[], DEBUG = false) => {
   const newPlots: Plot[] = [];
   if (readContracts) {
     try {
@@ -15,16 +15,21 @@ const useUpdatePlots = async (readContracts: any, DEBUG = false) => {
         const price = !isSold ? await readContracts.CityDaoParcel.getPrice(plotId) : undefined;
         const owner = isSold ? await readContracts.CityDaoParcel.ownerOf(plotId) : undefined;
         try {
-          const jsonManifestBuffer = await fetchPlotMetadata(ipfsHash);
-          const jsonManifest = JSON.parse(jsonManifestBuffer.toString());
+          let metadata: PlotMetadata = {};
+          if (currentPlots.includes(plotIds[index])) {
+            metadata = currentPlots[index].metadata ?? {};
+          } else {
+            const jsonManifestBuffer = await fetchPlotMetadata(ipfsHash);
+            metadata = JSON.parse(jsonManifestBuffer.toString());
+          }
           newPlots.push({
             id: plotId.toNumber(),
             parcel: 0,
             uri: ipfsHash,
-            price: price,
+            price: price.toNumber(),
             sold: isSold,
             owner: owner,
-            ...jsonManifest,
+            metadata: metadata,
           });
         } catch (e) {
           toast.error("Failed to read plot metadata. Please try again or contact CityDAO support.", {

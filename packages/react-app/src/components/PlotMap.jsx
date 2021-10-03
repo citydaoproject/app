@@ -73,7 +73,7 @@ export default function PlotMap({ plots, startingCoordinates, startingZoom, star
           const id = plot.id.toString(); // convert big number id to string
           try {
             if (map.current && map.current.getSource(id)) return; // skip if already added
-            addPlotToMap(plot.geojson, id);
+            addPlotToMap(plot.metadata.geojson, id);
             // set click functionality
             map.current &&
               map.current.on("click", id, function (e) {
