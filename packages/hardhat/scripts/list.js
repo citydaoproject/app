@@ -51,7 +51,7 @@ async function listPlot(plot, idx, contract) {
   console.log(`Listing plot${idx} with IPFS hash (${uploaded.path})`);
   const res = await contract.listPlot(
     uploaded.path,
-    ethers.BigNumber.from(`${100000000000000000 * idx}`),
+    ethers.BigNumber.from(`${100000000000000000 * (idx + 1)}`),
     {
       gasLimit: 400000,
     }
