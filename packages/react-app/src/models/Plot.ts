@@ -4,7 +4,7 @@ export interface Plot {
   uri: string;
   sold: boolean;
   owner: string;
-  price?: number;
+  price?: string;
   metadata: PlotMetadata;
 }
 
