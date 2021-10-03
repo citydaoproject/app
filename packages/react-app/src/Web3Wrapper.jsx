@@ -43,12 +43,10 @@ const web3Modal = new Web3Modal({
 function Web3Wrapper() {
   const userAddress = useSelector(state => state.user.address);
   const price = useSelector(state => state.network.exchangePrice);
-  const DEBUG = useSelector(state => state.debug.debug);
 
   const dispatch = useDispatch();
 
   const mainnetProvider = mainnetInfura;
-
   dispatch(setExchangePrice(useExchangePrice(targetNetwork, mainnetProvider)));
   dispatch(setGasPrice(useGasPrice(targetNetwork, "fast")));
 
@@ -61,7 +59,9 @@ function Web3Wrapper() {
           </Route>
         </Switch>
       </BrowserRouter>
-      {DEBUG ? <Wallet price={price} toAddress={userAddress} provider={networkProvider} /> : null}
+      {process.env.NODE_ENV === "development" ? (
+        <Wallet price={price} toAddress={userAddress} provider={networkProvider} />
+      ) : null}
     </div>
   );
 }

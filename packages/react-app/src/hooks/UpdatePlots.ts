@@ -26,7 +26,7 @@ const useUpdatePlots = async (readContracts: any, currentPlots = [] as Plot[], D
             id: plotId.toNumber(),
             parcel: 0,
             uri: ipfsHash,
-            price: price,
+            price: price.toNumber(),
             sold: isSold,
             owner: owner,
             metadata: metadata,

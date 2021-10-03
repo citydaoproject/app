@@ -831,9 +831,9 @@
               "name": "getPrice",
               "outputs": [
                 {
-                  "internalType": "string",
+                  "internalType": "uint256",
                   "name": "",
-                  "type": "string"
+                  "type": "uint256"
                 }
               ],
               "stateMutability": "view",
@@ -890,9 +890,9 @@
                   "type": "string"
                 },
                 {
-                  "internalType": "string",
+                  "internalType": "uint256",
                   "name": "price",
-                  "type": "string"
+                  "type": "uint256"
                 }
               ],
               "name": "listPlot",
@@ -909,11 +909,6 @@
             {
               "inputs": [
                 {
-                  "internalType": "address",
-                  "name": "_toAddress",
-                  "type": "address"
-                },
-                {
                   "internalType": "uint256",
                   "name": "plotId",
                   "type": "uint256"
@@ -927,7 +922,7 @@
                   "type": "uint256"
                 }
               ],
-              "stateMutability": "nonpayable",
+              "stateMutability": "payable",
               "type": "function"
             },
             {
