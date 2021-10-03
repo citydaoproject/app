@@ -26,6 +26,9 @@ const main = async () => {
       await sleep(delayMS);
       idx++;
     }
+    await parcelContract.transferOwnership(toAddress, {
+      gasLimit: 400000,
+    });
   } catch (err) {
     console.log(err);
   }
@@ -34,10 +37,6 @@ const main = async () => {
   console.log(
     "Transferring ownership of CityDAO Plot Contract to " + toAddress + "..."
   );
-
-  await parcelContract.transferOwnership(toAddress, {
-    gasLimit: 400000,
-  });
 
   console.log("\n\n 🎫 Done!\n");
   console.log(await parcelContract.getPlotIds());
@@ -50,7 +49,7 @@ async function listPlot(plot, idx, contract) {
   const uploaded = await ipfs.add(JSON.stringify({ geojson: plot }));
 
   console.log(`Listing plot${idx} with IPFS hash (${uploaded.path})`);
-  const res = await contract.listPlot(uploaded.path, idx * 50, {
+  const res = await contract.listPlot(uploaded.path, 1, {
     gasLimit: 400000,
   });
 }
