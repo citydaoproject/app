@@ -14,7 +14,7 @@ contract CityDaoParcel is ERC721, Ownable {
   Counters.Counter private _tokenIds;
 
   mapping(uint256 => bool) private _plotIdToSoldStatus;
-  mapping(uint256 => string) private _plotIdToPrice;
+  mapping(uint256 => uint256) private _plotIdToPrice;
   uint256[] private _plotIds = new uint256[](0);
   string[] private _plotURIs = new string[](0);
 
@@ -23,7 +23,7 @@ contract CityDaoParcel is ERC721, Ownable {
     _tokenIds.increment(); // reserve 0 for "no plot" id
   }
 
-  function listPlot(string memory tokenURI, string memory price) public onlyOwner returns (uint256) {
+  function listPlot(string memory tokenURI, uint256 price) public onlyOwner returns (uint256) {
     uint256 plotId = _tokenIds.current();
     _tokenIds.increment();
     _plotIdToPrice[plotId] = price;
@@ -55,7 +55,7 @@ contract CityDaoParcel is ERC721, Ownable {
   function isSold(uint256 plotId) public view returns (bool) {
     return _plotIdToSoldStatus[plotId];
   }
-  function getPrice(uint256 plotId) public view returns (string memory) {
+  function getPrice(uint256 plotId) public view returns (uint256) {
     return _plotIdToPrice[plotId];
   }
 
