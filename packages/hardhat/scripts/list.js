@@ -49,9 +49,13 @@ async function listPlot(plot, idx, contract) {
   const uploaded = await ipfs.add(JSON.stringify({ geojson: plot }));
 
   console.log(`Listing plot${idx} with IPFS hash (${uploaded.path})`);
-  const res = await contract.listPlot(uploaded.path, 1, {
-    gasLimit: 400000,
-  });
+  const res = await contract.listPlot(
+    uploaded.path,
+    ethers.BigNumber.from(`${100000000000000000 * (idx + 1)}`),
+    {
+      gasLimit: 400000,
+    }
+  );
 }
 
 function sleep(ms) {

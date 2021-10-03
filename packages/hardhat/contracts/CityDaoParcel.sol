@@ -14,7 +14,7 @@ contract CityDaoParcel is ERC721, Ownable {
   Counters.Counter private _tokenIds;
 
   mapping(uint256 => bool) private _plotIdToSoldStatus;
-  mapping(uint256 => uint256) private _plotIdToPrice;
+  mapping(uint256 => uint) private _plotIdToPrice;
   uint256[] private _plotIds = new uint256[](0);
   string[] private _plotURIs = new string[](0);
 
@@ -34,14 +34,16 @@ contract CityDaoParcel is ERC721, Ownable {
     return plotId;
   }
 
-  function mintPlot(address _toAddress, uint256 plotId)
+   function buyPlot(uint256 plotId)
+      payable
       public
       returns (uint256)
   {
-      require(msg.sender == _toAddress, "You must purchase the plot for yourself!");
       require(!isSold(plotId), "This plot has already been sold!");
-      
-      _safeMint(_toAddress, plotId);
+      uint256 _price = _plotIdToPrice[plotId];
+      require(msg.value == _price, "You must pay the price of the plot!");
+
+      _safeMint(msg.sender, plotId);
 
       uint256 _idx = getIndex(plotId);
       _setTokenURI(plotId, _plotURIs[_idx]);
@@ -55,7 +57,7 @@ contract CityDaoParcel is ERC721, Ownable {
   function isSold(uint256 plotId) public view returns (bool) {
     return _plotIdToSoldStatus[plotId];
   }
-  function getPrice(uint256 plotId) public view returns (uint256) {
+  function getPrice(uint256 plotId) public view returns (uint) {
     return _plotIdToPrice[plotId];
   }
 

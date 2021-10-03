@@ -5,7 +5,7 @@
       "chainId": "4",
       "contracts": {
         "CityDaoParcel": {
-          "address": "0xF6F903AFEb1d58708F40c3f719CE5f95D94d9EF3",
+          "address": "0x65819A78b8db3bDD7cfe35e0fDcFA3AC08D5F115",
           "abi": [
             {
               "inputs": [],
@@ -160,6 +160,25 @@
               "inputs": [
                 {
                   "internalType": "uint256",
+                  "name": "plotId",
+                  "type": "uint256"
+                }
+              ],
+              "name": "buyPlot",
+              "outputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "payable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "uint256",
                   "name": "tokenId",
                   "type": "uint256"
                 }
@@ -296,30 +315,6 @@
                 }
               ],
               "name": "listPlot",
-              "outputs": [
-                {
-                  "internalType": "uint256",
-                  "name": "",
-                  "type": "uint256"
-                }
-              ],
-              "stateMutability": "nonpayable",
-              "type": "function"
-            },
-            {
-              "inputs": [
-                {
-                  "internalType": "address",
-                  "name": "_toAddress",
-                  "type": "address"
-                },
-                {
-                  "internalType": "uint256",
-                  "name": "plotId",
-                  "type": "uint256"
-                }
-              ],
-              "name": "mintPlot",
               "outputs": [
                 {
                   "internalType": "uint256",
@@ -760,6 +755,25 @@
               "inputs": [
                 {
                   "internalType": "uint256",
+                  "name": "plotId",
+                  "type": "uint256"
+                }
+              ],
+              "name": "buyPlot",
+              "outputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "payable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "uint256",
                   "name": "tokenId",
                   "type": "uint256"
                 }
@@ -896,30 +910,6 @@
                 }
               ],
               "name": "listPlot",
-              "outputs": [
-                {
-                  "internalType": "uint256",
-                  "name": "",
-                  "type": "uint256"
-                }
-              ],
-              "stateMutability": "nonpayable",
-              "type": "function"
-            },
-            {
-              "inputs": [
-                {
-                  "internalType": "address",
-                  "name": "_toAddress",
-                  "type": "address"
-                },
-                {
-                  "internalType": "uint256",
-                  "name": "plotId",
-                  "type": "uint256"
-                }
-              ],
-              "name": "mintPlot",
               "outputs": [
                 {
                   "internalType": "uint256",

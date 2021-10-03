@@ -12,7 +12,8 @@ import { BrowsePlots } from "./views";
 
 const { ethers } = require("ethers");
 
-const targetNetwork = NETWORKS[process.env.REACT_APP_NETWORK]; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet, mumbai)
+const network = process.env.REACT_APP_NETWORK;
+const targetNetwork = NETWORKS[network]; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet, mumbai)
 const mainnetInfura = navigator.onLine
   ? new ethers.providers.StaticJsonRpcProvider("https://mainnet.infura.io/v3/" + INFURA_ID)
   : null;
@@ -20,9 +21,9 @@ const mainnetInfura = navigator.onLine
 // 🏠 Your local provider is usually pointed at your local blockchain
 const providerUrl = targetNetwork.rpcUrl;
 const networkProvider =
-  process.env.REACT_APP_NETWORK === "localhost"
+  network === "localhost"
     ? new ethers.providers.StaticJsonRpcProvider(providerUrl)
-    : new ethers.providers.InfuraProvider(process.env.REACT_APP_NETWORK, INFURA_ID);
+    : new ethers.providers.InfuraProvider(network, INFURA_ID);
 
 /*
   Web3 modal helps us "connect" external wallets:

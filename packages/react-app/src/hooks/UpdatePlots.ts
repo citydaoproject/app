@@ -1,3 +1,4 @@
+import { ethers } from "ethers";
 import { toast } from "react-toastify";
 import { fetchPlotMetadata } from "../data";
 import { Plot, PlotMetadata } from "../models/Plot";
@@ -26,7 +27,7 @@ const useUpdatePlots = async (readContracts: any, currentPlots = [] as Plot[], D
             id: plotId.toNumber(),
             parcel: 0,
             uri: ipfsHash,
-            price: price?.toNumber(),
+            price: price ? ethers.utils.formatEther(price) : undefined,
             sold: isSold,
             owner: owner,
             metadata: metadata,

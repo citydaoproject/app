@@ -1,3 +1,4 @@
+import { BigNumber, ethers } from "ethers";
 import React from "react";
 import { toast } from "react-toastify";
 import { setPlots } from "../actions";
@@ -7,14 +8,13 @@ import { useAppDispatch, useAppSelector, useContractLoader, useUpdatePlots, useU
 import { Plot } from "../models/Plot";
 
 interface Props {
-  plot?: Plot;
+  plot: Plot;
   injectedProvider: any;
 }
 
 export default function BuyPlot({ plot, injectedProvider }: Props) {
   const dispatch = useAppDispatch();
 
-  const userAddress = useAppSelector(state => state.user.address);
   const DEBUG = useAppSelector(state => state.debug.debug);
   const gasPrice = useAppSelector(state => state.network.gasPrice);
   const plots = useAppSelector(state => state.plots.plots);
@@ -23,7 +23,17 @@ export default function BuyPlot({ plot, injectedProvider }: Props) {
 
   const tx = Transactor(userSigner, gasPrice);
   const useBuyPlot = async () => {
-    tx && plot && (await tx(contracts.CityDaoParcel.mintPlot(userAddress, plot.id)));
+    if (!plot.sold && userSigner) {
+      const price = BigNumber.from(ethers.utils.parseEther(plot.price ?? "0"));
+      tx && plot && (await tx(contracts.CityDaoParcel.buyPlot(plot.id, { value: price })));
+    } else if (plot.sold) {
+      throw new Error("Plot is already sold");
+    } else if (!userSigner) {
+      toast.error("Please connect your wallet to buy this plot.", {
+        className: "error",
+        toastId: "no-connected-wallet",
+      });
+    }
     useUpdatePlots(contracts, plots, DEBUG).then(newPlots => {
       dispatch(setPlots(newPlots));
       dispatch(setActivePlot(undefined)); // reset active plot
