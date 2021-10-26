@@ -16,22 +16,29 @@ contract CityDaoParcel is ERC721, Ownable {
   mapping(uint256 => bool) private _plotIdToSoldStatus;
   mapping(uint256 => uint) private _plotIdToPrice;
   uint256[] private _plotIds = new uint256[](0);
-  string[] private _plotURIs = new string[](0);
+  string private metadataUri;
 
   constructor() public ERC721("CityDaoParcel", "YCB") {
     _setBaseURI("https://ipfs.io/ipfs/");
     _tokenIds.increment(); // reserve 0 for "no plot" id
   }
 
-  function listPlot(string memory tokenURI, uint256 price) public onlyOwner returns (uint256) {
+  function listPlot(uint256 price) public onlyOwner returns (uint256) {
     uint256 plotId = _tokenIds.current();
     _tokenIds.increment();
     _plotIdToPrice[plotId] = price;
     _plotIdToSoldStatus[plotId] = false;
     _plotIds.push(plotId);
-    _plotURIs.push(tokenURI);
 
     return plotId;
+  }
+
+  function setMetadata(string memory uri) public onlyOwner {
+    metadataUri = uri;
+  }
+
+  function getMetadataUri() public view returns (string memory) {
+    return metadataUri;
   }
 
    function buyPlot(uint256 plotId)
@@ -44,9 +51,6 @@ contract CityDaoParcel is ERC721, Ownable {
       require(msg.value == _price, "You must pay the price of the plot!");
 
       _safeMint(msg.sender, plotId);
-
-      uint256 _idx = getIndex(plotId);
-      _setTokenURI(plotId, _plotURIs[_idx]);
 
       delete _plotIdToPrice[plotId];
       _plotIdToSoldStatus[plotId] = true;
@@ -61,17 +65,7 @@ contract CityDaoParcel is ERC721, Ownable {
     return _plotIdToPrice[plotId];
   }
 
-  function getPlotURIs() public view returns (string[] memory) {
-    return _plotURIs;
-  }
-
   function getPlotIds() public view returns (uint256[] memory) {
     return _plotIds;
-  }
-
-  function getIndex(uint256 plotId) public view returns (uint256) {
-    for(uint i = 0; i < _plotIds.length; i++){
-      if(plotId == _plotIds[i]) return i;
-    }
   }
 }

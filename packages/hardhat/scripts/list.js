@@ -26,6 +26,9 @@ const main = async () => {
       await sleep(delayMS);
       idx++;
     }
+    const uploaded = await ipfs.add(JSON.stringify({ plots: parcel0.plots }));
+    await parcelContract.setMetadata(uploaded.path);
+    console.log(`Listing plot${idx} with IPFS hash (${uploaded.path})`);
     await parcelContract.transferOwnership(toAddress, {
       gasLimit: 400000,
     });
@@ -46,11 +49,8 @@ const main = async () => {
 
 async function listPlot(plot, idx, contract) {
   console.log(`Uploading plot${idx}...`);
-  const uploaded = await ipfs.add(JSON.stringify({ geojson: plot }));
 
-  console.log(`Listing plot${idx} with IPFS hash (${uploaded.path})`);
   const res = await contract.listPlot(
-    uploaded.path,
     ethers.BigNumber.from(`${100000000000000000 * (idx + 1)}`),
     {
       gasLimit: 400000,
