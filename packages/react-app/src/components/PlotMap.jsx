@@ -63,7 +63,7 @@ export default function PlotMap({ plots, startingCoordinates, startingZoom, star
       zoom: startingZoom,
       pitch: startingPitch,
     });
-  });
+  }, []);
 
   // Draw initial plots
   useEffect(() => {
@@ -93,7 +93,7 @@ export default function PlotMap({ plots, startingCoordinates, startingZoom, star
         });
       });
     }
-  });
+  }, [map.current, plots]);
 
   // Add/remove plot highlight when highlighted plot changes
   useEffect(() => {
@@ -119,7 +119,7 @@ export default function PlotMap({ plots, startingCoordinates, startingZoom, star
         map.current.removeLayer(fill_id);
       }
     }
-  });
+  }, [plots, highlightedPlot, map.current]);
 
   return (
     <div className="flex-grow flex flex-col">

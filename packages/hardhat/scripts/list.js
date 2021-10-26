@@ -1,5 +1,5 @@
 /* eslint no-use-before-define: "warn" */
-const parcel0 = require("./parcel0.json");
+const parcel0 = require("./data.json");
 const { ethers } = require("hardhat");
 const ipfsAPI = require("ipfs-http-client");
 const ipfs = ipfsAPI({
@@ -8,7 +8,7 @@ const ipfs = ipfsAPI({
   protocol: "https",
 });
 
-const delayMS = 1000; //sometimes xDAI needs a 6000ms break lol 😅
+const delayMS = 2000;
 
 const main = async () => {
   // ADDRESS TO MINT TO:
@@ -20,15 +20,15 @@ const main = async () => {
   const parcelContract = await ethers.getContract("CityDaoParcel", deployer);
 
   try {
+    const uploaded = await ipfs.add(JSON.stringify({ plots: parcel0.plots }));
+    await parcelContract.setMetadata(uploaded.path);
+    console.log(`Posting IPFS hash (${uploaded.path})`);
     let idx = 0;
     for (const plot of parcel0.plots) {
       await listPlot(plot, idx, parcelContract);
       await sleep(delayMS);
       idx++;
     }
-    const uploaded = await ipfs.add(JSON.stringify({ plots: parcel0.plots }));
-    await parcelContract.setMetadata(uploaded.path);
-    console.log(`Listing plot${idx} with IPFS hash (${uploaded.path})`);
     await parcelContract.transferOwnership(toAddress, {
       gasLimit: 400000,
     });
@@ -56,6 +56,7 @@ async function listPlot(plot, idx, contract) {
       gasLimit: 400000,
     }
   );
+  await sleep(delayMS);
 }
 
 function sleep(ms) {
