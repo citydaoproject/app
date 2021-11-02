@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Col, Layout } from "antd";
 import { Content } from "antd/lib/layout/layout";
 import { ethers } from "ethers";
@@ -9,7 +9,10 @@ import { setPlots } from "../actions";
 import { PlotTabs } from "../components";
 import { Plot } from "../models/Plot";
 import { logoutOfWeb3Modal } from "../helpers";
-import { fetchedPlots } from "../actions/plotsSlice";
+import { fetchedPlots, setParcelGeojson } from "../actions/plotsSlice";
+import { fetchPlotMetadata } from "../data";
+import { GeojsonData } from "../models/GeojsonData";
+import { toast } from "react-toastify";
 
 interface Props {
   networkProvider: any;
@@ -21,6 +24,7 @@ export default function BrowsePlots({ networkProvider, web3Modal }: Props) {
   const DEBUG = useAppSelector(state => state.debug.debug);
   const plots = useAppSelector(state => state.plots.plots);
   const activePlot = useAppSelector(state => state.plots.activePlot);
+  const parcel = useAppSelector(state => state.plots.parcel);
   const contracts: any = useContractLoader(networkProvider);
   const [injectedProvider, setInjectedProvider] = useState<ethers.providers.Web3Provider>();
 
@@ -48,6 +52,26 @@ export default function BrowsePlots({ networkProvider, web3Modal }: Props) {
     });
   }, [setInjectedProvider, DEBUG]);
 
+  const readParcel = async () => {
+    try {
+      if (contracts && contracts.CityDaoParcel) {
+        const parcelUri = await contracts.CityDaoParcel.getParcelMetadataUri();
+        const jsonManifestBuffer = await fetchPlotMetadata(parcelUri);
+        const parcelMetadata = JSON.parse(jsonManifestBuffer.toString()) as any;
+        dispatch(setParcelGeojson(parcelMetadata.plots[0] as any));
+      }
+    } catch (e) {
+      toast.error(`Failed to find parcel. Make sure you're on the ${process.env.REACT_APP_NETWORK} network.`, {
+        className: "error",
+        toastId: "contract-fail",
+      });
+      DEBUG && console.log(e);
+    }
+  };
+  useEffect(() => {
+    readParcel();
+  }, [contracts]);
+
   useUpdatePlots(contracts, plots, DEBUG).then((newPlots: Plot[]) => {
     if (newPlots.length !== plots.length) {
       dispatch(setPlots(newPlots));
@@ -73,6 +97,7 @@ export default function BrowsePlots({ networkProvider, web3Modal }: Props) {
             {/* key prop is to cause rerendering whenever it changes */}
             <PlotMap
               key={plots.length}
+              parcel={parcel}
               plots={plots}
               startingCoordinates={[-109.25792011522043, 44.92118759558491]}
               startingZoom={15.825123438299038}

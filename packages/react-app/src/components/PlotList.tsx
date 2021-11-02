@@ -13,7 +13,7 @@ interface Props {
 export default function PlotList({ plots, emptyMessage }: Props) {
   return (
     <div className="list">
-      {plots.map((plot: Plot, idx: number) => (
+      {plots.slice(0, 10).map((plot: Plot, idx: number) => (
         <motion.div className="list-item" key={plot.id} layout>
           <PlotButton plot={plot} delay={idx} />
         </motion.div>

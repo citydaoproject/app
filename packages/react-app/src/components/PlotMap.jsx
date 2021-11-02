@@ -2,17 +2,14 @@ import React, { useRef, useEffect, useState, Ref } from "react";
 import mapboxgl from "!mapbox-gl"; // eslint-disable-line import/no-webpack-loader-syntax
 import "mapbox-gl/dist/mapbox-gl.css";
 
-import { useAppDispatch, useAppSelector } from "../hooks";
-import { setHighlightedPlot } from "../actions";
-import { setActivePlot } from "../actions/plotsSlice";
+import { useAppSelector } from "../hooks";
 
 mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_TOKEN;
 
-export default function PlotMap({ plots, startingCoordinates, startingZoom, startingPitch }) {
+export default function PlotMap({ parcel, plots, startingCoordinates, startingZoom, startingPitch }) {
   const mapContainer = useRef(null);
   const map = useRef(null);
 
-  const dispatch = useAppDispatch();
   const highlightedPlot = useAppSelector(state => state.plots.highlightedPlot);
 
   const addPlotToMap = (geojson, string_id) => {
@@ -20,16 +17,6 @@ export default function PlotMap({ plots, startingCoordinates, startingZoom, star
       map.current.addSource(string_id, {
         type: "geojson",
         data: geojson,
-      });
-      // add plot click area
-      map.current.addLayer({
-        id: string_id,
-        source: string_id,
-        type: "fill",
-        paint: {
-          "fill-color": "#000000",
-          "fill-opacity": 0,
-        },
       });
       // add plot outline
       map.current.addLayer({
@@ -42,16 +29,6 @@ export default function PlotMap({ plots, startingCoordinates, startingZoom, star
         },
       });
     }
-  };
-
-  const clickPlot = plot => {
-    dispatch(setActivePlot(plot));
-  };
-  const hoverPlot = plot => {
-    dispatch(setHighlightedPlot(plot));
-  };
-  const removeHoverPlot = () => {
-    dispatch(setHighlightedPlot(undefined));
   };
 
   useEffect(() => {
@@ -69,57 +46,32 @@ export default function PlotMap({ plots, startingCoordinates, startingZoom, star
   useEffect(() => {
     if (map?.current) {
       map.current.on("load", function () {
-        plots.forEach(plot => {
-          const id = plot.id.toString(); // convert big number id to string
-          try {
-            if (map.current && map.current.getSource(id)) return; // skip if already added
-            addPlotToMap(plot.metadata.geojson, id);
-            // set click functionality
-            map.current &&
-              map.current.on("click", id, function (e) {
-                clickPlot(plot);
-              });
-            map.current &&
-              map.current.on("mousemove", id, function (e) {
-                hoverPlot(plot);
-              });
-            map.current &&
-              map.current.on("mouseleave", id, function (e) {
-                removeHoverPlot();
-              });
-          } catch (e) {
-            console.log(e);
-          }
-        });
+        if (map.current && map.current.getSource("parcel")) return; // skip if already added
+        addPlotToMap(parcel.metadata.geojson, "parcel");
       });
     }
   }, [map.current, plots]);
 
   // Add/remove plot highlight when highlighted plot changes
   useEffect(() => {
-    for (let plot of plots) {
-      const fill_id = `${plot.id.toString()}_fill`;
-      if (
-        highlightedPlot?.id === plot.id &&
-        map?.current &&
-        !map.current.getLayer(fill_id) &&
-        map.current.getSource(plot.id.toString())
-      ) {
-        map.current.addLayer({
-          id: fill_id,
-          source: plot.id.toString(),
-          type: "fill",
-          paint: {
-            "fill-color": "#eff551",
-            "fill-opacity": 0.5,
-            "fill-outline-color": "#eff551",
-          },
-        });
-      } else if (highlightedPlot?.id !== plot.id && map?.current && map.current.getLayer(fill_id)) {
-        map.current.removeLayer(fill_id);
-      }
+    if (map?.current && highlightedPlot && !map.current.getLayer("highlighted_fill")) {
+      addPlotToMap(highlightedPlot.metadata.geojson, "highlighted");
+      map.current.addLayer({
+        id: "highlighted_fill",
+        source: "highlighted",
+        type: "fill",
+        paint: {
+          "fill-color": "#eff551",
+          "fill-opacity": 0.5,
+          "fill-outline-color": "#eff551",
+        },
+      });
+    } else if (map?.current && map.current.getLayer("highlighted_fill")) {
+      map.current.removeLayer("highlighted_fill");
+      map.current.removeLayer("highlighted_outline");
+      map.current.removeSource("highlighted");
     }
-  }, [plots, highlightedPlot, map.current]);
+  }, [highlightedPlot, map.current]);
 
   return (
     <div className="flex-grow flex flex-col">
