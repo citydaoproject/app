@@ -16,7 +16,8 @@ contract CityDaoParcel is ERC721, Ownable {
   mapping(uint256 => bool) private _plotIdToSoldStatus;
   mapping(uint256 => uint) private _plotIdToPrice;
   uint256[] private _plotIds = new uint256[](0);
-  string private metadataUri;
+  string private plotMetadataUri;
+  string private parcelMetadataUri;
 
   constructor() public ERC721("CityDaoParcel", "YCB") {
     _setBaseURI("https://ipfs.io/ipfs/");
@@ -33,12 +34,20 @@ contract CityDaoParcel is ERC721, Ownable {
     return plotId;
   }
 
-  function setMetadata(string memory uri) public onlyOwner {
-    metadataUri = uri;
+  function setParcelMetadata(string memory uri) public onlyOwner {
+    parcelMetadataUri = uri;
   }
 
-  function getMetadataUri() public view returns (string memory) {
-    return metadataUri;
+  function setPlotsMetadata(string memory uri) public onlyOwner {
+    plotMetadataUri = uri;
+  }
+
+  function getParcelMetadataUri() public view returns (string memory) {
+    return parcelMetadataUri;
+  }
+
+  function getPlotsMetadataUri() public view returns (string memory) {
+    return plotMetadataUri;
   }
 
    function buyPlot(uint256 plotId)
@@ -67,5 +76,19 @@ contract CityDaoParcel is ERC721, Ownable {
 
   function getPlotIds() public view returns (uint256[] memory) {
     return _plotIds;
+  }
+  function getAllPrices() public view returns (uint256[] memory) {
+    uint256[] memory ret = new uint256[](_tokenIds.current());
+    for (uint i = 0; i < _tokenIds.current(); i++) {
+        ret[i] = _plotIdToPrice[i];
+    }
+    return ret;
+  }
+  function getAllSoldStatus() public view returns (bool[] memory) {
+    bool[] memory ret = new bool[](_tokenIds.current());
+    for (uint i = 0; i < _tokenIds.current(); i++) {
+        ret[i] = _plotIdToSoldStatus[i];
+    }
+    return ret;
   }
 }

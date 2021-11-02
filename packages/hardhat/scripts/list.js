@@ -1,5 +1,6 @@
 /* eslint no-use-before-define: "warn" */
-const parcel0 = require("./data.json");
+const plots = require("./plots.json");
+const parcel = require("./parcel.json");
 const { ethers } = require("hardhat");
 const ipfsAPI = require("ipfs-http-client");
 const ipfs = ipfsAPI({
@@ -8,7 +9,7 @@ const ipfs = ipfsAPI({
   protocol: "https",
 });
 
-const delayMS = 2000;
+const delayMS = 1000;
 
 const main = async () => {
   // ADDRESS TO MINT TO:
@@ -20,11 +21,13 @@ const main = async () => {
   const parcelContract = await ethers.getContract("CityDaoParcel", deployer);
 
   try {
-    const uploaded = await ipfs.add(JSON.stringify({ plots: parcel0.plots }));
-    await parcelContract.setMetadata(uploaded.path);
-    console.log(`Posting IPFS hash (${uploaded.path})`);
+    const parcelUri = await ipfs.add(JSON.stringify({ plots: parcel.parcel }));
+    await parcelContract.setParcelMetadata(parcelUri.path);
+    const plotsUri = await ipfs.add(JSON.stringify({ plots: plots.plots }));
+    await parcelContract.setPlotsMetadata(plotsUri.path);
+    console.log(`Posting IPFS hash (${plotsUri.path})`);
     let idx = 0;
-    for (const plot of parcel0.plots) {
+    for (const plot of plots.plots) {
       await listPlot(plot, idx, parcelContract);
       await sleep(delayMS);
       idx++;
