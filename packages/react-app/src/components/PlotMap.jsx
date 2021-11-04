@@ -9,6 +9,7 @@ mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_TOKEN;
 export default function PlotMap({ parcel, plots, startingCoordinates, startingZoom, startingPitch }) {
   const mapContainer = useRef(null);
   const map = useRef(null);
+  const [mapLoaded, setMapLoaded] = useState(false);
 
   const highlightedPlot = useAppSelector(state => state.plots.highlightedPlot);
 
@@ -46,6 +47,7 @@ export default function PlotMap({ parcel, plots, startingCoordinates, startingZo
   useEffect(() => {
     if (map?.current) {
       map.current.on("load", function () {
+        setMapLoaded(true);
         if (map.current && map.current.getSource("parcel")) return; // skip if already added
         addPlotToMap(parcel.metadata.geojson, "parcel");
       });
@@ -54,7 +56,7 @@ export default function PlotMap({ parcel, plots, startingCoordinates, startingZo
 
   // Add/remove plot highlight when highlighted plot changes
   useEffect(() => {
-    if (map?.current && highlightedPlot && !map.current.getLayer("highlighted_fill")) {
+    if (map?.current && highlightedPlot && !map.current.getLayer("highlighted_fill") && mapLoaded) {
       addPlotToMap(highlightedPlot.metadata.geojson, "highlighted");
       map.current.addLayer({
         id: "highlighted_fill",
@@ -66,7 +68,7 @@ export default function PlotMap({ parcel, plots, startingCoordinates, startingZo
           "fill-outline-color": "#eff551",
         },
       });
-    } else if (map?.current && map.current.getLayer("highlighted_fill")) {
+    } else if (map?.current && map.current.getLayer("highlighted_fill") && mapLoaded) {
       map.current.removeLayer("highlighted_fill");
       map.current.removeLayer("highlighted_outline");
       map.current.removeSource("highlighted");

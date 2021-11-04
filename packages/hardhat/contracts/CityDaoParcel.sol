@@ -78,16 +78,16 @@ contract CityDaoParcel is ERC721, Ownable {
     return _plotIds;
   }
   function getAllPrices() public view returns (uint256[] memory) {
-    uint256[] memory ret = new uint256[](_tokenIds.current());
-    for (uint i = 0; i < _tokenIds.current(); i++) {
-        ret[i] = _plotIdToPrice[i];
+    uint256[] memory ret = new uint256[](_plotIds.length);
+    for (uint i = 0; i < _plotIds.length; i++) {
+        ret[i] = _plotIdToPrice[_plotIds[i]];
     }
     return ret;
   }
   function getAllSoldStatus() public view returns (bool[] memory) {
-    bool[] memory ret = new bool[](_tokenIds.current());
-    for (uint i = 0; i < _tokenIds.current(); i++) {
-        ret[i] = _plotIdToSoldStatus[i];
+    bool[] memory ret = new bool[](_plotIds.length);
+    for (uint i = 0; i < _plotIds.length; i++) {
+        ret[i] = _plotIdToSoldStatus[_plotIds[i]];
     }
     return ret;
   }

@@ -10,9 +10,10 @@ import { Plot } from "../models/Plot";
 interface Props {
   plot: Plot;
   injectedProvider: any;
+  networkProvider: any;
 }
 
-export default function BuyPlot({ plot, injectedProvider }: Props) {
+export default function BuyPlot({ plot, injectedProvider, networkProvider }: Props) {
   const dispatch = useAppDispatch();
 
   const DEBUG = useAppSelector(state => state.debug.debug);
@@ -20,11 +21,11 @@ export default function BuyPlot({ plot, injectedProvider }: Props) {
   const gasPrice = useAppSelector(state => state.network.gasPrice);
   const plots = useAppSelector(state => state.plots.plots);
   const userSigner = useUserSigner(injectedProvider);
-  const contracts: any = useContractLoader(injectedProvider);
+  const contracts: any = useContractLoader(networkProvider);
 
   const tx = Transactor(userSigner, gasPrice);
   const useBuyPlot = async () => {
-    if (!plot.sold && userAddress) {
+    if (!plot.sold && userAddress && contracts?.CityDaoParcel) {
       const price = BigNumber.from(ethers.utils.parseEther(plot.price ?? "0"));
       tx && plot && (await tx(contracts.CityDaoParcel.buyPlot(plot.id, { value: price })));
     } else if (plot.sold) {
