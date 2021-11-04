@@ -80,9 +80,9 @@ export default function BrowsePlots({ networkProvider, web3Modal }: Props) {
   });
 
   return (
-    <div className="flex flex-col flex-grow">
+    <>
       <ProgressBar />
-      <div className="flex flex-row flex-grow">
+      <div className="flex flex-row flex-grow min-w-0">
         <Col className="sidebar">
           <LogoDisplay />
           {activePlot !== undefined ? (
@@ -106,6 +106,6 @@ export default function BrowsePlots({ networkProvider, web3Modal }: Props) {
           </Content>
         </Layout>
       </div>
-    </div>
+    </>
   );
 }

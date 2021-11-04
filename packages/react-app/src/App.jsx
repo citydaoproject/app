@@ -14,7 +14,7 @@ function App() {
   dispatch(setDebugMode(process.env.REACT_APP_DEBUG));
   return (
     <div className="App text-center">
-      <Layout style={{ minHeight: "100vh" }}>
+      <Layout style={{ height: "100vh", display: "flex" }}>
         <Web3Wrapper />
       </Layout>
       <ToastContainer />

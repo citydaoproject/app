@@ -52,7 +52,7 @@ function Web3Wrapper() {
   dispatch(setGasPrice(useGasPrice(targetNetwork, "fast")));
 
   return (
-    <div className="Web3Wrapper flex flex-col flex-grow">
+    <>
       <BrowserRouter>
         <Switch>
           <Route exact path="/">
@@ -63,7 +63,7 @@ function Web3Wrapper() {
       {process.env.NODE_ENV === "development" ? (
         <Wallet price={price} toAddress={userAddress} provider={networkProvider} />
       ) : null}
-    </div>
+    </>
   );
 }
 

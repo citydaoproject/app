@@ -5,7 +5,7 @@ export default function ProgressBar() {
   const plots = useAppSelector(state => state.plots.plots);
   const percent_sold = Math.floor((plots.filter(plot => plot.sold).length / plots.length) * 100);
   return (
-    <div className="header w-full bg-gradient h-12 z-10 text-gray-1 flex items-center justify-center text-base primary-font font-semibold">
+    <div className="header w-full bg-gradient h-12 py-4 z-10 text-gray-1 flex items-center justify-center text-base primary-font font-semibold">
       {plots.length > 0 && (percent_sold < 100 ? "Parcel 0 sale is live!" : "Parcel 0 sale is sold out!")}
       {plots.length === 0 && "Fetching plots..."}
       {percent_sold < 100 ? (
