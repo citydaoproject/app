@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { List } from "antd";
 
 import { Plot } from "../models/Plot";
 import PlotButton from "./PlotButton";
 import { motion } from "framer-motion";
+import { RootState } from "../store";
+import { useAppSelector } from "../hooks";
 
 interface Props {
   plots: Plot[];
@@ -11,11 +12,15 @@ interface Props {
 }
 
 export default function PlotList({ plots, emptyMessage }: Props) {
+  const idFilter = useAppSelector((state: RootState) => state.plots.idFilter);
   const [displayedPlots, setDisplayedPlots] = useState(plots);
   const [numDisplayedPlots, setNumDisplayedPlots] = useState(10);
   useEffect(() => {
     setDisplayedPlots(plots.slice(0, numDisplayedPlots));
   }, [plots, numDisplayedPlots]);
+  useEffect(() => {
+    setNumDisplayedPlots(10);
+  }, [idFilter]);
 
   const increaseNumDisplayedPlots = () => {
     setNumDisplayedPlots(numDisplayedPlots + 10);
