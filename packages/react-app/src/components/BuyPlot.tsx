@@ -10,10 +10,9 @@ import { Plot } from "../models/Plot";
 interface Props {
   plot: Plot;
   injectedProvider: any;
-  networkProvider: any;
 }
 
-export default function BuyPlot({ plot, injectedProvider, networkProvider }: Props) {
+export default function BuyPlot({ plot, injectedProvider }: Props) {
   const dispatch = useAppDispatch();
 
   const DEBUG = useAppSelector(state => state.debug.debug);
@@ -21,7 +20,7 @@ export default function BuyPlot({ plot, injectedProvider, networkProvider }: Pro
   const gasPrice = useAppSelector(state => state.network.gasPrice);
   const plots = useAppSelector(state => state.plots.plots);
   const userSigner = useUserSigner(injectedProvider);
-  const contracts: any = useContractLoader(networkProvider);
+  const contracts: any = useContractLoader(injectedProvider);
 
   const tx = Transactor(userSigner, gasPrice);
   const useBuyPlot = async () => {

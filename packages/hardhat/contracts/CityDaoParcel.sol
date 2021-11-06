@@ -70,6 +70,7 @@ contract CityDaoParcel is ERC721, Ownable {
   function isSold(uint256 plotId) public view returns (bool) {
     return _plotIdToSoldStatus[plotId];
   }
+
   function getPrice(uint256 plotId) public view returns (uint) {
     return _plotIdToPrice[plotId];
   }
@@ -77,6 +78,20 @@ contract CityDaoParcel is ERC721, Ownable {
   function getPlotIds() public view returns (uint256[] memory) {
     return _plotIds;
   }
+
+  function getOwners() public view returns (address[] memory) {
+    address[] memory _owners = new address[](_plotIds.length);
+    for (uint i = 0; i < _plotIds.length; i++) {
+      uint256 _plotId = _plotIds[i];
+      if (isSold(_plotId)) {
+        _owners[i] = ownerOf(_plotIds[i]);
+      } else {
+        _owners[i] = address(0);
+      }
+    }
+    return _owners;
+  }
+
   function getAllPrices() public view returns (uint256[] memory) {
     uint256[] memory ret = new uint256[](_plotIds.length);
     for (uint i = 0; i < _plotIds.length; i++) {
@@ -84,6 +99,7 @@ contract CityDaoParcel is ERC721, Ownable {
     }
     return ret;
   }
+
   function getAllSoldStatus() public view returns (bool[] memory) {
     bool[] memory ret = new bool[](_plotIds.length);
     for (uint i = 0; i < _plotIds.length; i++) {

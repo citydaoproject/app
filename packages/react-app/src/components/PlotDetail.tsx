@@ -12,10 +12,9 @@ import { BuyPlot, ViewPlot } from ".";
 interface Props {
   plot: Plot;
   injectedProvider: any;
-  networkProvider: any;
 }
 
-export default function PlotDetail({ plot, injectedProvider, networkProvider }: Props) {
+export default function PlotDetail({ plot, injectedProvider }: Props) {
   const dispatch = useAppDispatch();
   return (
     <AnimatePresence>
@@ -51,11 +50,7 @@ export default function PlotDetail({ plot, injectedProvider, networkProvider }: 
             exit={{ x: -300, opacity: 0 }}
             transition={{ delay: 0.1 }}
           >
-            {plot?.sold ? (
-              <ViewPlot plot={plot} />
-            ) : (
-              <BuyPlot plot={plot} injectedProvider={injectedProvider} networkProvider={networkProvider} />
-            )}
+            {plot?.sold ? <ViewPlot plot={plot} /> : <BuyPlot plot={plot} injectedProvider={injectedProvider} />}
           </motion.div>
 
           <motion.div

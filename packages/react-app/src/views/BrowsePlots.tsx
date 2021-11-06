@@ -86,7 +86,7 @@ export default function BrowsePlots({ networkProvider, web3Modal }: Props) {
         <Col className="sidebar">
           <LogoDisplay />
           {activePlot !== undefined ? (
-            <PlotDetail plot={activePlot} injectedProvider={injectedProvider} networkProvider={networkProvider} />
+            <PlotDetail plot={activePlot} injectedProvider={injectedProvider} />
           ) : (
             <PlotTabs />
           )}

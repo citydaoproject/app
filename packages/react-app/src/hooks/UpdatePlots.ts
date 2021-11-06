@@ -11,6 +11,7 @@ const useUpdatePlots = async (readContracts: any, currentPlots = [] as Plot[], D
       const plotIds = await readContracts.CityDaoParcel.getPlotIds();
       const plotPrices = await readContracts.CityDaoParcel.getAllPrices();
       const statuses = await readContracts.CityDaoParcel.getAllSoldStatus();
+      const owners = await readContracts.CityDaoParcel.getOwners();
       const ipfsHash = await readContracts.CityDaoParcel.getPlotsMetadataUri();
       const jsonManifestBuffer = await fetchPlotMetadata(ipfsHash);
       const plotsMetadata = JSON.parse(jsonManifestBuffer.toString()) as GeojsonData;
@@ -18,7 +19,7 @@ const useUpdatePlots = async (readContracts: any, currentPlots = [] as Plot[], D
         const plotId = plotIds[index];
         const isSold = statuses[index];
         const price = !isSold ? plotPrices[index] : undefined;
-        const owner = "";
+        const owner = owners[index] ?? "";
         try {
           let metadata: PlotMetadata = {};
           if (currentPlots.includes(plotIds[index])) {
