@@ -17,7 +17,7 @@ export default function PlotTabs() {
   });
 
   return (
-    <Tabs defaultActiveKey="1" className="px-4 w-full overflow-visible">
+    <Tabs defaultActiveKey="1" className="px-4 w-full">
       <TabPane tab="Available" key="1">
         <PlotList
           plots={plots.filter(plot => !plot.sold)}

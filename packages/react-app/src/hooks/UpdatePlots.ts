@@ -25,7 +25,14 @@ const useUpdatePlots = async (readContracts: any, currentPlots = [] as Plot[], D
           if (currentPlots.includes(plotIds[index])) {
             metadata = currentPlots[index].metadata ?? {};
           } else {
-            metadata = { geojson: plotsMetadata.plots[index] ?? {} };
+            // geojson uses lng, lat (rather than lat, lng)
+            const lng = plotsMetadata.plots[index]?.geometry?.coordinates[0][0][0] ?? null;
+            const lat = plotsMetadata.plots[index]?.geometry?.coordinates[0][0][1] ?? null;
+            metadata = {
+              geojson: plotsMetadata.plots[index] ?? {},
+              coordinates: lat && lng ? `${lat}${lat >= 0 ? "°N" : "°S"}, ${lng}${lng >= 0 ? "°E" : "°W"}` : undefined,
+              location: "Clark, WY",
+            };
           }
           newPlots.push({
             id: plotId.toNumber(),

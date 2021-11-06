@@ -18,7 +18,7 @@ export default function PlotMap({ parcel, plots, startingCoordinates, startingZo
   useEffect(() => {
     if (map.current && activePlot) {
       map.current.flyTo({
-        center: activePlot.metadata.geojson.geometry.coordinates[0][1],
+        center: activePlot.metadata.geojson.geometry.coordinates[0][0],
         zoom: startingZoom,
         pitch: startingPitch,
       });

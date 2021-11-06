@@ -1,3 +1,3 @@
 export interface GeojsonData {
-  plots: unknown[];
+  plots: any[];
 }
