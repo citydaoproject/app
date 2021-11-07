@@ -26,7 +26,7 @@ export default function BuyPlot({ plot, injectedProvider }: Props) {
   const contracts: any = useContractLoader(injectedProvider);
 
   const tx = Transactor(userSigner, gasPrice);
-  const buyPlot = useCallback(async () => {
+    const buyPlot = useCallback(async () => {
     if (!plot.sold && userAddress && contracts?.CityDaoParcel) {
       const price = BigNumber.from(ethers.utils.parseEther(plot.price ?? "0"));
       tx && plot && (await tx(contracts.CityDaoParcel.buyPlot(plot.id, { value: price })));
@@ -43,7 +43,7 @@ export default function BuyPlot({ plot, injectedProvider }: Props) {
       dispatch(setPlots(newPlots));
       dispatch(setActivePlot(undefined)); // reset active plot
     });
-  }, []);
+  }, [contracts, dispatch, plots, plot, userAddress, userSigner, tx]);
 
   const handleClick = () => {
     
