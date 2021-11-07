@@ -49,7 +49,8 @@ export default function BuyPlot({ plot, injectedProvider }: Props) {
     
     Modal.confirm({
       title: 'Legal disclaimer!',
-      content: 'By confirming, you hereby agree to the following conditions..',
+      content: `By confirming, you hereby agree to the following conditions.. 
+      lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum`,
       okText: 'Yes',
       cancelText: 'No',
       okType: 'primary',
