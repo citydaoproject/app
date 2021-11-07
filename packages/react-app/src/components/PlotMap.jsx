@@ -12,6 +12,18 @@ export default function PlotMap({ parcel, plots, startingCoordinates, startingZo
   const [mapLoaded, setMapLoaded] = useState(false);
 
   const highlightedPlot = useAppSelector(state => state.plots.highlightedPlot);
+  const activePlot = useAppSelector(state => state.plots.activePlot);
+
+  // zoom to plot on selection
+  useEffect(() => {
+    if (map.current && activePlot) {
+      map.current.flyTo({
+        center: activePlot.metadata.geojson.geometry.coordinates[0][0],
+        zoom: startingZoom,
+        pitch: startingPitch,
+      });
+    }
+  }, [activePlot]);
 
   const addPlotToMap = (geojson, string_id) => {
     if (map?.current) {

@@ -87,7 +87,7 @@ export default function BrowsePlots({ networkProvider, web3Modal }: Props) {
         <Col className="sidebar">
           <LogoDisplay />
           {activePlot !== undefined ? (
-            <PlotDetail plot={activePlot} injectedProvider={injectedProvider} networkProvider={networkProvider} />
+            <PlotDetail plot={activePlot} injectedProvider={injectedProvider} />
           ) : (
             <PlotTabs />
           )}
@@ -100,9 +100,9 @@ export default function BrowsePlots({ networkProvider, web3Modal }: Props) {
               key={plots.length}
               parcel={parcel}
               plots={plots}
-              startingCoordinates={[-109.25792011522043, 44.92118759558491]}
+              startingCoordinates={[-109.25689639464197, 44.922331600075466]}
               startingZoom={15.825123438299038}
-              startingPitch={52.499999999999964}
+              startingPitch={20}
             />
           </Content>
         </Layout>
