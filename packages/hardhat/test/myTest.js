@@ -4,23 +4,43 @@ const { solidity } = require("ethereum-waffle");
 
 use(solidity);
 
-describe("My Dapp", function () {
-  let myContract;
+describe("Token Contract", function () {
+  let myContract, Token, token;
 
-  describe("YourContract", function () {
-    it("Should deploy YourContract", async function () {
-      const YourContract = await ethers.getContractFactory("YourContract");
+  beforeEach(async function () {
+    Token = await ethers.getContractFactory("CityDaoParcel");
+    token = await Token.deploy();
+  });
 
-      myContract = await YourContract.deploy();
+  describe("Purchasing", () => {
+    const ID = 1;
+    it("Purchase land", async function () {
+      // const bool = await token.isSold(1);
+      const plot = await token.buyPlot(ID);
+      console.log("plot", plot);
+      expect(plot.hash).to.be.a("string");
+      // expect(token.address).to.not.be.a("string");
     });
 
-    describe("setPurpose()", function () {
-      it("Should be able to set a new purpose", async function () {
-        const newPurpose = "Test Purpose";
-
-        await myContract.setPurpose(newPurpose);
-        expect(await myContract.purpose()).to.equal(newPurpose);
-      });
+    it("Is sold?", async () => {
+      const bool = await token.isSold(ID);
+      console.log("bool", bool);
+      // expect(bool).to.be.true;
     });
+
+    it("Try double-purchase", async () => {
+      const plot = await token.buyPlot(ID);
+      console.log("plot", plot);
+      // expect(plot.hash).to.not.be.a("string");
+    });
+
+    // describe("setPurpose()", function () {
+    //   it("Should be able to set a new purpose", async function () {
+    //     const newPurpose = "Test Purpose";
+
+    //     await myContract.setPurpose(newPurpose);
+    //     expect(await myContract.purpose()).to.equal(newPurpose);
+    //   });
+    // });
   });
 });
