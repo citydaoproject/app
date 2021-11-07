@@ -4,9 +4,11 @@ import { toast } from "react-toastify";
 import { setPlots } from "../actions";
 import { setActivePlot } from "../actions/plotsSlice";
 import { Transactor } from "../helpers";
-import { useAppDispatch, useAppSelector, useContractLoader, updatePlots, useUserSigner } from "../hooks";
+import { useAppDispatch, useAppSelector, useContractLoader, useUserSigner } from "../hooks";
 import { Plot } from "../models/Plot";
 import { Modal } from 'antd';
+import updatePlots from "../helpers/UpdatePlots";
+import "./../App.less";
 
 interface Props {
   plot: Plot;
@@ -52,6 +54,9 @@ export default function BuyPlot({ plot, injectedProvider, networkProvider }: Pro
       okText: 'Yes',
       cancelText: 'No',
       okType: 'primary',
+      okButtonProps: {
+        className: 'confirm',
+      },
       centered: true,
       onOk: buyPlot,
     });

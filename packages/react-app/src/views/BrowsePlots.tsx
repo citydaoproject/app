@@ -3,7 +3,7 @@ import { Col, Layout } from "antd";
 import { Content } from "antd/lib/layout/layout";
 import { ethers } from "ethers";
 
-import { updatePlots, useContractLoader, useAppSelector, useAppDispatch, useUserSigner } from "../hooks";
+import { useContractLoader, useAppSelector, useAppDispatch, useUserSigner } from "../hooks";
 import { PlotMap, ProgressBar, PlotDetail, LogoDisplay, Header } from "../components";
 import { setPlots } from "../actions";
 import { PlotTabs } from "../components";
@@ -13,6 +13,7 @@ import { fetchedPlots, setParcelGeojson } from "../actions/plotsSlice";
 import { fetchPlotMetadata } from "../data";
 import { GeojsonData } from "../models/GeojsonData";
 import { toast } from "react-toastify";
+import updatePlots from "../helpers/UpdatePlots";
 
 interface Props {
   networkProvider: any;
