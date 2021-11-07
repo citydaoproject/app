@@ -1,11 +1,12 @@
 import { BigNumber, ethers } from "ethers";
-import React from "react";
+import React, { useCallback } from "react";
 import { toast } from "react-toastify";
 import { setPlots } from "../actions";
 import { setActivePlot } from "../actions/plotsSlice";
 import { Transactor } from "../helpers";
-import { useAppDispatch, useAppSelector, useContractLoader, useUpdatePlots, useUserSigner } from "../hooks";
+import { useAppDispatch, useAppSelector, useContractLoader, updatePlots, useUserSigner } from "../hooks";
 import { Plot } from "../models/Plot";
+import { Modal } from 'antd';
 
 interface Props {
   plot: Plot;
@@ -24,7 +25,7 @@ export default function BuyPlot({ plot, injectedProvider, networkProvider }: Pro
   const contracts: any = useContractLoader(networkProvider);
 
   const tx = Transactor(userSigner, gasPrice);
-  const useBuyPlot = async () => {
+  const buyPlot = useCallback(async () => {
     if (!plot.sold && userAddress && contracts?.CityDaoParcel) {
       const price = BigNumber.from(ethers.utils.parseEther(plot.price ?? "0"));
       tx && plot && (await tx(contracts.CityDaoParcel.buyPlot(plot.id, { value: price })));
@@ -36,14 +37,28 @@ export default function BuyPlot({ plot, injectedProvider, networkProvider }: Pro
         toastId: "no-connected-wallet",
       });
     }
-    useUpdatePlots(contracts, plots, DEBUG).then(newPlots => {
+
+    updatePlots(contracts, plots, DEBUG).then(newPlots => {
       dispatch(setPlots(newPlots));
       dispatch(setActivePlot(undefined)); // reset active plot
     });
-  };
+  }, []);
+
+  const handleClick = () => {
+    
+    Modal.confirm({
+      title: 'Legal disclaimer!',
+      content: 'By confirming, you hereby agree to the following conditions..',
+      okText: 'Yes',
+      cancelText: 'No',
+      okType: 'primary',
+      centered: true,
+      onOk: buyPlot,
+    });
+  }
 
   return (
-    <button onClick={useBuyPlot} className="btn bg-primary w-full">
+    <button onClick={handleClick} className="btn bg-primary w-full">
       Buy Now
     </button>
   );

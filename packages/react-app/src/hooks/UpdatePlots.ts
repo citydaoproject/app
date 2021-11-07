@@ -4,7 +4,7 @@ import { fetchPlotMetadata } from "../data";
 import { Plot, PlotMetadata } from "../models/Plot";
 import { GeojsonData } from "../models/GeojsonData";
 
-const useUpdatePlots = async (readContracts: any, currentPlots = [] as Plot[], DEBUG = false) => {
+const updatePlots = async (readContracts: any, currentPlots = [] as Plot[], DEBUG = false) => {
   const newPlots: Plot[] = [];
   if (readContracts) {
     try {
@@ -56,4 +56,4 @@ const useUpdatePlots = async (readContracts: any, currentPlots = [] as Plot[], D
   return newPlots;
 };
 
-export default useUpdatePlots;
+export default updatePlots;
