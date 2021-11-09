@@ -12,7 +12,7 @@ import { BrowsePlots } from "./views";
 
 const { ethers } = require("ethers");
 
-const network = "rinkeby"; //process.env.REACT_APP_NETWORK;
+const network = process.env.REACT_APP_NETWORK;
 const targetNetwork = NETWORKS[network]; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet, mumbai)
 const mainnetInfura = navigator.onLine
   ? new ethers.providers.StaticJsonRpcProvider("https://mainnet.infura.io/v3/" + INFURA_ID)
