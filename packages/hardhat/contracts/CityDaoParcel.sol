@@ -18,6 +18,7 @@ contract CityDaoParcel is ERC721, Ownable {
   uint256[] private _plotIds = new uint256[](0);
   string private plotMetadataUri;
   string private parcelMetadataUri;
+  string private communalLandMetadataUri;
 
   constructor() public ERC721("CityDaoParcel", "YCB") {
     _setBaseURI("https://ipfs.io/ipfs/");
@@ -50,7 +51,14 @@ contract CityDaoParcel is ERC721, Ownable {
     return plotMetadataUri;
   }
 
-   function buyPlot(uint256 plotId)
+  function setCommunalLandMetadata(string memory uri) public onlyOwner {
+    communalLandMetadataUri = uri;
+  }
+  function getCommunalLandMetadataUri() public view returns (string memory) {
+    return communalLandMetadataUri;
+  }
+
+  function buyPlot(uint256 plotId)
       payable
       public
       returns (uint256)

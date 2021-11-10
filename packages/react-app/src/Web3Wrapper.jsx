@@ -25,12 +25,10 @@ const networkProvider =
     ? new ethers.providers.StaticJsonRpcProvider(providerUrl)
     : new ethers.providers.InfuraProvider(network, INFURA_ID);
 
-/*
-  Web3 modal helps us "connect" external wallets:
-*/
 const web3Modal = new Web3Modal({
-  // network: "mainnet", // optional
-  cacheProvider: true,
+  // network: network,
+  // cacheProvider: true,
+  theme: "dark",
   providerOptions: {
     walletconnect: {
       package: WalletConnectProvider, // required

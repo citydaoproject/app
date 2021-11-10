@@ -9,8 +9,8 @@ import { setPlots } from "../actions";
 import { PlotTabs } from "../components";
 import { Plot } from "../models/Plot";
 import { logoutOfWeb3Modal } from "../helpers";
-import { fetchedPlots, setParcelGeojson } from "../actions/plotsSlice";
-import { fetchPlotMetadata } from "../data";
+import { fetchedPlots, setCommunalLand, setParcelGeojson } from "../actions/plotsSlice";
+import { fetchMetadata } from "../data";
 import { GeojsonData } from "../models/GeojsonData";
 import { toast } from "react-toastify";
 import updatePlots from "../helpers/UpdatePlots";
@@ -57,9 +57,14 @@ export default function BrowsePlots({ networkProvider, web3Modal }: Props) {
     try {
       if (contracts && contracts.CityDaoParcel) {
         const parcelUri = await contracts.CityDaoParcel.getParcelMetadataUri();
-        const jsonManifestBuffer = await fetchPlotMetadata(parcelUri);
-        const parcelMetadata = JSON.parse(jsonManifestBuffer.toString()) as any;
+        const parcelManifestBuffer = await fetchMetadata(parcelUri);
+        const parcelMetadata = JSON.parse(parcelManifestBuffer.toString()) as any;
         dispatch(setParcelGeojson(parcelMetadata.plots[0] as any));
+
+        const communalUri = await contracts.CityDaoParcel.getCommunalLandMetadataUri();
+        const communalManifestBuffer = await fetchMetadata(communalUri);
+        const communalMetadata = JSON.parse(communalManifestBuffer.toString()) as any;
+        dispatch(setCommunalLand(communalMetadata.features as any[]));
       }
     } catch (e) {
       toast.error(`Failed to find parcel. Make sure you're on the ${process.env.REACT_APP_NETWORK} network.`, {

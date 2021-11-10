@@ -4,6 +4,7 @@ import { Plot } from "../models/Plot";
 interface PlotsState {
   plots: Plot[];
   parcel: Plot;
+  communal: any[];
   highlightedPlot?: Plot;
   activePlot?: Plot;
   idFilter?: string;
@@ -19,6 +20,7 @@ const initialState: PlotsState = {
     owner: "",
     metadata: { geojson: {} },
   },
+  communal: [],
   highlightedPlot: undefined,
   activePlot: undefined,
   fetching: true,
@@ -49,6 +51,9 @@ export const plotsState = createSlice({
     setParcelGeojson: (state, action: PayloadAction<any>) => {
       state.parcel.metadata.geojson = action.payload;
     },
+    setCommunalLand: (state, action: PayloadAction<any[]>) => {
+      state.communal = action.payload;
+    },
   },
 });
 
@@ -59,6 +64,7 @@ export const {
   setIdFilter,
   fetchedPlots,
   setParcelGeojson,
+  setCommunalLand,
 } = plotsState.actions;
 
 export default plotsState.reducer;

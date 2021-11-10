@@ -871,6 +871,19 @@
             },
             {
               "inputs": [],
+              "name": "getCommunalLandMetadataUri",
+              "outputs": [
+                {
+                  "internalType": "string",
+                  "name": "",
+                  "type": "string"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [],
               "name": "getOwners",
               "outputs": [
                 {
@@ -1119,6 +1132,19 @@
                 }
               ],
               "name": "setApprovalForAll",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "string",
+                  "name": "uri",
+                  "type": "string"
+                }
+              ],
+              "name": "setCommunalLandMetadata",
               "outputs": [],
               "stateMutability": "nonpayable",
               "type": "function"

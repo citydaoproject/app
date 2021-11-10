@@ -1,6 +1,7 @@
 /* eslint no-use-before-define: "warn" */
 const plots = require("./plots.json");
 const parcel = require("./parcel.json");
+const communal = require("./communal.json");
 const { ethers } = require("hardhat");
 const ipfsAPI = require("ipfs-http-client");
 const ipfs = ipfsAPI({
@@ -25,6 +26,10 @@ const main = async () => {
     await parcelContract.setParcelMetadata(parcelUri.path);
     const plotsUri = await ipfs.add(JSON.stringify({ plots: plots.plots }));
     await parcelContract.setPlotsMetadata(plotsUri.path);
+    const communalUri = await ipfs.add(
+      JSON.stringify({ features: communal.features })
+    );
+    await parcelContract.setCommunalLandMetadata(communalUri.path);
     console.log(`Posting IPFS hash (${plotsUri.path})`);
     let idx = 0;
     for (const plot of plots.plots) {
