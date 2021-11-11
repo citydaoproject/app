@@ -23,17 +23,32 @@ const main = async () => {
 
   try {
     const parcelUri = await ipfs.add(JSON.stringify({ plots: parcel.parcel }));
+    await sleep(delayMS);
     await parcelContract.setParcelMetadata(parcelUri.path);
     const plotsUri = await ipfs.add(JSON.stringify({ plots: plots.plots }));
+    await sleep(delayMS);
     await parcelContract.setPlotsMetadata(plotsUri.path);
     const communalUri = await ipfs.add(
       JSON.stringify({ features: communal.features })
     );
+    await sleep(delayMS);
     await parcelContract.setCommunalLandMetadata(communalUri.path);
     console.log(`Posting IPFS hash (${plotsUri.path})`);
     let idx = 0;
     for (const plot of plots.plots) {
-      await listPlot(plot, idx, parcelContract);
+      const plotUri = await ipfs.add(
+        JSON.stringify({
+          name: `CityDAO Parcel 0, Plot ${idx}`,
+          description:
+            "This NFT denotes a lifetime lease of the plot specified in its geojson metadata. The plot is meant for\
+            conservation purposes and must be kept in its current state unless otherwise specified by a CityDAO\
+            contract. The owner of this NFT will also obtain one governance vote in proposals involving the communal\
+            land designated in the parcel contract.",
+          image: "https://media0.giphy.com/media/Ju7l5y9osyymQ/200.gif",
+          geojson: plot,
+        })
+      );
+      await createPlot(plot, idx, plotUri.path, parcelContract);
       await sleep(delayMS);
       idx++;
     }
@@ -51,20 +66,19 @@ const main = async () => {
 
   console.log("\n\n 🎫 Done!\n");
   console.log(await parcelContract.getPlotIds());
-
-  await sleep(delayMS);
 };
 
-async function listPlot(plot, idx, contract) {
+async function createPlot(plot, idx, plotUri, contract) {
   console.log(`Uploading plot${idx}...`);
 
-  const res = await contract.listPlot(
+  await contract.createPlot(
     ethers.BigNumber.from(`${100000000000000000 * (idx + 1)}`),
+    plotUri,
     {
       gasLimit: 400000,
     }
   );
-  await sleep(delayMS);
+  await sleep(5000);
 }
 
 function sleep(ms) {

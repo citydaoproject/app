@@ -37,7 +37,7 @@ export default function PlotButton({ plot, delay }: Props) {
             <span className="plot-title primary-font text-lg font-medium leading-6 mx-2">
               Plot #{stringifyPlotId(plot.id)}
             </span>
-            <span className="text-lg secondary-font text-gray-9 leading-6 third-font mb-1">Parcel{plot.parcel}</span>
+            <span className="text-lg secondary-font text-gray-9 leading-6 third-font mb-1">Parcel {plot.parcel}</span>
           </div>
           <span className="plot-price primary-font text-lg font-light leading-6 float-right items-center">
             {plot?.price !== undefined && `${plot.price.toString()} ETH`}

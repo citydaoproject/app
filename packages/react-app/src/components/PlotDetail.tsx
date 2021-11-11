@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Divider } from "antd";
 import { AnimatePresence, motion } from "framer-motion";
 import { CloseOutlined } from "@ant-design/icons";
@@ -8,14 +8,28 @@ import { setActivePlot } from "../actions/plotsSlice";
 
 import LAND_IMG from "../assets/images/SampleLandImage.png";
 import { BuyPlot, ViewPlot } from ".";
+import { fetchMetadata } from "../data";
 
 interface Props {
   plot: Plot;
+  contracts: any;
   injectedProvider: any;
 }
 
-export default function PlotDetail({ plot, injectedProvider }: Props) {
+export default function PlotDetail({ plot, contracts, injectedProvider }: Props) {
+  const [plotMetadata, setPlotMetadata] = useState<any>({} as any);
   const dispatch = useAppDispatch();
+
+  const fetchPlotMetadata = useCallback(async () => {
+    const plotUri = await contracts.CityDaoParcel.getTokenMetadataUri(plot.id);
+    const plotManifestBuffer = await fetchMetadata(plotUri);
+    return JSON.parse(plotManifestBuffer.toString()) as any;
+  }, [contracts, plot.id]);
+
+  useEffect(() => {
+    fetchPlotMetadata().then(setPlotMetadata);
+  }, [contracts, plot]);
+
   return (
     <AnimatePresence>
       <div className="plot-detail">
@@ -39,7 +53,7 @@ export default function PlotDetail({ plot, injectedProvider }: Props) {
         <div className="block overflow-y-scroll p-4" style={{ maxHeight: "75vh" }}>
           <div className="flex flex-col space-y-4 primary-font text-lg">
             <motion.img
-              src={LAND_IMG}
+              src={plotMetadata?.image ?? LAND_IMG}
               alt={plot?.id.toString()}
               initial={{ x: -300, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
@@ -102,10 +116,7 @@ export default function PlotDetail({ plot, injectedProvider }: Props) {
               <div className="p-4 text-white">Owner Rights</div>
               <Divider />
               <div className="flex flex-col justify-between p-4 secondary-font text-base font-light text-gray-9">
-                This NFT denotes a lifetime lease of the plot specified in its geojson metadata. The plot is meant for
-                conservation purposes and must be kept in its current state unless otherwise specified by a CityDAO
-                contract. The owner of this NFT will also obtain one governance vote in proposals involving the communal
-                land designated in the parcel contract. The communal land is in green on the parcel explorer map.
+                {plotMetadata?.description ?? "Could not retrieve owner rights from the contract."}
               </div>
             </motion.div>
           </div>

@@ -15,6 +15,7 @@ contract CityDaoParcel is ERC721, Ownable {
 
   mapping(uint256 => bool) private _plotIdToSoldStatus;
   mapping(uint256 => uint) private _plotIdToPrice;
+  mapping(uint256 => string) private _plotIdToMetadata;
 
   // The owner of an NFT with the given plot ID holds a lifetime lease of the land plot designated in the plotMetadata found at the plotMetadataUri.
   // The plots are meant for conservation purposes only and must be kept in their current state unless specified in another CityDAO contract.
@@ -24,23 +25,24 @@ contract CityDaoParcel is ERC721, Ownable {
   // The plot metadata marks the bounding area of each plot. 
   // The plot metadata's order matches the order of the plot ids array. 
   // For example, the first plot metadata is for the first plot id in the array.
-  string private plotMetadataUri;
+  string private plotsMetadataUri;
   string private parcelMetadataUri;
 
   // The communal land metadata marks the bounding area of the communal land.
   // This land is owned by CityDAO LLC and is to be governed by the holders of the plot NFTs minted in this contract.
   string private communalLandMetadataUri;
 
-  constructor() public ERC721("CityDaoParcel", "YCB") {
+  constructor() public ERC721("CityDaoParcel", "PRCL0") {
     _setBaseURI("https://ipfs.io/ipfs/");
     _tokenIds.increment(); // reserve 0 for "no plot" id
   }
 
-  function listPlot(uint256 price) public onlyOwner returns (uint256) {
+  function createPlot(uint256 price, string memory plotUri) public onlyOwner returns (uint256) {
     uint256 plotId = _tokenIds.current();
     _tokenIds.increment();
     _plotIdToPrice[plotId] = price;
     _plotIdToSoldStatus[plotId] = false;
+    _plotIdToMetadata[plotId] = plotUri;
     _plotIds.push(plotId);
 
     return plotId;
@@ -51,7 +53,7 @@ contract CityDaoParcel is ERC721, Ownable {
   }
 
   function setPlotsMetadata(string memory uri) public onlyOwner {
-    plotMetadataUri = uri;
+    plotsMetadataUri = uri;
   }
 
   function getParcelMetadataUri() public view returns (string memory) {
@@ -59,7 +61,7 @@ contract CityDaoParcel is ERC721, Ownable {
   }
 
   function getPlotsMetadataUri() public view returns (string memory) {
-    return plotMetadataUri;
+    return plotsMetadataUri;
   }
 
   function setCommunalLandMetadata(string memory uri) public onlyOwner {
@@ -79,6 +81,7 @@ contract CityDaoParcel is ERC721, Ownable {
       require(msg.value == _price, "You must pay the price of the plot!");
 
       _safeMint(msg.sender, plotId);
+      _setTokenURI(plotId, _plotIdToMetadata[plotId]);
 
       delete _plotIdToPrice[plotId];
       _plotIdToSoldStatus[plotId] = true;
@@ -96,6 +99,10 @@ contract CityDaoParcel is ERC721, Ownable {
 
   function getPlotIds() public view returns (uint256[] memory) {
     return _plotIds;
+  }
+
+  function getTokenMetadataUri(uint256 tokenId) public view returns (string memory) {
+    return _plotIdToMetadata[tokenId];
   }
 
   function getOwners() public view returns (address[] memory) {
