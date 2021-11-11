@@ -92,7 +92,7 @@ export default function PlotMap({ parcel, plots, startingCoordinates, startingZo
         });
         setTimeout(() => {
           setMapLoaded(true);
-        }, 750);
+        }, 1000);
       });
     }
   }, [map.current, plots]);

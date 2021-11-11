@@ -15,9 +15,20 @@ contract CityDaoParcel is ERC721, Ownable {
 
   mapping(uint256 => bool) private _plotIdToSoldStatus;
   mapping(uint256 => uint) private _plotIdToPrice;
+
+  // The owner of an NFT with the given plot ID holds a lifetime lease of the land plot designated in the plotMetadata found at the plotMetadataUri.
+  // The plots are meant for conservation purposes only and must be kept in their current state unless specified in another CityDAO contract.
+  // The owner of a plot NFT will also be granted one governance vote in proposals involving the communal land designated in the communalLandMetadata found at the communalLandMetadataUri.
   uint256[] private _plotIds = new uint256[](0);
+
+  // The plot metadata marks the bounding area of each plot. 
+  // The plot metadata's order matches the order of the plot ids array. 
+  // For example, the first plot metadata is for the first plot id in the array.
   string private plotMetadataUri;
   string private parcelMetadataUri;
+
+  // The communal land metadata marks the bounding area of the communal land.
+  // This land is owned by CityDAO LLC and is to be governed by the holders of the plot NFTs minted in this contract.
   string private communalLandMetadataUri;
 
   constructor() public ERC721("CityDaoParcel", "YCB") {

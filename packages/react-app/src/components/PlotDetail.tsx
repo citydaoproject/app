@@ -53,7 +53,6 @@ export default function PlotDetail({ plot, injectedProvider }: Props) {
             >
               {plot?.sold ? <ViewPlot plot={plot} /> : <BuyPlot plot={plot} injectedProvider={injectedProvider} />}
             </motion.div>
-
             <motion.div
               className="border-gray-4 text-left"
               initial={{ x: -300, opacity: 0 }}
@@ -91,6 +90,22 @@ export default function PlotDetail({ plot, injectedProvider }: Props) {
                       No plot properties available.
                     </div>
                   )}
+              </div>
+            </motion.div>
+            <motion.div
+              className="border-gray-4 text-left"
+              initial={{ x: -300, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              exit={{ x: -300, opacity: 0 }}
+              transition={{ delay: 0.4 }}
+            >
+              <div className="p-4 text-white">Owner Rights</div>
+              <Divider />
+              <div className="flex flex-col justify-between p-4 secondary-font text-base font-light text-gray-9">
+                This NFT denotes a lifetime lease of the plot specified in its geojson metadata. The plot is meant for
+                conservation purposes and must be kept in its current state unless otherwise specified by a CityDAO
+                contract. The owner of this NFT will also obtain one governance vote in proposals involving the communal
+                land designated in the parcel contract. The communal land is in green on the parcel explorer map.
               </div>
             </motion.div>
           </div>
