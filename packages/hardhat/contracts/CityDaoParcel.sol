@@ -32,7 +32,7 @@ contract CityDaoParcel is ERC721, Ownable {
   // This land is owned by CityDAO LLC and is to be governed by the holders of the plot NFTs minted in this contract.
   string private communalLandMetadataUri;
 
-  constructor() public ERC721("CityDaoParcel", "PRCL0") {
+  constructor() public ERC721("CityDAO Parcel 0", "PRCL0") {
     _setBaseURI("https://ipfs.io/ipfs/");
     _tokenIds.increment(); // reserve 0 for "no plot" id
   }

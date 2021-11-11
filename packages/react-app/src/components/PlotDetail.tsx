@@ -77,16 +77,18 @@ export default function PlotDetail({ plot, contracts, injectedProvider }: Props)
               <div className="p-4 text-white">Properties</div>
               <Divider />
               <div className="flex flex-col justify-between p-4">
-                {plot.metadata.sqft && plot.metadata.acres && (
-                  <div className="py-2 secondary-font text-base font-light text-gray-9">
-                    Size: {plot.metadata.sqft && `${plot.metadata.sqft} Sqft`}{" "}
-                    {plot.metadata.acres && `${plot.metadata.acres} Acres`}
-                  </div>
-                )}
                 {plot.metadata.location && (
                   <div className="py-2 secondary-font text-base font-light text-gray-9">
                     Location: {plot.metadata.location}
                   </div>
+                )}
+                {plotMetadata.terrain && (
+                  <div className="py-2 secondary-font text-base font-light text-gray-9">
+                    Terrain: {plotMetadata.terrain}
+                  </div>
+                )}
+                {plotMetadata.sqft && (
+                  <div className="py-2 secondary-font text-base font-light text-gray-9">Size: {plotMetadata.sqft}</div>
                 )}
                 {plot.metadata.coordinates && (
                   <div className="py-2 secondary-font text-base font-light text-gray-9">
@@ -96,8 +98,8 @@ export default function PlotDetail({ plot, contracts, injectedProvider }: Props)
                   </div>
                 )}
                 {/* Fallback text */}
-                {!plot.metadata.sqft &&
-                  !plot.metadata.acres &&
+                {!plotMetadata.sqft &&
+                  !plotMetadata.terrain &&
                   !plot.metadata.location &&
                   !plot.metadata.coordinates && (
                     <div className="py-2 secondary-font text-base font-light text-gray-9">
