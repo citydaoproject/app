@@ -14,6 +14,7 @@ import { fetchMetadata } from "../data";
 import { GeojsonData } from "../models/GeojsonData";
 import { toast } from "react-toastify";
 import updatePlots from "../helpers/UpdatePlots";
+import { setIsWhitelisted } from "../actions/userSlice";
 
 interface Props {
   networkProvider: any;
@@ -26,6 +27,7 @@ export default function BrowsePlots({ networkProvider, web3Modal }: Props) {
   const plots = useAppSelector(state => state.plots.plots);
   const activePlot = useAppSelector(state => state.plots.activePlot);
   const parcel = useAppSelector(state => state.plots.parcel);
+  const userAddress = useAppSelector(state => state.user.address);
   const contracts: any = useContractLoader(networkProvider);
   const [injectedProvider, setInjectedProvider] = useState<ethers.providers.Web3Provider>();
 
@@ -77,6 +79,24 @@ export default function BrowsePlots({ networkProvider, web3Modal }: Props) {
   useEffect(() => {
     readParcel();
   }, [contracts]);
+
+  const readWhitelistStatus = async () => {
+    try {
+      if (contracts && contracts.CityDaoParcel && userAddress) {
+        const whitelisted = await contracts.CityDaoParcel.isWhitelisted(userAddress);
+        dispatch(setIsWhitelisted(whitelisted));
+      }
+    } catch (e) {
+      toast.error(`Failed to read from contract. Make sure you're on the ${process.env.REACT_APP_NETWORK} network.`, {
+        className: "error",
+        toastId: "contract-fail",
+      });
+      DEBUG && console.log(e);
+    }
+  };
+  useEffect(() => {
+    readWhitelistStatus();
+  }, [contracts, userAddress]);
 
   updatePlots(contracts, plots, DEBUG).then((newPlots: Plot[]) => {
     if (newPlots.length !== plots.length) {
