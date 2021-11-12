@@ -3,6 +3,7 @@ pragma experimental ABIEncoderV2;
 //SPDX-License-Identifier: MIT
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/token/ERC1155/IERC1155.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/access/Ownable.sol"; //learn more: https://docs.openzeppelin.com/contracts/3.x/erc721
 
@@ -12,7 +13,10 @@ contract CityDaoParcel is ERC721, Ownable {
 
   using Counters for Counters.Counter;
   Counters.Counter private _tokenIds;
+  address private _citizenNftContract;
+  uint256[] private _citizenNftIds;
 
+  mapping(uint256 => bool) private _citizenWhitelist;
   mapping(uint256 => bool) private _plotIdToSoldStatus;
   mapping(uint256 => uint) private _plotIdToPrice;
   mapping(uint256 => string) private _plotIdToMetadata;
@@ -76,6 +80,7 @@ contract CityDaoParcel is ERC721, Ownable {
       public
       returns (uint256)
   {
+      require(isWhitelisted(msg.sender), "You don\'t have the right citizen NFT to buy this plot yet.");
       require(!isSold(plotId), "This plot has already been sold!");
       uint256 _price = _plotIdToPrice[plotId];
       require(msg.value == _price, "You must pay the price of the plot!");
@@ -132,5 +137,32 @@ contract CityDaoParcel is ERC721, Ownable {
         ret[i] = _plotIdToSoldStatus[_plotIds[i]];
     }
     return ret;
+  }
+
+  function setCitizenNftContract(address nftContract) public onlyOwner {
+    _citizenNftContract = nftContract;
+  }
+
+  function setCitizenNftIds(uint256[] memory ids) public onlyOwner {
+    _citizenNftIds = ids;
+  }
+
+  function setWhitelist(uint256 citizenId, bool whitelisted) public onlyOwner {
+    _citizenWhitelist[citizenId] = whitelisted;
+  }
+
+  function isWhitelisted(address sender) public view returns (bool) {
+    require(_citizenNftContract != address(0), "Citizen NFT contract not set!");
+    require(_citizenNftIds.length > 0, "No citizen NFTs have been set yet.");
+    IERC1155 citizenNft = IERC1155(_citizenNftContract);
+    bool whitelisted = false;
+    for (uint i = 0; i < _citizenNftIds.length; i++) {
+      uint256 _citizenNftId = _citizenNftIds[i];
+      if ( _citizenWhitelist[_citizenNftId] && citizenNft.balanceOf(sender, _citizenNftId) > 0) {
+        whitelisted = true;
+        break;
+      }
+    }
+    return whitelisted;
   }
 }
