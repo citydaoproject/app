@@ -1,12 +1,12 @@
 import { BigNumber, ethers } from "ethers";
-import React, { useCallback } from "react";
+import React, { Component, useCallback } from "react";
 import { toast } from "react-toastify";
 import { setPlots } from "../actions";
 import { setActivePlot } from "../actions/plotsSlice";
 import { Transactor } from "../helpers";
 import { useAppDispatch, useAppSelector, useContractLoader, useUserSigner } from "../hooks";
 import { Plot } from "../models/Plot";
-import { Modal } from 'antd';
+import { Modal, Tooltip } from "antd";
 import updatePlots from "../helpers/UpdatePlots";
 import "./../App.less";
 
@@ -20,6 +20,7 @@ export default function BuyPlot({ plot, injectedProvider }: Props) {
 
   const DEBUG = useAppSelector(state => state.debug.debug);
   const userAddress = useAppSelector(state => state.user.address);
+  const isWhitelisted = useAppSelector(state => state.user.isWhitelisted);
   const gasPrice = useAppSelector(state => state.network.gasPrice);
   const plots = useAppSelector(state => state.plots.plots);
   const userSigner = useUserSigner(injectedProvider);
@@ -43,28 +44,42 @@ export default function BuyPlot({ plot, injectedProvider }: Props) {
       dispatch(setPlots(newPlots));
       dispatch(setActivePlot(undefined)); // reset active plot
     });
-  }, []);
+  }, [contracts, dispatch, plots, plot, userAddress, userSigner, tx]);
 
   const handleClick = () => {
-    
     Modal.confirm({
-      title: 'Legal disclaimer!',
+      title: "Legal disclaimer!",
       content: `By confirming, you hereby agree to the following conditions.. 
       lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum`,
-      okText: 'Yes',
-      cancelText: 'No',
-      okType: 'primary',
+      okText: "Yes",
+      cancelText: "No",
+      okType: "primary",
       okButtonProps: {
-        className: 'confirm',
+        className: "confirm",
       },
       centered: true,
       onOk: buyPlot,
     });
-  }
+  };
 
-  return (
-    <button onClick={handleClick} className="btn bg-primary w-full">
-      Buy Now
-    </button>
-  );
+  const getButton = () => {
+    return (
+      <button onClick={handleClick} className="btn bg-primary w-full" disabled={!userAddress || !isWhitelisted}>
+        Buy Now
+      </button>
+    );
+  };
+
+  const getTooltip = (button: JSX.Element) => {
+    const text = !userAddress
+      ? "Connect your wallet to buy this plot."
+      : "You do not have the proper citizen NFT to buy at this time. Please check citydao.io for the purchasing schedule, or buy a citizen NFT at citizen.citydao.io";
+    return <Tooltip title={text}>{button}</Tooltip>;
+  };
+
+  if (!userAddress || !isWhitelisted) {
+    return getTooltip(getButton());
+  } else {
+    return getButton();
+  }
 }

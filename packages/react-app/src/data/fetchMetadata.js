@@ -3,7 +3,7 @@ const ipfsAPI = require("ipfs-http-client");
 
 const ipfs = ipfsAPI({ host: "ipfs.infura.io", port: "5001", protocol: "https" });
 
-const fetchPlotMetadata = async hashToGet => {
+const fetchMetadata = async hashToGet => {
   for await (const file of ipfs.get(hashToGet)) {
     if (!file.content) continue;
     const content = new BufferList();
@@ -14,4 +14,4 @@ const fetchPlotMetadata = async hashToGet => {
   }
 };
 
-export default fetchPlotMetadata;
+export default fetchMetadata;

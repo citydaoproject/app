@@ -1,6 +1,6 @@
 import { ethers } from "ethers";
 import { toast } from "react-toastify";
-import { fetchPlotMetadata } from "../data";
+import { fetchMetadata } from "../data";
 import { Plot, PlotMetadata } from "../models/Plot";
 import { GeojsonData } from "../models/GeojsonData";
 
@@ -13,7 +13,7 @@ const updatePlots = async (readContracts: any, currentPlots = [] as Plot[], DEBU
       const statuses = await readContracts.CityDaoParcel.getAllSoldStatus();
       const owners = await readContracts.CityDaoParcel.getOwners();
       const ipfsHash = await readContracts.CityDaoParcel.getPlotsMetadataUri();
-      const jsonManifestBuffer = await fetchPlotMetadata(ipfsHash);
+      const jsonManifestBuffer = await fetchMetadata(ipfsHash);
       const plotsMetadata = JSON.parse(jsonManifestBuffer.toString()) as GeojsonData;
       for (let index = 0; index < plotIds.length; index++) {
         const plotId = plotIds[index];

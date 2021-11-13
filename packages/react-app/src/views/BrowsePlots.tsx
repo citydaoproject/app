@@ -9,11 +9,12 @@ import { setPlots } from "../actions";
 import { PlotTabs } from "../components";
 import { Plot } from "../models/Plot";
 import { logoutOfWeb3Modal } from "../helpers";
-import { fetchedPlots, setParcelGeojson } from "../actions/plotsSlice";
-import { fetchPlotMetadata } from "../data";
+import { fetchedPlots, setCommunalLand, setParcelGeojson } from "../actions/plotsSlice";
+import { fetchMetadata } from "../data";
 import { GeojsonData } from "../models/GeojsonData";
 import { toast } from "react-toastify";
 import updatePlots from "../helpers/UpdatePlots";
+import { setIsWhitelisted } from "../actions/userSlice";
 
 interface Props {
   networkProvider: any;
@@ -26,6 +27,7 @@ export default function BrowsePlots({ networkProvider, web3Modal }: Props) {
   const plots = useAppSelector(state => state.plots.plots);
   const activePlot = useAppSelector(state => state.plots.activePlot);
   const parcel = useAppSelector(state => state.plots.parcel);
+  const userAddress = useAppSelector(state => state.user.address);
   const contracts: any = useContractLoader(networkProvider);
   const [injectedProvider, setInjectedProvider] = useState<ethers.providers.Web3Provider>();
 
@@ -57,9 +59,14 @@ export default function BrowsePlots({ networkProvider, web3Modal }: Props) {
     try {
       if (contracts && contracts.CityDaoParcel) {
         const parcelUri = await contracts.CityDaoParcel.getParcelMetadataUri();
-        const jsonManifestBuffer = await fetchPlotMetadata(parcelUri);
-        const parcelMetadata = JSON.parse(jsonManifestBuffer.toString()) as any;
+        const parcelManifestBuffer = await fetchMetadata(parcelUri);
+        const parcelMetadata = JSON.parse(parcelManifestBuffer.toString()) as any;
         dispatch(setParcelGeojson(parcelMetadata.plots[0] as any));
+
+        const communalUri = await contracts.CityDaoParcel.getCommunalLandMetadataUri();
+        const communalManifestBuffer = await fetchMetadata(communalUri);
+        const communalMetadata = JSON.parse(communalManifestBuffer.toString()) as any;
+        dispatch(setCommunalLand(communalMetadata.features as any[]));
       }
     } catch (e) {
       toast.error(`Failed to find parcel. Make sure you're on the ${process.env.REACT_APP_NETWORK} network.`, {
@@ -72,6 +79,24 @@ export default function BrowsePlots({ networkProvider, web3Modal }: Props) {
   useEffect(() => {
     readParcel();
   }, [contracts]);
+
+  const readWhitelistStatus = async () => {
+    try {
+      if (contracts && contracts.CityDaoParcel && userAddress) {
+        const whitelisted = await contracts.CityDaoParcel.isWhitelisted(userAddress);
+        dispatch(setIsWhitelisted(whitelisted));
+      }
+    } catch (e) {
+      toast.error(`Failed to read from contract. Make sure you're on the ${process.env.REACT_APP_NETWORK} network.`, {
+        className: "error",
+        toastId: "contract-fail",
+      });
+      DEBUG && console.log(e);
+    }
+  };
+  useEffect(() => {
+    readWhitelistStatus();
+  }, [contracts, userAddress]);
 
   updatePlots(contracts, plots, DEBUG).then((newPlots: Plot[]) => {
     if (newPlots.length !== plots.length) {
@@ -87,7 +112,7 @@ export default function BrowsePlots({ networkProvider, web3Modal }: Props) {
         <Col className="sidebar">
           <LogoDisplay />
           {activePlot !== undefined ? (
-            <PlotDetail plot={activePlot} injectedProvider={injectedProvider} />
+            <PlotDetail plot={activePlot} contracts={contracts} injectedProvider={injectedProvider} />
           ) : (
             <PlotTabs />
           )}

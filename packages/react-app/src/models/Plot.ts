@@ -10,7 +10,6 @@ export interface Plot {
 export interface PlotMetadata {
   geojson?: any;
   sqft?: number;
-  acres?: number;
   location?: string;
   coordinates?: string;
 }

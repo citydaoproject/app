@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Divider } from "antd";
 import { AnimatePresence, motion } from "framer-motion";
 import { CloseOutlined } from "@ant-design/icons";
@@ -8,14 +8,28 @@ import { setActivePlot } from "../actions/plotsSlice";
 
 import LAND_IMG from "../assets/images/SampleLandImage.png";
 import { BuyPlot, ViewPlot } from ".";
+import { fetchMetadata } from "../data";
 
 interface Props {
   plot: Plot;
+  contracts: any;
   injectedProvider: any;
 }
 
-export default function PlotDetail({ plot, injectedProvider }: Props) {
+export default function PlotDetail({ plot, contracts, injectedProvider }: Props) {
+  const [plotMetadata, setPlotMetadata] = useState<any>({} as any);
   const dispatch = useAppDispatch();
+
+  const fetchPlotMetadata = useCallback(async () => {
+    const plotUri = await contracts.CityDaoParcel.getTokenMetadataUri(plot.id);
+    const plotManifestBuffer = await fetchMetadata(plotUri);
+    return JSON.parse(plotManifestBuffer.toString()) as any;
+  }, [contracts, plot.id]);
+
+  useEffect(() => {
+    fetchPlotMetadata().then(setPlotMetadata);
+  }, [contracts, plot]);
+
   return (
     <AnimatePresence>
       <div className="plot-detail">
@@ -39,7 +53,7 @@ export default function PlotDetail({ plot, injectedProvider }: Props) {
         <div className="block overflow-y-scroll p-4" style={{ maxHeight: "75vh" }}>
           <div className="flex flex-col space-y-4 primary-font text-lg">
             <motion.img
-              src={LAND_IMG}
+              src={plotMetadata?.image ?? LAND_IMG}
               alt={plot?.id.toString()}
               initial={{ x: -300, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
@@ -53,7 +67,6 @@ export default function PlotDetail({ plot, injectedProvider }: Props) {
             >
               {plot?.sold ? <ViewPlot plot={plot} /> : <BuyPlot plot={plot} injectedProvider={injectedProvider} />}
             </motion.div>
-
             <motion.div
               className="border-gray-4 text-left"
               initial={{ x: -300, opacity: 0 }}
@@ -64,16 +77,18 @@ export default function PlotDetail({ plot, injectedProvider }: Props) {
               <div className="p-4 text-white">Properties</div>
               <Divider />
               <div className="flex flex-col justify-between p-4">
-                {plot.metadata.sqft && plot.metadata.acres && (
-                  <div className="py-2 secondary-font text-base font-light text-gray-9">
-                    Size: {plot.metadata.sqft && `${plot.metadata.sqft} Sqft`}{" "}
-                    {plot.metadata.acres && `${plot.metadata.acres} Acres`}
-                  </div>
-                )}
                 {plot.metadata.location && (
                   <div className="py-2 secondary-font text-base font-light text-gray-9">
                     Location: {plot.metadata.location}
                   </div>
+                )}
+                {plotMetadata.terrain && (
+                  <div className="py-2 secondary-font text-base font-light text-gray-9">
+                    Terrain: {plotMetadata.terrain}
+                  </div>
+                )}
+                {plotMetadata.sqft && (
+                  <div className="py-2 secondary-font text-base font-light text-gray-9">Size: {plotMetadata.sqft}</div>
                 )}
                 {plot.metadata.coordinates && (
                   <div className="py-2 secondary-font text-base font-light text-gray-9">
@@ -83,14 +98,27 @@ export default function PlotDetail({ plot, injectedProvider }: Props) {
                   </div>
                 )}
                 {/* Fallback text */}
-                {!plot.metadata.sqft &&
-                  !plot.metadata.acres &&
+                {!plotMetadata.sqft &&
+                  !plotMetadata.terrain &&
                   !plot.metadata.location &&
                   !plot.metadata.coordinates && (
                     <div className="py-2 secondary-font text-base font-light text-gray-9">
                       No plot properties available.
                     </div>
                   )}
+              </div>
+            </motion.div>
+            <motion.div
+              className="border-gray-4 text-left"
+              initial={{ x: -300, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              exit={{ x: -300, opacity: 0 }}
+              transition={{ delay: 0.4 }}
+            >
+              <div className="p-4 text-white">Owner Rights</div>
+              <Divider />
+              <div className="flex flex-col justify-between p-4 secondary-font text-base font-light text-gray-9">
+                {plotMetadata?.description ?? "Could not retrieve owner rights from the contract."}
               </div>
             </motion.div>
           </div>
