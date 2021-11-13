@@ -17,6 +17,7 @@ contract CityDaoParcel is ERC721, Ownable {
   uint256[] private _citizenNftIds;
 
   mapping(uint256 => bool) private _citizenWhitelist;
+  mapping(address => bool) private _addressWhitelist;
   mapping(uint256 => bool) private _plotIdToSoldStatus;
   mapping(uint256 => uint) private _plotIdToPrice;
   mapping(uint256 => string) private _plotIdToMetadata;
@@ -147,11 +148,18 @@ contract CityDaoParcel is ERC721, Ownable {
     _citizenNftIds = ids;
   }
 
-  function setWhitelist(uint256 citizenId, bool whitelisted) public onlyOwner {
+  function whitelistNft(uint256 citizenId, bool whitelisted) public onlyOwner {
     _citizenWhitelist[citizenId] = whitelisted;
   }
 
+  function whitelistAddress(address addr, bool whitelisted) public onlyOwner {
+    _addressWhitelist[addr] = true;
+  }
+
   function isWhitelisted(address sender) public view returns (bool) {
+    if (_addressWhitelist[sender]) {
+      return true;
+    }
     require(_citizenNftContract != address(0), "Citizen NFT contract not set!");
     require(_citizenNftIds.length > 0, "No citizen NFTs have been set yet.");
     IERC1155 citizenNft = IERC1155(_citizenNftContract);
