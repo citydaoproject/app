@@ -16,7 +16,7 @@ contract CitizenNFT is
 
     /// @notice Initialise CitizenNFT smart contract with the appropriate address and ItemIds of the
     /// Open Sea shared storefront smart contract and the Citizen NFTs that are locked in it.
-    constructor() public
+    constructor()
         ERC1155("")
     {
 

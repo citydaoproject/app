@@ -21,11 +21,24 @@ const main = async () => {
   const { deployer } = await getNamedAccounts();
   const parcelContract = await ethers.getContract("CityDaoParcel", deployer);
 
+  // royalty
+  await parcelContract.setRoyalty(
+    "0x2C68489f711eEf3e30fC0Cc20Bdaa436A3b4cc4a",
+    100
+  );
+  console.log(
+    "1 ETH royalty pays",
+    await parcelContract.royaltyInfo(1, 100000000000000000)
+  );
+
+  // whitelist
   await parcelContract.setCitizenNftContract(
     "0xc5a5C42992dECbae36851359345FE25997F5C42d"
   );
   await parcelContract.setCitizenNftIds([7, 42, 69]);
-  await parcelContract.whitelistNft(42, true);
+  await parcelContract.whitelistAddress(
+    "0x2C68489f711eEf3e30fC0Cc20Bdaa436A3b4cc4a"
+  );
   const whitelisted = await parcelContract.isWhitelisted(
     "0x2C68489f711eEf3e30fC0Cc20Bdaa436A3b4cc4a"
   );
