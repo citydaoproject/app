@@ -25,7 +25,7 @@ const main = async () => {
     "0xc5a5C42992dECbae36851359345FE25997F5C42d"
   );
   await parcelContract.setCitizenNftIds([7, 42, 69]);
-  await parcelContract.setWhitelist(42, true);
+  await parcelContract.whitelistNft(42, true);
   const whitelisted = await parcelContract.isWhitelisted(
     "0x2C68489f711eEf3e30fC0Cc20Bdaa436A3b4cc4a"
   );
