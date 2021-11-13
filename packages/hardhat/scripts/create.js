@@ -26,9 +26,11 @@ const main = async () => {
     "0x2C68489f711eEf3e30fC0Cc20Bdaa436A3b4cc4a",
     100
   );
+  const royaltyPrice = ethers.BigNumber.from("1000000000000000000");
+  const [addr, amount] = await parcelContract.royaltyInfo(1, royaltyPrice);
   console.log(
-    "1 ETH royalty pays",
-    await parcelContract.royaltyInfo(1, 100000000000000000)
+    `${ethers.utils.formatEther(royaltyPrice)} ETH royalty pays`,
+    ethers.utils.formatEther(amount)
   );
 
   // whitelist
@@ -37,7 +39,8 @@ const main = async () => {
   );
   await parcelContract.setCitizenNftIds([7, 42, 69]);
   await parcelContract.whitelistAddress(
-    "0x2C68489f711eEf3e30fC0Cc20Bdaa436A3b4cc4a"
+    "0x2C68489f711eEf3e30fC0Cc20Bdaa436A3b4cc4a",
+    true
   );
   const whitelisted = await parcelContract.isWhitelisted(
     "0x2C68489f711eEf3e30fC0Cc20Bdaa436A3b4cc4a"
