@@ -2,6 +2,7 @@
 /* eslint-disable one-var */
 const { ethers } = require("hardhat");
 const { use, expect } = require("chai");
+require("chai/register-should");
 const { solidity } = require("ethereum-waffle");
 // const { main } = require("../scrips/create");
 const createTest = require("./testCreate");
@@ -9,14 +10,15 @@ const createTest = require("./testCreate");
 use(solidity);
 
 describe("Token Contract", function () {
-  let myContract, Token, token, owner;
+  let Contract, contract, owner, passedOwner;
 
   beforeEach(async () => {
     [owner] = await ethers.getSigners();
-    Token = await ethers.getContractFactory("CityDaoParcel");
-    token = await Token.deploy();
-    // const createTest = import("./testCreate");
-    await createTest.createTest(token);
+    Contract = await ethers.getContractFactory("CityDaoParcel");
+    contract = await Contract.deploy();
+    passedOwner = "0xb40A70Aa5C30215c44F27BF990cBf4D3E5Acb384"; // OR 'owner';
+    passedOwner = owner;
+    await createTest.createTest(contract, passedOwner);
 
     // const { deployer } = await getNamedAccounts();
     // token = await Token.getContract("CityDaoParcel", deployer);
@@ -25,47 +27,44 @@ describe("Token Contract", function () {
   describe("Purchasing land", () => {
     const ID = 1;
 
-    it("Double spend not possible?", async () => {
-      const price = await token.getPrice(ID);
-      await token.buyPlot(ID, { value: price });
-      expect(await token.isSold(ID)).to.be.true;
-      expect(async () =>
-        token.buyPlot(ID).to.throw("This plot has already been sold!")
+    it("Owner privileges enforced", async () => {
+      const err = "Ownable: caller is not the owner";
+      if (owner !== passedOwner) {
+        await expect(
+          contract.createPlot(
+            ethers.BigNumber.from(`${100000000000000000 * 1}`),
+            {
+              gasLimit: 400000,
+            }
+          )
+        ).to.be.revertedWith(err);
+        await expect(
+          contract.whitelistAddress(owner.address, true)
+        ).to.be.revertedWith(err);
+      }
+    });
+
+    it("Is whitelisting enforced?", async () => {
+      const price = await contract.getPrice(ID);
+      await expect(contract.buyPlot(ID, { value: price })).to.be.revertedWith(
+        "Citizen NFT contract not set!"
       );
-      console.log("soldstatus", await token.getAllSoldStatus());
-      expect(await token.getAllSoldStatus()).to.include(true);
-      // console.log("owners", await token.getOwners());
-      // expect(await token.getOwners()).to.include(owner.address);
+      await contract.whitelistAddress(owner.address, true);
+      expect(await contract.isWhitelisted(owner.address)).to.be.true;
+    });
+
+    it("Double spend not possible?", async () => {
+      contract.whitelistAddress(owner.address, true);
+      const price = await contract.getPrice(ID);
+      await contract.buyPlot(ID, { value: price });
+      expect(await contract.isSold(ID)).to.be.true;
+      expect(async () =>
+        contract.buyPlot(ID).to.throw("This plot has already been sold!")
+      );
+      console.log("soldstatus", await contract.getAllSoldStatus());
+      expect(await contract.getAllSoldStatus()).to.include(true);
+      console.log("owners", await contract.getOwners());
+      expect(await contract.getOwners()).to.include(owner.address);
     });
   });
 });
-
-// describe("Purchasing", () => {
-//   const ID = 1;
-
-//   it("Purchase land", async function () {
-//     // const bool = await token.isSold(1);
-//     const plot = await token.buyPlot(ID);
-//     console.log("plot", plot);
-//     expect(plot.hash).to.be.a("string");
-//     // expect(token.address).to.not.be.a("string");
-//   });
-
-//   it("Is sold?", async () => {
-//     const bool = await token.isSold(ID);
-//     console.log("bool", bool);
-//     // expect(bool).to.be.true;
-//   });
-
-//   it("Try double-purchase", async () => {
-//     const plot = await token.buyPlot(ID);
-//     console.log("plot", plot);
-//     // expect(plot.hash).to.not.be.a("string");
-//   });
-
-//   it("getting owners?", async () => {
-//     const owners = await token.getOwners();
-//     console.log("owners", owners);
-//     expect(owners).to.be.a("array");
-//   });
-// });

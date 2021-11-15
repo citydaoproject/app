@@ -11,10 +11,11 @@ const ipfs = ipfsAPI({
 
 const delayMS = 1000;
 
-const createTest = async (parcelContract) => {
+const createTest = async (parcelContract, owner) => {
   // export async function createTest(parcelContract) {
   // ADDRESS TO MINT TO:
-  const toAddress = "0xb40A70Aa5C30215c44F27BF990cBf4D3E5Acb384"; // this will be the temporary address to hold the plots on testnets, in practice will be owned by CityDAO
+  // const toAddress = "0xb40A70Aa5C30215c44F27BF990cBf4D3E5Acb384"; // this will be the temporary address to hold the plots on testnets, in practice will be owned by CityDAO
+  const toAddress = owner;
 
   // const { deployer } = await getNamedAccounts();
   // console.log("deployer", deployer);
@@ -54,7 +55,8 @@ const createTest = async (parcelContract) => {
 async function listPlot(plot, idx, contract) {
   console.log(`Uploading plot${idx}...`);
 
-  const res = await contract.listPlot(
+  // const res = await contract.listPlot(
+  const res = await contract.createPlot(
     ethers.BigNumber.from(`${100000000000000000 * (idx + 1)}`),
     {
       gasLimit: 400000,
