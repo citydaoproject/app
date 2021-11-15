@@ -654,7 +654,7 @@
       "chainId": "31337",
       "contracts": {
         "CitizenNFT": {
-          "address": "0xc5a5C42992dECbae36851359345FE25997F5C42d",
+          "address": "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9",
           "abi": [
             {
               "inputs": [],
@@ -1051,7 +1051,7 @@
           ]
         },
         "CityDaoParcel": {
-          "address": "0x84eA74d481Ee0A5332c457a4d796187F6Ba67fEB",
+          "address": "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9",
           "abi": [
             {
               "inputs": [],
@@ -1190,19 +1190,6 @@
               "type": "function"
             },
             {
-              "inputs": [],
-              "name": "baseURI",
-              "outputs": [
-                {
-                  "internalType": "string",
-                  "name": "",
-                  "type": "string"
-                }
-              ],
-              "stateMutability": "view",
-              "type": "function"
-            },
-            {
               "inputs": [
                 {
                   "internalType": "uint256",
@@ -1243,6 +1230,24 @@
                 }
               ],
               "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [],
+              "name": "defaultRoyalty",
+              "outputs": [
+                {
+                  "internalType": "address",
+                  "name": "recipient",
+                  "type": "address"
+                },
+                {
+                  "internalType": "uint16",
+                  "name": "bps",
+                  "type": "uint16"
+                }
+              ],
+              "stateMutability": "view",
               "type": "function"
             },
             {
@@ -1510,6 +1515,35 @@
             {
               "inputs": [
                 {
+                  "internalType": "uint256",
+                  "name": "tokenId",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "value",
+                  "type": "uint256"
+                }
+              ],
+              "name": "royaltyInfo",
+              "outputs": [
+                {
+                  "internalType": "address",
+                  "name": "",
+                  "type": "address"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
                   "internalType": "address",
                   "name": "from",
                   "type": "address"
@@ -1644,17 +1678,17 @@
             {
               "inputs": [
                 {
-                  "internalType": "uint256",
-                  "name": "citizenId",
-                  "type": "uint256"
+                  "internalType": "address",
+                  "name": "recipient",
+                  "type": "address"
                 },
                 {
-                  "internalType": "bool",
-                  "name": "whitelisted",
-                  "type": "bool"
+                  "internalType": "uint16",
+                  "name": "bps",
+                  "type": "uint16"
                 }
               ],
-              "name": "setWhitelist",
+              "name": "setRoyalty",
               "outputs": [],
               "stateMutability": "nonpayable",
               "type": "function"
@@ -1695,49 +1729,6 @@
               "inputs": [
                 {
                   "internalType": "uint256",
-                  "name": "index",
-                  "type": "uint256"
-                }
-              ],
-              "name": "tokenByIndex",
-              "outputs": [
-                {
-                  "internalType": "uint256",
-                  "name": "",
-                  "type": "uint256"
-                }
-              ],
-              "stateMutability": "view",
-              "type": "function"
-            },
-            {
-              "inputs": [
-                {
-                  "internalType": "address",
-                  "name": "owner",
-                  "type": "address"
-                },
-                {
-                  "internalType": "uint256",
-                  "name": "index",
-                  "type": "uint256"
-                }
-              ],
-              "name": "tokenOfOwnerByIndex",
-              "outputs": [
-                {
-                  "internalType": "uint256",
-                  "name": "",
-                  "type": "uint256"
-                }
-              ],
-              "stateMutability": "view",
-              "type": "function"
-            },
-            {
-              "inputs": [
-                {
-                  "internalType": "uint256",
                   "name": "tokenId",
                   "type": "uint256"
                 }
@@ -1748,19 +1739,6 @@
                   "internalType": "string",
                   "name": "",
                   "type": "string"
-                }
-              ],
-              "stateMutability": "view",
-              "type": "function"
-            },
-            {
-              "inputs": [],
-              "name": "totalSupply",
-              "outputs": [
-                {
-                  "internalType": "uint256",
-                  "name": "",
-                  "type": "uint256"
                 }
               ],
               "stateMutability": "view",
@@ -1798,6 +1776,49 @@
                 }
               ],
               "name": "transferOwnership",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "address",
+                  "name": "addr",
+                  "type": "address"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "whitelisted",
+                  "type": "bool"
+                }
+              ],
+              "name": "whitelistAddress",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "citizenId",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "whitelisted",
+                  "type": "bool"
+                }
+              ],
+              "name": "whitelistNft",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [],
+              "name": "withdraw",
               "outputs": [],
               "stateMutability": "nonpayable",
               "type": "function"

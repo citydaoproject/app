@@ -65,6 +65,7 @@
     ]
   },
   "dependencies": {
+    "@openzeppelin/contracts": "^4.3.3",
     "mapbox-gl": "^2.4.0"
   }
 }

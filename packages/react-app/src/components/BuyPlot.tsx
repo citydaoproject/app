@@ -64,7 +64,11 @@ export default function BuyPlot({ plot, injectedProvider }: Props) {
 
   const getButton = () => {
     return (
-      <button onClick={handleClick} className="btn bg-primary w-full" disabled={!userAddress || !isWhitelisted}>
+      <button
+        onClick={handleClick}
+        className={`btn bg-primary w-full ${!userAddress || !isWhitelisted ? "opacity-50" : ""}`}
+        disabled={!userAddress || !isWhitelisted}
+      >
         Buy Now
       </button>
     );

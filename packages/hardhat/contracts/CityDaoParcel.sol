@@ -1,20 +1,67 @@
-pragma solidity >=0.6.0;
+pragma solidity ^0.8.0;
 pragma experimental ABIEncoderV2;
 //SPDX-License-Identifier: MIT
 
-import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-import "@openzeppelin/contracts/token/ERC1155/IERC1155.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
+import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
-import "@openzeppelin/contracts/access/Ownable.sol"; //learn more: https://docs.openzeppelin.com/contracts/3.x/erc721
+import "@openzeppelin/contracts/access/Ownable.sol";
 
-// GET LISTED ON OPENSEA: https://testnets.opensea.io/get-listed/step-two
+// /**
+//  * @dev Interface of the ERC165 standard, as defined in the
+//  * https://eips.ethereum.org/EIPS/eip-165[EIP].
+//  *
+//  * Implementers can declare support of contract interfaces, which can then be
+//  * queried by others ({ERC165Checker}).
+//  *
+//  * For an implementation, see {ERC165}.
+//  */
+// interface IERC165 {
+//     /**
+//      * @dev Returns true if this contract implements the interface defined by
+//      * `interfaceId`. See the corresponding
+//      * https://eips.ethereum.org/EIPS/eip-165#how-interfaces-are-identified[EIP section]
+//      * to learn more about how these ids are created.
+//      *
+//      * This function call must use less than 30 000 gas.
+//      */
+//     function supportsInterface(bytes4 interfaceId) external view returns (bool);
+// }
+// abstract contract ERC165 is IERC165 {
+//     /**
+//      * @dev See {IERC165-supportsInterface}.
+//      */
+//     function supportsInterface(bytes4 interfaceId) public view virtual override returns (bool) {
+//         return interfaceId == type(IERC165).interfaceId;
+//     }
+// }
 
-contract CityDaoParcel is ERC721, Ownable {
+/**
+ * EIP-2981
+ */
+interface IEIP2981 is IERC165 {
+    /**
+     * bytes4(keccak256("royaltyInfo(uint256,uint256)")) == 0x2a55205a
+     *
+     * => 0x2a55205a = 0x2a55205a
+     */
+    function royaltyInfo(uint256 tokenId, uint256 value)
+        external
+        view
+        returns (address, uint256);
+}
+
+contract CityDaoParcel is ERC165, ERC721URIStorage, Ownable, IEIP2981 {
 
   using Counters for Counters.Counter;
   Counters.Counter private _tokenIds;
   address private _citizenNftContract;
   uint256[] private _citizenNftIds;
+  struct TokenRoyalty {
+      address recipient;
+      uint16 bps;
+  }
+  TokenRoyalty public defaultRoyalty;
 
   mapping(uint256 => bool) private _citizenWhitelist;
   mapping(address => bool) private _addressWhitelist;
@@ -37,8 +84,7 @@ contract CityDaoParcel is ERC721, Ownable {
   // This land is owned by CityDAO LLC and is to be governed by the holders of the plot NFTs minted in this contract.
   string private communalLandMetadataUri;
 
-  constructor() public ERC721("CityDAO Parcel 0", "PRCL0") {
-    _setBaseURI("https://ipfs.io/ipfs/");
+  constructor() ERC721("CityDAO Parcel 0", "PRCL0") {
     _tokenIds.increment(); // reserve 0 for "no plot" id
   }
 
@@ -93,6 +139,54 @@ contract CityDaoParcel is ERC721, Ownable {
       _plotIdToSoldStatus[plotId] = true;
 
       return plotId;
+  }
+
+  /// @notice Withdraw the funds locked in the smart contract,
+  /// Can only becalled by the owner of the smart contract.
+  function withdraw() external onlyOwner {
+      uint256 amount = address(this).balance;
+      (bool success, ) = owner().call{value: amount}("");
+      require(success, "Failed to withdraw");
+  }
+
+  /// @dev Define the default amount of fee and receive address
+  /// @param recipient address ID account receive royalty
+  /// @param bps uint256 amount of fee (1% == 100)
+  function setRoyalty(address recipient, uint16 bps)
+      public
+      onlyOwner
+  {
+      defaultRoyalty = TokenRoyalty(recipient, bps);
+  }
+
+  function supportsInterface(bytes4 interfaceId)
+      public
+      view
+      virtual
+      override(ERC165, IERC165, ERC721)
+      returns (bool)
+  {
+      return
+          interfaceId == type(IEIP2981).interfaceId ||
+          super.supportsInterface(interfaceId);
+  }
+
+  /// @dev Returns royalty info (address to send fee, and fee to send)
+  /// @param tokenId uint256 ID of the token to display information
+  /// @param value uint256 sold price
+  function royaltyInfo(uint256 tokenId, uint256 value)
+      public
+      view
+      override
+      returns (address, uint256)
+  {
+      if (defaultRoyalty.recipient != address(0) && defaultRoyalty.bps != 0) {
+          return (
+              defaultRoyalty.recipient,
+              (value * defaultRoyalty.bps) / 10000
+          );
+      }
+      return (address(0), 0);
   }
 
   function isSold(uint256 plotId) public view returns (bool) {
@@ -153,7 +247,7 @@ contract CityDaoParcel is ERC721, Ownable {
   }
 
   function whitelistAddress(address addr, bool whitelisted) public onlyOwner {
-    _addressWhitelist[addr] = true;
+    _addressWhitelist[addr] = whitelisted;
   }
 
   function isWhitelisted(address sender) public view returns (bool) {
