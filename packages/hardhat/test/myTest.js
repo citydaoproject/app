@@ -4,24 +4,27 @@ const { ethers } = require("hardhat");
 const { use, expect } = require("chai");
 require("chai/register-should");
 const { solidity } = require("ethereum-waffle");
-// const { main } = require("../scrips/create");
 const createTest = require("./testCreate");
 
 use(solidity);
 
-describe("Token Contract", function () {
-  let Contract, contract, owner, passedOwner, CitizenContract, citizenContract;
+describe("Token parcelContract", function () {
+  let parcelContract,
+    parcelContract,
+    owner,
+    passedOwner,
+    CitizenNFTContract,
+    citizenNFTContract;
 
   beforeEach(async () => {
     [owner] = await ethers.getSigners();
-    Contract = await ethers.getContractFactory("CityDaoParcel");
-    contract = await Contract.deploy();
-    passedOwner = "0xb40A70Aa5C30215c44F27BF990cBf4D3E5Acb384"; // OR 'owner';
+    parcelContract = await ethers.getContractFactory("CityDaoParcel");
+    parcelContract = await parcelContract.deploy();
     passedOwner = owner.address;
-    await createTest.createTest(contract, passedOwner);
+    await createTest.createTest(parcelContract, passedOwner);
 
-    CitizenContract = await ethers.getContractFactory("CitizenNFT");
-    citizenContract = await CitizenContract.deploy();
+    CitizenNFTContract = await ethers.getContractFactory("CitizenNFT");
+    citizenNFTContract = await CitizenNFTContract.deploy();
   });
 
   describe("Purchasing land", () => {
@@ -31,7 +34,7 @@ describe("Token Contract", function () {
       const err = "Ownable: caller is not the owner";
       if (owner.address !== passedOwner) {
         await expect(
-          contract.createPlot(
+          parcelContract.createPlot(
             ethers.BigNumber.from(`${100000000000000000 * 1}`),
             {
               gasLimit: 400000,
@@ -39,32 +42,32 @@ describe("Token Contract", function () {
           )
         ).to.be.revertedWith(err);
         await expect(
-          contract.whitelistAddress(owner.address, true)
+          parcelContract.whitelistAddress(owner.address, true)
         ).to.be.revertedWith(err);
       }
     });
 
     it("Is whitelisting enforced?", async () => {
-      const price = await contract.getPrice(ID);
-      await expect(contract.buyPlot(ID, { value: price })).to.be.revertedWith(
+      const price = await parcelContract.getPrice(ID);
+      await expect(
+        parcelContract.buyPlot(ID, { value: price })
+      ).to.be.revertedWith(
         "You don't have the right citizen NFT to buy this plot yet."
       );
-      await contract.whitelistAddress(owner.address, true);
-      expect(await contract.isWhitelisted(owner.address)).to.be.true;
+      await parcelContract.whitelistAddress(owner.address, true);
+      expect(await parcelContract.isWhitelisted(owner.address)).to.be.true;
     });
 
     it.only("Double spend not possible?", async () => {
-      contract.whitelistAddress(owner.address, true);
-      const price = await contract.getPrice(ID);
-      await contract.buyPlot(ID, { value: price });
-      expect(await contract.isSold(ID)).to.be.true;
+      parcelContract.whitelistAddress(owner.address, true);
+      const price = await parcelContract.getPrice(ID);
+      await parcelContract.buyPlot(ID, { value: price });
+      expect(await parcelContract.isSold(ID)).to.be.true;
       expect(async () =>
-        contract.buyPlot(ID).to.throw("This plot has already been sold!")
+        parcelContract.buyPlot(ID).to.throw("This plot has already been sold!")
       );
-      console.log("soldstatus", await contract.getAllSoldStatus());
-      expect(await contract.getAllSoldStatus()).to.include(true);
-      console.log("owners", await contract.getOwners());
-      expect(await contract.getOwners()).to.include(owner.address);
+      expect(await parcelContract.getAllSoldStatus()).to.include(true);
+      expect(await parcelContract.getOwners()).to.include(owner.address);
     });
   });
 });
