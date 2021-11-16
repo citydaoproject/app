@@ -10,18 +10,18 @@ const createTest = require("./testCreate");
 use(solidity);
 
 describe("Token Contract", function () {
-  let Contract, contract, owner, passedOwner;
+  let Contract, contract, owner, passedOwner, CitizenContract, citizenContract;
 
   beforeEach(async () => {
     [owner] = await ethers.getSigners();
     Contract = await ethers.getContractFactory("CityDaoParcel");
     contract = await Contract.deploy();
     passedOwner = "0xb40A70Aa5C30215c44F27BF990cBf4D3E5Acb384"; // OR 'owner';
-    passedOwner = owner;
+    passedOwner = owner.address;
     await createTest.createTest(contract, passedOwner);
 
-    // const { deployer } = await getNamedAccounts();
-    // token = await Token.getContract("CityDaoParcel", deployer);
+    CitizenContract = await ethers.getContractFactory("CitizenNFT");
+    citizenContract = await CitizenContract.deploy();
   });
 
   describe("Purchasing land", () => {
@@ -29,7 +29,7 @@ describe("Token Contract", function () {
 
     it("Owner privileges enforced", async () => {
       const err = "Ownable: caller is not the owner";
-      if (owner !== passedOwner) {
+      if (owner.address !== passedOwner) {
         await expect(
           contract.createPlot(
             ethers.BigNumber.from(`${100000000000000000 * 1}`),
@@ -47,13 +47,13 @@ describe("Token Contract", function () {
     it("Is whitelisting enforced?", async () => {
       const price = await contract.getPrice(ID);
       await expect(contract.buyPlot(ID, { value: price })).to.be.revertedWith(
-        "Citizen NFT contract not set!"
+        "You don't have the right citizen NFT to buy this plot yet."
       );
       await contract.whitelistAddress(owner.address, true);
       expect(await contract.isWhitelisted(owner.address)).to.be.true;
     });
 
-    it("Double spend not possible?", async () => {
+    it.only("Double spend not possible?", async () => {
       contract.whitelistAddress(owner.address, true);
       const price = await contract.getPrice(ID);
       await contract.buyPlot(ID, { value: price });
