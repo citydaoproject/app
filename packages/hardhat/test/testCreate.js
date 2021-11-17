@@ -10,7 +10,7 @@ const ipfs = ipfsAPI({
   protocol: "https",
 });
 
-const delayMS = 100;
+const delayMS = 5000;
 
 const createTest = async (parcelContract, owner) => {
   // ADDRESS TO MINT TO:
@@ -64,11 +64,7 @@ const createTest = async (parcelContract, owner) => {
       const plotUri = await ipfs.add(
         JSON.stringify({
           name: `CityDAO Parcel 0, Plot ${idx}`,
-          description:
-            "This NFT denotes a lifetime lease of the plot specified in its geojson metadata. The plot is meant for\
-            conservation purposes and must be kept in its current state unless otherwise specified by a CityDAO\
-            contract. The owner of this NFT will also obtain one governance vote in proposals involving the communal\
-            land designated in the parcel contract.",
+          description: "Test NFT description",
           image: "https://media0.giphy.com/media/Ju7l5y9osyymQ/200.gif",
           terrain: "Mountainous",
           sqft: "~1750 sqft",
