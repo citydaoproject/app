@@ -88,6 +88,12 @@ contract CityDaoParcel is ERC165, ERC721URIStorage, Ownable, IEIP2981 {
     _tokenIds.increment(); // reserve 0 for "no plot" id
   }
 
+  function withdraw(uint amount, address payable _to) public onlyOwner returns(bool) {
+      require(amount <= address(this).balance);
+      _to.transfer(amount);
+      return true;
+  }
+
   function createPlot(uint256 price, string memory plotUri) public onlyOwner returns (uint256) {
     uint256 plotId = _tokenIds.current();
     _tokenIds.increment();
