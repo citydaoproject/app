@@ -1,7 +1,7 @@
 /* eslint no-use-before-define: "warn" */
-const plots = require("./../scripts/plots.json");
-const parcel = require("./../scripts/parcel.json");
-const communal = require("./../scripts/communal.json");
+const plots = require("../scripts/plots.json");
+const parcel = require("../scripts/parcel.json");
+const communal = require("../scripts/communal.json");
 const { ethers } = require("hardhat");
 const ipfsAPI = require("ipfs-http-client");
 const ipfs = ipfsAPI({

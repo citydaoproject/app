@@ -7,8 +7,8 @@ const { ethers } = require("hardhat");
 const { use, expect } = require("chai");
 require("chai/register-should");
 const { solidity } = require("ethereum-waffle");
-const createTest = require("./testCreate");
-const plots = require("./../scripts/plots.json");
+const createTest = require("./testCreatePlots");
+const plots = require("../scripts/plots.json");
 const ipfsAPI = require("ipfs-http-client");
 const ipfs = ipfsAPI({
   host: "ipfs.infura.io",
