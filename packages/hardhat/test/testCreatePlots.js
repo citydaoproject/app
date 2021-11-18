@@ -10,7 +10,7 @@ const ipfs = ipfsAPI({
   protocol: "https",
 });
 
-const delayMS = 5000;
+const delayMS = 1000; // increase to 5000ms if rate-limited
 
 const createTest = async (parcelContract, owner) => {
   // ADDRESS TO MINT TO:

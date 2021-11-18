@@ -44,7 +44,7 @@ describe("Token parcelContract", function () {
 
   describe("Purchasing land", () => {
     const ID = 1;
-    it("Plots created properly?", async () => {
+    it("should create plots properly", async () => {
       const price = `100000000000000000`;
       let idx = 0;
       for (let plot = plots.plots; idx < 2; idx++) {
@@ -69,7 +69,7 @@ describe("Token parcelContract", function () {
       }
     });
 
-    it("Owner privileges enforced", async () => {
+    it("should enforce owner privileges", async () => {
       const err = "Ownable: caller is not the owner";
       await expect(
         parcelContract.setRoyalty(owner.address, 100)
@@ -87,7 +87,7 @@ describe("Token parcelContract", function () {
       ).to.be.revertedWith(err);
     });
 
-    it("Is whitelisting enforced?", async () => {
+    it("should enforce whitelisting", async () => {
       const price = await parcelContract.getPrice(ID);
       await expect(
         parcelContract.buyPlot(ID, { value: price })
@@ -98,16 +98,23 @@ describe("Token parcelContract", function () {
       expect(await parcelContract.isWhitelisted(owner.address)).to.be.true;
     });
 
-    it("Double spend not possible?", async () => {
+    it("should complete purchase && double spend not possible", async () => {
       parcelContract.whitelistAddress(owner.address, true);
       const price = await parcelContract.getPrice(ID);
       await parcelContract.buyPlot(ID, { value: price });
-      expect(await parcelContract.isSold(ID)).to.be.true;
+      expect(
+        (await parcelContract.getAllSoldStatus()).filter((i) => i === true)
+      ).to.have.lengthOf(1);
+      const buyID = (await parcelContract.getAllSoldStatus()).indexOf(true) + 1;
+      expect(await parcelContract.isSold(buyID)).to.be.true;
       expect(async () =>
-        parcelContract.buyPlot(ID).to.throw("This plot has already been sold!")
+        parcelContract
+          .buyPlot(buyID)
+          .to.throw("This plot has already been sold!")
       );
-      expect(await parcelContract.getAllSoldStatus()).to.include(true);
-      expect(await parcelContract.getOwners()).to.include(owner.address);
+      expect((await parcelContract.getOwners())[buyID - 1]).to.equal(
+        owner.address
+      );
     });
   });
 });
