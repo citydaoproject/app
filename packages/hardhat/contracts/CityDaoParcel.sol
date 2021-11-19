@@ -7,35 +7,6 @@ import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-// /**
-//  * @dev Interface of the ERC165 standard, as defined in the
-//  * https://eips.ethereum.org/EIPS/eip-165[EIP].
-//  *
-//  * Implementers can declare support of contract interfaces, which can then be
-//  * queried by others ({ERC165Checker}).
-//  *
-//  * For an implementation, see {ERC165}.
-//  */
-// interface IERC165 {
-//     /**
-//      * @dev Returns true if this contract implements the interface defined by
-//      * `interfaceId`. See the corresponding
-//      * https://eips.ethereum.org/EIPS/eip-165#how-interfaces-are-identified[EIP section]
-//      * to learn more about how these ids are created.
-//      *
-//      * This function call must use less than 30 000 gas.
-//      */
-//     function supportsInterface(bytes4 interfaceId) external view returns (bool);
-// }
-// abstract contract ERC165 is IERC165 {
-//     /**
-//      * @dev See {IERC165-supportsInterface}.
-//      */
-//     function supportsInterface(bytes4 interfaceId) public view virtual override returns (bool) {
-//         return interfaceId == type(IERC165).interfaceId;
-//     }
-// }
-
 /**
  * EIP-2981
  */
@@ -53,20 +24,34 @@ interface IEIP2981 is IERC165 {
 
 contract CityDaoParcel is ERC165, ERC721URIStorage, Ownable, IEIP2981 {
 
+  // Counter to increment plot (token) IDs
   using Counters for Counters.Counter;
   Counters.Counter private _tokenIds;
+
+  // The citizen NFT contract and its corresponding token IDs. A token must be listed in the _citizenNftIds in order to be whitelisted.
   address private _citizenNftContract;
   uint256[] private _citizenNftIds;
+
+  // Implementing EIP2981 for royalties
   struct TokenRoyalty {
       address recipient;
       uint16 bps;
   }
   TokenRoyalty public defaultRoyalty;
 
+  // In order to mint a token, the caller must either be a whitelisted address or posses a whitelisted citizen NFT.
+  // List of whitelisted citizen NFT IDs
   mapping(uint256 => bool) private _citizenWhitelist;
+  // List of whitelisted wallet addresses
   mapping(address => bool) private _addressWhitelist;
+
+  // Maps the plot ID to the sold (minted) status of the plot (true = sold, false = not sold)
   mapping(uint256 => bool) private _plotIdToSoldStatus;
+
+  // Maps the plot to its listed mint price
   mapping(uint256 => uint) private _plotIdToPrice;
+
+  // Maps the plot ID to its corresponding metadata URI
   mapping(uint256 => string) private _plotIdToMetadata;
 
   // The owner of an NFT with the given plot ID holds a lifetime lease of the land plot designated in the plotMetadata found at the plotMetadataUri.
@@ -78,22 +63,42 @@ contract CityDaoParcel is ERC165, ERC721URIStorage, Ownable, IEIP2981 {
   // The plot metadata's order matches the order of the plot ids array. 
   // For example, the first plot metadata is for the first plot id in the array.
   string private plotsMetadataUri;
+
+  // The parcel metadata marks the bounding area of the entire parcel.
   string private parcelMetadataUri;
 
   // The communal land metadata marks the bounding area of the communal land.
   // This land is owned by CityDAO LLC and is to be governed by the holders of the plot NFTs minted in this contract.
   string private communalLandMetadataUri;
 
+  /**
+  * @dev Initializes the contract by setting a `name` and a `symbol` to the token collection.
+  */
   constructor() ERC721("CityDAO Parcel 0", "PRCL0") {
     _tokenIds.increment(); // reserve 0 for "no plot" id
   }
 
-  function withdraw(uint amount, address payable _to) public onlyOwner returns(bool) {
-      require(amount <= address(this).balance);
-      _to.transfer(amount);
-      return true;
+  /**
+  * @notice Withdraws from the contract's balance.
+  * @dev Will revert if the contract's balance is less than the requested amount.
+  *   Will return true if successfully withdrawn, otherwise throws.
+  * @param amount The amount to withdraw (in wei)
+  * @param _to The address to send the funds to.
+  */
+  function withdraw(uint amount) public onlyOwner returns(bool) {
+      require(amount <= address(this).balance, "The contract's balance is less than the requested amount");
+      (bool success, ) = owner().call{value: amount}("");
+      require(success, "Failed to withdraw funds");
   }
 
+  /**
+  * @notice Creates a new plot eligible to be sold.
+  * @dev Sets the plots price, sold status (false), and metadata URI.
+  *   The plot URI is not added because the plot is not yet minted. It is added in buyPlot.
+  *   Metadata must contain a valid geojson object designating the plot area.
+  * @param price The mind price of the plot (in wei)
+  * @param plotUri The URI of the plot's metadata
+  */
   function createPlot(uint256 price, string memory plotUri) public onlyOwner returns (uint256) {
     uint256 plotId = _tokenIds.current();
     _tokenIds.increment();
@@ -105,18 +110,34 @@ contract CityDaoParcel is ERC165, ERC721URIStorage, Ownable, IEIP2981 {
     return plotId;
   }
 
+  /**
+  * @notice Sets overarching parcel metadata uri.
+  * @param uri The uri of the parcel metadata
+  */
   function setParcelMetadata(string memory uri) public onlyOwner {
     parcelMetadataUri = uri;
   }
-
-  function setPlotsMetadata(string memory uri) public onlyOwner {
-    plotsMetadataUri = uri;
-  }
-
+  /**
+  * @notice Gets overarching parcel metadata uri.
+  */
   function getParcelMetadataUri() public view returns (string memory) {
     return parcelMetadataUri;
   }
 
+  /**
+  * @notice sets geojson metadata for all plots.
+  * @dev The uri's metadata must contain a geojson object with the "features" key changed to "plots".
+  *   The "plots" value should be an array of geojson polygons.
+  * @param uri The uri of the plot metadata
+  */
+  function setPlotsMetadata(string memory uri) public onlyOwner {
+    plotsMetadataUri = uri;
+  }
+  /**
+  * @notice Gets all plots metadata uri.
+  * @dev The uri's metadata should contain a geojson object with the "features" key changed to "plots".
+  *   The "plots" value should be an array of geojson polygons.
+  */
   function getPlotsMetadataUri() public view returns (string memory) {
     return plotsMetadataUri;
   }
@@ -249,11 +270,22 @@ contract CityDaoParcel is ERC165, ERC721URIStorage, Ownable, IEIP2981 {
   }
 
   function whitelistNft(uint256 citizenId, bool whitelisted) public onlyOwner {
+    bool idExists = false;
+    for (uint i = 0; i < _citizenNftIds.length; i++) {
+      uint256 _citizenNftId = _citizenNftIds[i];
+      if (_citizenNftId == citizenId) {
+        idExists = true;
+        break;
+      }
+    }
+    require(idExists, "Citizen NFT ID has not been set with setCitizenNftIds");
     _citizenWhitelist[citizenId] = whitelisted;
   }
 
-  function whitelistAddress(address addr, bool whitelisted) public onlyOwner {
-    _addressWhitelist[addr] = whitelisted;
+  function whitelistAddresses(address[] memory _addresses, bool whitelisted) public onlyOwner {
+    for (uint i = 0; i < _addresses.length; i++) {
+      _addressWhitelist[_addresses[i]] = whitelisted;
+    }
   }
 
   function isWhitelisted(address sender) public view returns (bool) {
