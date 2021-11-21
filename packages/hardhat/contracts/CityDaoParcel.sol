@@ -22,6 +22,8 @@ interface IEIP2981 is IERC165 {
         returns (address, uint256);
 }
 
+/// @title CityDAO Parcel 0
+/// @author @gregfromstl
 contract CityDaoParcel is ERC165, ERC721URIStorage, Ownable, IEIP2981 {
 
   // Counter to increment plot (token) IDs
@@ -79,20 +81,22 @@ contract CityDaoParcel is ERC165, ERC721URIStorage, Ownable, IEIP2981 {
   }
 
   /**
-  * @notice Withdraws from the contract's balance.
+  * @notice Withdraws from the contract's balance to the owner's address.
+  *   Can only be called by the owner of the smart contract.
   * @dev Will revert if the contract's balance is less than the requested amount.
   *   Will return true if successfully withdrawn, otherwise throws.
   * @param amount The amount to withdraw (in wei)
-  * @param _to The address to send the funds to.
   */
   function withdraw(uint amount) public onlyOwner returns(bool) {
       require(amount <= address(this).balance, "The contract's balance is less than the requested amount");
       (bool success, ) = owner().call{value: amount}("");
       require(success, "Failed to withdraw funds");
+      return success
   }
 
   /**
   * @notice Creates a new plot eligible to be sold.
+  *   Can only be called by the owner of the smart contract.
   * @dev Sets the plots price, sold status (false), and metadata URI.
   *   The plot URI is not added because the plot is not yet minted. It is added in buyPlot.
   *   Metadata must contain a valid geojson object designating the plot area.
@@ -112,13 +116,14 @@ contract CityDaoParcel is ERC165, ERC721URIStorage, Ownable, IEIP2981 {
 
   /**
   * @notice Sets overarching parcel metadata uri.
-  * @param uri The uri of the parcel metadata
+  *   Can only be called by the owner of the smart contract.
+  * @param uri The uri of the parcel metadata. The metadata must contain a valid geojson object with the "features" key changed to "parcel".
   */
   function setParcelMetadata(string memory uri) public onlyOwner {
     parcelMetadataUri = uri;
   }
   /**
-  * @notice Gets overarching parcel metadata uri.
+  * @notice Gets overarching parcel metadata uri. The metadata will contain a valid geojson object with the "features" key changed to "parcel"
   */
   function getParcelMetadataUri() public view returns (string memory) {
     return parcelMetadataUri;
@@ -126,6 +131,7 @@ contract CityDaoParcel is ERC165, ERC721URIStorage, Ownable, IEIP2981 {
 
   /**
   * @notice sets geojson metadata for all plots.
+  *   Can only be called by the owner of the smart contract.
   * @dev The uri's metadata must contain a geojson object with the "features" key changed to "plots".
   *   The "plots" value should be an array of geojson polygons.
   * @param uri The uri of the plot metadata
@@ -142,13 +148,29 @@ contract CityDaoParcel is ERC165, ERC721URIStorage, Ownable, IEIP2981 {
     return plotsMetadataUri;
   }
 
+  /**
+  * @notice sets geojson metadata for the communal land area.
+  *   Can only be called by the owner of the smart contract.
+  * @dev The uri's metadata must contain a geojson object with the "features" key.
+  * @param uri The uri of the plot metadata
+  */
   function setCommunalLandMetadata(string memory uri) public onlyOwner {
     communalLandMetadataUri = uri;
   }
+  /**
+  * @notice sets geojson metadata for the communal land area.
+  * @dev The uri's metadata will contain a geojson object with the "features" key.
+  */
   function getCommunalLandMetadataUri() public view returns (string memory) {
     return communalLandMetadataUri;
   }
 
+  /**
+  * @notice purchases and mints the specified plot.
+  * @dev The sender must be whitelisted by address or posses a whitelisted citizen NFT. The plot must have a false sold status. The message must contain the exact price of the plot in its value field.
+  *   The price of the plot can be retrieved by calling getPrice. The status of all plots can be found by calling getAllSoldStatus and aligning with getPlotIds.
+  * @param plotId The ID of the plot to be purchased.
+  */
   function buyPlot(uint256 plotId)
       payable
       public
@@ -168,17 +190,11 @@ contract CityDaoParcel is ERC165, ERC721URIStorage, Ownable, IEIP2981 {
       return plotId;
   }
 
-  /// @notice Withdraw the funds locked in the smart contract,
-  /// Can only becalled by the owner of the smart contract.
-  function withdraw() external onlyOwner {
-      uint256 amount = address(this).balance;
-      (bool success, ) = owner().call{value: amount}("");
-      require(success, "Failed to withdraw");
-  }
-
-  /// @dev Define the default amount of fee and receive address
-  /// @param recipient address ID account receive royalty
-  /// @param bps uint256 amount of fee (1% == 100)
+  /**
+  * @notice Define the default amount of fee and receive address
+  * @param recipient address ID account receive royalty
+  * @param bps uint256 amount of fee (1% == 100)
+  */
   function setRoyalty(address recipient, uint16 bps)
       public
       onlyOwner
@@ -198,9 +214,11 @@ contract CityDaoParcel is ERC165, ERC721URIStorage, Ownable, IEIP2981 {
           super.supportsInterface(interfaceId);
   }
 
-  /// @dev Returns royalty info (address to send fee, and fee to send)
-  /// @param tokenId uint256 ID of the token to display information
-  /// @param value uint256 sold price
+  /**
+  * @notice Returns royalty info (address to send fee, and fee to send)
+  * @param tokenId uint256 ID of the token to display information
+  * @param value uint256 sold price
+  */
   function royaltyInfo(uint256 tokenId, uint256 value)
       public
       view
@@ -216,22 +234,39 @@ contract CityDaoParcel is ERC165, ERC721URIStorage, Ownable, IEIP2981 {
       return (address(0), 0);
   }
 
+  /**
+  * @notice Returns the sold status of the specified plot.
+  * @param plotId uint256 ID of the token (plot) to get sold status for.
+  */
   function isSold(uint256 plotId) public view returns (bool) {
     return _plotIdToSoldStatus[plotId];
   }
 
+  /**
+  * @notice Returns the price of the specified plot (in Gwei).
+  * @param plotId uint256 ID of the token (plot) to get price for.
+  */
   function getPrice(uint256 plotId) public view returns (uint) {
     return _plotIdToPrice[plotId];
   }
 
-  function getPlotIds() public view returns (uint256[] memory) {
-    return _plotIds;
-  }
 
   function getTokenMetadataUri(uint256 tokenId) public view returns (string memory) {
     return _plotIdToMetadata[tokenId];
   }
 
+  /**
+  * @notice Returns the list of plot IDs
+  * @dev The plot IDs are returned in the same order as the sold status (setAllSoldStatus), owners (getOwners), and prices (getAllPrices). This enables coordinating between the plot IDs and their sold status / price / owner.
+  */
+  function getPlotIds() public view returns (uint256[] memory) {
+    return _plotIds;
+  }
+
+  /**
+  * @notice Returns the list owners in the order corresponding to getPlotIds
+  * @dev Returns the 0 address for plots that have not yet been sold (minted).
+  */
   function getOwners() public view returns (address[] memory) {
     address[] memory _owners = new address[](_plotIds.length);
     for (uint i = 0; i < _plotIds.length; i++) {
@@ -245,6 +280,10 @@ contract CityDaoParcel is ERC165, ERC721URIStorage, Ownable, IEIP2981 {
     return _owners;
   }
 
+  /**
+  * @notice Returns the list of prices in the order corresponding to getPlotIds
+  * @dev Returns the mint price regardless of sold status.
+  */
   function getAllPrices() public view returns (uint256[] memory) {
     uint256[] memory ret = new uint256[](_plotIds.length);
     for (uint i = 0; i < _plotIds.length; i++) {
@@ -253,6 +292,9 @@ contract CityDaoParcel is ERC165, ERC721URIStorage, Ownable, IEIP2981 {
     return ret;
   }
 
+  /**
+  * @notice Returns the list of sold statuses (as a boolean) in the order corresponding to getPlotIds
+  */
   function getAllSoldStatus() public view returns (bool[] memory) {
     bool[] memory ret = new bool[](_plotIds.length);
     for (uint i = 0; i < _plotIds.length; i++) {
@@ -261,14 +303,28 @@ contract CityDaoParcel is ERC165, ERC721URIStorage, Ownable, IEIP2981 {
     return ret;
   }
 
+  /**
+  * @notice Sets the citizen NFT contract address, which will be used for citizen whitelisting.
+  * @param nftContract address The address of the citizen NFT contract.
+  */
   function setCitizenNftContract(address nftContract) public onlyOwner {
     _citizenNftContract = nftContract;
   }
 
+  /**
+  * @notice Sets the citizen NFT IDs
+  * @dev In order to whitelist a citizen NFT, the ID must first be added here
+  */
   function setCitizenNftIds(uint256[] memory ids) public onlyOwner {
     _citizenNftIds = ids;
   }
 
+  /**
+  * @notice Sets the whitelist status for an NFT of the set _citizenNftContract.
+  * @dev setCitizenNftIds must be called with the ID to whitelist before this function can be called.
+  * @param citizenId uint256 The ID of the NFT to whitelist.
+  * @param whitelisted bool Whether or not the NFT is whitelisted.
+  */
   function whitelistNft(uint256 citizenId, bool whitelisted) public onlyOwner {
     bool idExists = false;
     for (uint i = 0; i < _citizenNftIds.length; i++) {
@@ -282,12 +338,22 @@ contract CityDaoParcel is ERC165, ERC721URIStorage, Ownable, IEIP2981 {
     _citizenWhitelist[citizenId] = whitelisted;
   }
 
+  /**
+  * @notice Whitelists a list of addresses.
+  * @param _addresses address[] The ID of the NFT to whitelist.
+  * @param whitelisted bool Whether or not the addresses are whitelisted.
+  */
   function whitelistAddresses(address[] memory _addresses, bool whitelisted) public onlyOwner {
     for (uint i = 0; i < _addresses.length; i++) {
       _addressWhitelist[_addresses[i]] = whitelisted;
     }
   }
 
+  /**
+  * @notice Checks if a an address is whitelisted or possesses a whitelisted citizen NFT.
+  * @dev The _citizenNftContract must be set to check for whitelisted citizen NFTs. The _citizenNftIds must be set to check for whitelisted citizen NFTs.
+  * @param sender address The address to check the whitelist status of.
+  */
   function isWhitelisted(address sender) public view returns (bool) {
     if (_addressWhitelist[sender]) {
       return true;
