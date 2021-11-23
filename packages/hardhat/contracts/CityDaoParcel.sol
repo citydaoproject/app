@@ -73,11 +73,44 @@ contract CityDaoParcel is ERC165, ERC721URIStorage, Ownable, IEIP2981 {
   // This land is owned by CityDAO LLC and is to be governed by the holders of the plot NFTs minted in this contract.
   string private communalLandMetadataUri;
 
+  // Sent whenever a plot is initially purchased and minted
+  event PlotMinted(address, uint256);
+  // Emitted whenever a plot is first created and listed for sale
+  event PlotCreated(uint256);
+  // Emitted whenever a series of addresses are whitelisted
+  event WhitelistedAddress(address[]);
+  // Emitted whenever the plots metadata is updated
+  event PlotsMetadataUpdated(string);
+  // Emitted whenever the communal land metadata is updated
+  event CommunalLandMetadataUpdated(string);
+  // Emitted whenever the parcel metadata is updated
+  event ParcelMetadataUpdated(string);
+  // Emitted whenever the citizen NFT contract is set
+  event CitizenNftContractSet(address);
+  // Emitted whenever the citizen NFT IDs are set
+  event CitizenNftIdsSet(uint256[]);
+  // Emmited whenever the citizen NFTs are whitelisted
+  event CitizenNftWhitelisted(uint256);
+  // Emitted whenever eth is deposited into the contract from an address
+  event LogEthDeposit(address);
+  // Emitted whenever the an amount is withdrawn from the contract
+  event LogEthWithdrawal(address, uint256);
+  // Emitted whenever the token royalty is set
+  event DefaultRoyaltySet(address recipient, uint16 bps);
+
   /**
   * @dev Initializes the contract by setting a `name` and a `symbol` to the token collection.
   */
   constructor() ERC721("CityDAO Parcel 0", "PRCL0") {
     _tokenIds.increment(); // reserve 0 for "no plot" id
+  }
+
+  fallback() external payable {
+    emit LogEthDeposit(msg.sender);
+  }
+
+  receive() external payable {
+    emit LogEthDeposit(msg.sender);
   }
 
   /**
@@ -91,6 +124,7 @@ contract CityDaoParcel is ERC165, ERC721URIStorage, Ownable, IEIP2981 {
       require(amount <= address(this).balance, "The contract's balance is less than the requested amount");
       (bool success, ) = owner().call{value: amount}("");
       require(success, "Failed to withdraw funds");
+      emit LogEthWithdrawal(msg.sender, amount);
       return success
   }
 
@@ -111,6 +145,8 @@ contract CityDaoParcel is ERC165, ERC721URIStorage, Ownable, IEIP2981 {
     _plotIdToMetadata[plotId] = plotUri;
     _plotIds.push(plotId);
 
+    emit PlotCreated(plotId);
+
     return plotId;
   }
 
@@ -121,6 +157,7 @@ contract CityDaoParcel is ERC165, ERC721URIStorage, Ownable, IEIP2981 {
   */
   function setParcelMetadata(string memory uri) public onlyOwner {
     parcelMetadataUri = uri;
+    emit ParcelMetadataUpdated(uri);
   }
   /**
   * @notice Gets overarching parcel metadata uri. The metadata will contain a valid geojson object with the "features" key changed to "parcel"
@@ -138,6 +175,7 @@ contract CityDaoParcel is ERC165, ERC721URIStorage, Ownable, IEIP2981 {
   */
   function setPlotsMetadata(string memory uri) public onlyOwner {
     plotsMetadataUri = uri;
+    emit PlotsMetadataUpdated(uri);
   }
   /**
   * @notice Gets all plots metadata uri.
@@ -156,6 +194,7 @@ contract CityDaoParcel is ERC165, ERC721URIStorage, Ownable, IEIP2981 {
   */
   function setCommunalLandMetadata(string memory uri) public onlyOwner {
     communalLandMetadataUri = uri;
+    emit CommunalLandMetadataUpdated(uri);
   }
   /**
   * @notice sets geojson metadata for the communal land area.
@@ -187,6 +226,8 @@ contract CityDaoParcel is ERC165, ERC721URIStorage, Ownable, IEIP2981 {
       delete _plotIdToPrice[plotId];
       _plotIdToSoldStatus[plotId] = true;
 
+      emit PlotMinted(msg.sender, plotId);
+
       return plotId;
   }
 
@@ -200,6 +241,7 @@ contract CityDaoParcel is ERC165, ERC721URIStorage, Ownable, IEIP2981 {
       onlyOwner
   {
       defaultRoyalty = TokenRoyalty(recipient, bps);
+      emit DefaultRoyaltySet(recipient, bps);
   }
 
   function supportsInterface(bytes4 interfaceId)
@@ -309,6 +351,7 @@ contract CityDaoParcel is ERC165, ERC721URIStorage, Ownable, IEIP2981 {
   */
   function setCitizenNftContract(address nftContract) public onlyOwner {
     _citizenNftContract = nftContract;
+    emit CitizenNftContractSet(nftContract);
   }
 
   /**
@@ -317,6 +360,7 @@ contract CityDaoParcel is ERC165, ERC721URIStorage, Ownable, IEIP2981 {
   */
   function setCitizenNftIds(uint256[] memory ids) public onlyOwner {
     _citizenNftIds = ids;
+    emit CitizenNftIdsSet(ids);
   }
 
   /**
@@ -336,6 +380,7 @@ contract CityDaoParcel is ERC165, ERC721URIStorage, Ownable, IEIP2981 {
     }
     require(idExists, "Citizen NFT ID has not been set with setCitizenNftIds");
     _citizenWhitelist[citizenId] = whitelisted;
+    emit CitizenNftWhitelisted(citizenId);
   }
 
   /**
@@ -347,6 +392,7 @@ contract CityDaoParcel is ERC165, ERC721URIStorage, Ownable, IEIP2981 {
     for (uint i = 0; i < _addresses.length; i++) {
       _addressWhitelist[_addresses[i]] = whitelisted;
     }
+    emit WhitelistedAddress(_addresses);
   }
 
   /**
