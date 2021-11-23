@@ -125,8 +125,17 @@ contract CityDaoParcel is ERC165, ERC721URIStorage, Ownable, IEIP2981 {
       (bool success, ) = owner().call{value: amount}("");
       require(success, "Failed to withdraw funds");
       emit LogEthWithdrawal(msg.sender, amount);
-      return success
+      return success;
   }
+
+  function batchCreatePlots(uint256[] memory prices, string[] memory plotUris) public onlyOwner returns (uint256[]) {
+    require(prices.length == plotUris.length, "The number of prices and plotUris must match");
+    uint256[] memory plotIds = new uint256[](prices.length);
+    for (uint i = 0; i < prices.length; i++) {
+      plotIds[i] = createPlot(prices[i], plotUris[i]);
+    }
+    return plotIds;
+  } 
 
   /**
   * @notice Creates a new plot eligible to be sold.
@@ -346,11 +355,12 @@ contract CityDaoParcel is ERC165, ERC721URIStorage, Ownable, IEIP2981 {
   }
 
   /**
-  * @notice Sets the citizen NFT contract address, which will be used for citizen whitelisting.
+  * @notice Sets the citizen NFT contract address and NFT IDs, which will be used for citizen whitelisting.
   * @param nftContract address The address of the citizen NFT contract.
   */
-  function setCitizenNftContract(address nftContract) public onlyOwner {
+  function setCitizenNftContract(address nftContract, uint256[] memory nftIds) public onlyOwner {
     _citizenNftContract = nftContract;
+    setCitizenNftIds(nftIds);
     emit CitizenNftContractSet(nftContract);
   }
 
