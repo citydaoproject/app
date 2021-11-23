@@ -24,7 +24,7 @@ const main = async () => {
   // royalty
   await parcelContract.setRoyalty(
     "0x2C68489f711eEf3e30fC0Cc20Bdaa436A3b4cc4a",
-    100
+    1000
   );
   const royaltyPrice = ethers.BigNumber.from("1000000000000000000");
   const [addr, amount] = await parcelContract.royaltyInfo(1, royaltyPrice);
@@ -35,11 +35,11 @@ const main = async () => {
 
   // whitelist
   await parcelContract.setCitizenNftContract(
-    "0xc5a5C42992dECbae36851359345FE25997F5C42d"
+    "0xc5a5C42992dECbae36851359345FE25997F5C42d",
+    [7, 42, 69]
   );
-  await parcelContract.setCitizenNftIds([7, 42, 69]);
-  await parcelContract.whitelistAddress(
-    "0x2C68489f711eEf3e30fC0Cc20Bdaa436A3b4cc4a",
+  await parcelContract.whitelistAddresses(
+    ["0x2C68489f711eEf3e30fC0Cc20Bdaa436A3b4cc4a"],
     true
   );
   const whitelisted = await parcelContract.isWhitelisted(

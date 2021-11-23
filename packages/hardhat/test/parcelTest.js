@@ -34,7 +34,7 @@ describe("Token parcelContract", function () {
     passedOwner = owner.address;
     if (this.ctx.currentTest.title === "Plots created properly?") return;
     if (this.ctx.currentTest.title === "Owner privileges enforced") {
-      passedOwner = "0xb40A70Aa5C30215c44F27BF990cBf4D3E5Acb384"; // random address
+      passedOwner = "0xb50A70Aa5C30215c44F27BF990cBf4D3E5Acb384"; // random address
     }
     await createTest.createTest(parcelContract, passedOwner);
 
@@ -58,13 +58,9 @@ describe("Token parcelContract", function () {
             geojson: plot,
           })
         );
-        await parcelContract.createPlot(price, plotUri);
-        const plotID = idx + 1;
-        expect((await parcelContract.getPrice(plotID)).toString()).to.equal(
+        await parcelContract.createPlot(ethers.BigNumber.from(price), plotUri);
+        expect((await parcelContract.getAllPrices()).toString()).to.include(
           price
-        );
-        expect((await parcelContract.getPlotIds()).toString()).to.include(
-          plotID
         );
       }
     });
@@ -83,7 +79,7 @@ describe("Token parcelContract", function () {
         )
       ).to.be.revertedWith(err);
       await expect(
-        parcelContract.whitelistAddress(owner.address, true)
+        parcelContract.whitelistAddresses([owner.address], true)
       ).to.be.revertedWith(err);
     });
 
@@ -94,12 +90,12 @@ describe("Token parcelContract", function () {
       ).to.be.revertedWith(
         "You don't have the right citizen NFT to buy this plot yet."
       );
-      await parcelContract.whitelistAddress(owner.address, true);
+      await parcelContract.whitelistAddresses([owner.address], true);
       expect(await parcelContract.isWhitelisted(owner.address)).to.be.true;
     });
 
     it("should complete purchase && double spend not possible", async () => {
-      parcelContract.whitelistAddress(owner.address, true);
+      parcelContract.whitelistAddresses([owner.address], true);
       const price = await parcelContract.getPrice(ID);
       await parcelContract.buyPlot(ID, { value: price });
       expect(

@@ -128,7 +128,12 @@ contract CityDaoParcel is ERC165, ERC721URIStorage, Ownable, IEIP2981 {
       return success;
   }
 
-  function batchCreatePlots(uint256[] memory prices, string[] memory plotUris) public onlyOwner returns (uint256[]) {
+  /**
+  * @notice creates a batch of plots
+  * @param prices The price of each plot (in wei)
+  * @param plotUris The metadata uri of each plot
+  */
+  function batchCreatePlots(uint256[] memory prices, string[] memory plotUris) public onlyOwner returns (uint256[] memory) {
     require(prices.length == plotUris.length, "The number of prices and plotUris must match");
     uint256[] memory plotIds = new uint256[](prices.length);
     for (uint i = 0; i < prices.length; i++) {
