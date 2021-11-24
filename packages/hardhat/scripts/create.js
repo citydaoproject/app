@@ -70,7 +70,9 @@ const main = async () => {
             conservation purposes and must be kept in its current state unless otherwise specified by a CityDAO\
             contract. The owner of this NFT will also obtain one governance vote in proposals involving the communal\
             land designated in the parcel contract.",
-          image: "https://media0.giphy.com/media/Ju7l5y9osyymQ/200.gif",
+          image: `https://storage.googleapis.com/parcel0_plot_images/generated/${
+            idx + 1
+          }.png`,
           terrain: "Mountainous",
           sqft: "~1750 sqft",
           geojson: plot,
