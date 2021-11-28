@@ -1,5 +1,5 @@
 import { BigNumber, ethers } from "ethers";
-import React, { Component, useCallback } from "react";
+import React, { Component, useCallback, useState } from "react";
 import { toast } from "react-toastify";
 import { setPlots } from "../actions";
 import { setActivePlot } from "../actions/plotsSlice";
@@ -25,6 +25,7 @@ export default function BuyPlot({ plot, injectedProvider }: Props) {
   const plots = useAppSelector(state => state.plots.plots);
   const userSigner = useUserSigner(injectedProvider);
   const contracts: any = useContractLoader(injectedProvider);
+  const [numOwnedPlots, setNumOwnedPlots] = useState(0);
 
   const tx = Transactor(userSigner, gasPrice);
   const buyPlot = useCallback(async () => {
@@ -44,6 +45,8 @@ export default function BuyPlot({ plot, injectedProvider }: Props) {
       dispatch(setPlots(newPlots));
       dispatch(setActivePlot(undefined)); // reset active plot
     });
+
+    setNumOwnedPlots(plots.filter(plot => plot.owner === userAddress).length);
   }, [contracts, dispatch, plots, plot, userAddress, userSigner, tx]);
 
   const handleClick = () => {
@@ -66,8 +69,8 @@ export default function BuyPlot({ plot, injectedProvider }: Props) {
     return (
       <button
         onClick={handleClick}
-        className={`btn bg-primary w-full ${!userAddress || !isWhitelisted ? "opacity-50" : ""}`}
-        disabled={!userAddress || !isWhitelisted}
+        className={`btn bg-primary w-full ${!userAddress || !isWhitelisted || numOwnedPlots >= 5 ? "opacity-50" : ""}`}
+        disabled={!userAddress || !isWhitelisted || numOwnedPlots >= 5}
       >
         Buy Now
       </button>
@@ -75,13 +78,19 @@ export default function BuyPlot({ plot, injectedProvider }: Props) {
   };
 
   const getTooltip = (button: JSX.Element) => {
-    const text = !userAddress
-      ? "Connect your wallet to buy this plot."
-      : "You do not have the proper citizen NFT to buy at this time. Please check citydao.io for the purchasing schedule, or buy a citizen NFT at citizen.citydao.io";
+    let text = "Unable to purchase plot.";
+    if (!userAddress) {
+      text = "Connect your wallet to buy this plot.";
+    } else if (!isWhitelisted) {
+      text =
+        "You do not have the proper citizen NFT to buy at this time. Please check citydao.io for the purchasing schedule, or buy a citizen NFT at citizen.citydao.io";
+    } else if (numOwnedPlots >= 5) {
+      text = "You have reached the maximum number of plots you can purchase from this parcel drop.";
+    }
     return <Tooltip title={text}>{button}</Tooltip>;
   };
 
-  if (!userAddress || !isWhitelisted) {
+  if (!userAddress || !isWhitelisted || numOwnedPlots >= 5) {
     return getTooltip(getButton());
   } else {
     return getButton();

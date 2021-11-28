@@ -34,7 +34,7 @@ export default function PlotTabs() {
         {userAddress && (
           <PlotList
             plots={plots.filter(plot => plot.owner === userAddress)}
-            emptyMessage={fetchingPlots ? "Loading..." : "You don't have any plots yet."}
+            emptyMessage={fetchingPlots ? "Loading..." : "You don't own any plots yet."}
           />
         )}
         {!userAddress && <span className="text-gray-7 third-font">Connect your wallet to see your owned plots</span>}
