@@ -222,7 +222,6 @@ contract CityDaoParcel is ERC165, ERC721URIStorage, Ownable, IEIP2981 {
   * @notice purchases and mints the specified plot.
   * @dev The sender must be whitelisted by address or posses a whitelisted citizen NFT. The plot must have a false sold status. The message must contain the exact price of the plot in its value field.
   *   The price of the plot can be retrieved by calling getPrice. The status of all plots can be found by calling getAllSoldStatus and aligning with getPlotIds.
-  *   An address must have <= 5 plots to purchase.
   * @param plotId The ID of the plot to be purchased.
   */
   function buyPlot(uint256 plotId)
@@ -231,7 +230,6 @@ contract CityDaoParcel is ERC165, ERC721URIStorage, Ownable, IEIP2981 {
       returns (uint256)
   {
       require(isWhitelisted(msg.sender), "You don\'t have the right citizen NFT to buy this plot yet.");
-      require(balanceOf(msg.sender) <= 5, "You cannot purchase more than five plots from this parcel drop.");
       require(!isSold(plotId), "This plot has already been sold!");
       uint256 _price = _plotIdToPrice[plotId];
       require(msg.value == _price, "You must pay the price of the plot!");
@@ -415,6 +413,7 @@ contract CityDaoParcel is ERC165, ERC721URIStorage, Ownable, IEIP2981 {
   /**
   * @notice Checks if a an address is whitelisted and possesses a whitelisted citizen NFT.
   * @dev The _citizenNftContract must be set to check for whitelisted citizen NFTs. The _citizenNftIds must be set to check for whitelisted citizen NFTs. The address must be whitelisted AND possess a whitelisted NFT to pass.
+  * A standard citizen is no longer whielisted once they have two plots. A founding or first citizen can have up to five plots.
   * @param sender address The address to check the whitelist status of.
   */
   function isWhitelisted(address sender) public view returns (bool) {
@@ -425,9 +424,9 @@ contract CityDaoParcel is ERC165, ERC721URIStorage, Ownable, IEIP2981 {
     for (uint i = 0; i < _citizenNftIds.length; i++) {
       uint256 _citizenNftId = _citizenNftIds[i];
       if ( _citizenWhitelist[_citizenNftId] && citizenNft.balanceOf(sender, _citizenNftId) > 0) {
-        if (_addressWhitelist[sender] && _citizenNftId == 42) {
+        if (_addressWhitelist[sender] && _citizenNftId == 42 && balanceOf(sender) < 2) {
           whitelisted = true;
-        } else if (_citizenNftId != 42) {
+        } else if (_citizenNftId != 42 && balanceOf(sender) < 5) {
           whitelisted = true;
         }
         break;

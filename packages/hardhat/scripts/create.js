@@ -35,9 +35,10 @@ const main = async () => {
 
   // whitelist
   await parcelContract.setCitizenNftContract(
-    "0xc5a5C42992dECbae36851359345FE25997F5C42d",
+    "0xbEf235017f20859c4467a3aE3B7FE4CdF43d5f5C",
     [7, 42, 69]
   );
+  await parcelContract.whitelistNft(42, true);
   await parcelContract.whitelistAddresses(
     ["0x2C68489f711eEf3e30fC0Cc20Bdaa436A3b4cc4a"],
     true
@@ -64,12 +65,12 @@ const main = async () => {
     for (const plot of plots.plots) {
       const plotUri = await ipfs.add(
         JSON.stringify({
-          name: `CityDAO Parcel 0, Plot ${idx}`,
+          name: `CityDAO Parcel 0, Plot ${idx + 1}`,
           description:
             "This NFT denotes a lifetime lease of the plot specified in its geojson metadata. The plot is meant for\
-            conservation purposes and must be kept in its current state unless otherwise specified by a CityDAO\
-            contract. The owner of this NFT will also obtain one governance vote in proposals involving the communal\
-            land designated in the parcel contract.",
+              conservation purposes and must be kept in its current state unless otherwise specified by a CityDAO\
+              contract. The owner of this NFT will also obtain one governance vote in proposals involving the communal\
+              land designated in the parcel contract.",
           image: `https://storage.googleapis.com/parcel0_plot_images/generated/${
             idx + 1
           }.png`,
@@ -90,9 +91,9 @@ const main = async () => {
   }
 
   // transfer contract to CityDAO
-  console.log(
-    "Transferring ownership of CityDAO Plot Contract to " + toAddress + "..."
-  );
+  // console.log(
+  //   "Transferring ownership of CityDAO Plot Contract to " + toAddress + "..."
+  // );
 
   console.log("\n\n 🎫 Done!\n");
   console.log(await parcelContract.getPlotIds());
