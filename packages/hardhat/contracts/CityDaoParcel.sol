@@ -6,6 +6,7 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "@chainlink/contracts/src/v0.8/VRFConsumerBase.sol";
 
 /**
  * EIP-2981
@@ -24,7 +25,7 @@ interface IEIP2981 is IERC165 {
 
 /// @title CityDAO Parcel 0
 /// @author @gregfromstl
-contract CityDaoParcel is ERC165, ERC721URIStorage, Ownable, IEIP2981 {
+contract CityDaoParcel is ERC165, ERC721URIStorage, Ownable, IEIP2981, VRFConsumerBase {
 
   // Counter to increment plot (token) IDs
   using Counters for Counters.Counter;
@@ -40,6 +41,11 @@ contract CityDaoParcel is ERC165, ERC721URIStorage, Ownable, IEIP2981 {
       uint16 bps;
   }
   TokenRoyalty public defaultRoyalty;
+
+  // For Chainlink VRF, see https://docs.chain.link/docs/get-a-random-number/
+  bytes32 internal keyHash;
+  uint256 internal fee;
+  uint256 public randomResult;
 
   // In order to mint a token, the caller must either be a whitelisted address or posses a whitelisted citizen NFT.
   // List of whitelisted citizen NFT IDs
@@ -101,8 +107,15 @@ contract CityDaoParcel is ERC165, ERC721URIStorage, Ownable, IEIP2981 {
   /**
   * @dev Initializes the contract by setting a `name` and a `symbol` to the token collection.
   */
-  constructor() ERC721("CityDAO Parcel 0", "PRCL0") {
+  constructor() 
+  ERC721("CityDAO Parcel 0", "PRCL0") 
+  VRFConsumerBase(
+      0xb3dCcb4Cf7a26f6cf6B120Cf5A73875B7BBc655B, // VRF Coordinator
+      0x01BE23585060835E02B77ef475b0Cc51aA1e0709  // LINK Token
+  ) {
     _tokenIds.increment(); // reserve 0 for "no plot" id
+    keyHash = 0x2ed0feb3e7fd2022120aa84fab1945545a9f2ffc9076fd6156fa96eaff4c1311;
+    fee = 0.1 * 10 ** 18; // 0.1 LINK (Varies by network)
   }
 
   fallback() external payable {
@@ -111,6 +124,34 @@ contract CityDaoParcel is ERC165, ERC721URIStorage, Ownable, IEIP2981 {
 
   receive() external payable {
     emit LogEthDeposit(msg.sender);
+  }
+
+
+  /** 
+  * Requests randomness 
+  */
+  function getRandomNumber() public returns (bytes32 requestId) {
+      require(LINK.balanceOf(address(this)) >= fee, "Not enough LINK - fill contract with at least 2 LINK (mainnet)");
+      return requestRandomness(keyHash, fee);
+  }
+  function expand(uint256 randomValue, uint256 n) public pure returns (uint256[] memory expandedValues) {
+      expandedValues = new uint256[](n);
+      for (uint256 i = 0; i < n; i++) {
+          expandedValues[i] = uint256(keccak256(abi.encode(randomValue, i)));
+      }
+      return expandedValues;
+  }
+  /**
+  * Callback function used by VRF Coordinator
+  */
+  function fulfillRandomness(bytes32 requestId, uint256 randomness) internal override {
+      randomResult = randomness;
+  }
+  /**
+  * Get random numbers from Chainlink VRF (run getRandomNumber() first)
+  */
+  function drawRaffle(uint256 n) public view returns (uint256[] memory) {
+    return expand(randomResult, n);
   }
 
   /**
@@ -148,7 +189,7 @@ contract CityDaoParcel is ERC165, ERC721URIStorage, Ownable, IEIP2981 {
   * @dev Sets the plots price, sold status (false), and metadata URI.
   *   The plot URI is not added because the plot is not yet minted. It is added in buyPlot.
   *   Metadata must contain a valid geojson object designating the plot area.
-  * @param price The mind price of the plot (in wei)
+  * @param price The mint price of the plot (in wei)
   * @param plotUri The URI of the plot's metadata
   */
   function createPlot(uint256 price, string memory plotUri) public onlyOwner returns (uint256) {
