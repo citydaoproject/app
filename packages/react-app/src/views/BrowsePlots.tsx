@@ -102,8 +102,7 @@ export default function BrowsePlots({ networkProvider, web3Modal }: Props) {
     try {
       if (contracts && contracts.CityDaoParcel && userAddress) {
         const whitelistedAmount = await contracts.CityDaoParcel.getWhitelistedAmount(userAddress);
-        console.log(whitelistedAmount);
-        dispatch(setWhitelistedAmount(whitelistedAmount));
+        dispatch(setWhitelistedAmount(whitelistedAmount.toNumber()));
       }
     } catch (e) {
       toast.error(`Failed to read from contract. Make sure you're on the ${process.env.REACT_APP_NETWORK} network.`, {
