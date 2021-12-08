@@ -8,7 +8,7 @@ import { setExchangePrice, setGasPrice } from "./actions";
 import { Wallet } from "./components";
 import { INFURA_ID, NETWORKS } from "./constants";
 import { useExchangePrice, useGasPrice } from "./hooks";
-import { BrowsePlots } from "./views";
+import { BrowsePlots, Whitelist } from "./views";
 
 const { ethers } = require("ethers");
 
@@ -55,6 +55,9 @@ function Web3Wrapper() {
         <Switch>
           <Route exact path="/">
             <BrowsePlots web3Modal={web3Modal} networkProvider={networkProvider} />
+          </Route>
+          <Route exact path="/whitelist">
+            <Whitelist web3Modal={web3Modal} networkProvider={networkProvider} />
           </Route>
         </Switch>
       </BrowserRouter>

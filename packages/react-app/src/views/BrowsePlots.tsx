@@ -105,11 +105,7 @@ export default function BrowsePlots({ networkProvider, web3Modal }: Props) {
         dispatch(setWhitelistedAmount(whitelistedAmount.toNumber()));
       }
     } catch (e) {
-      toast.error(`Failed to read from contract. Make sure you're on the ${process.env.REACT_APP_NETWORK} network.`, {
-        className: "error",
-        toastId: "contract-fail",
-      });
-      DEBUG && console.log(e);
+      dispatch(setWhitelistedAmount(0));
     }
   };
   useEffect(() => {
