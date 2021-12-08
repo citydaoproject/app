@@ -1,5 +1,5 @@
 import { BigNumber, ethers } from "ethers";
-import React, { Component, useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { setPlots } from "../actions";
 import { setActivePlot } from "../actions/plotsSlice";
@@ -20,7 +20,7 @@ export default function BuyPlot({ plot, injectedProvider }: Props) {
 
   const DEBUG = useAppSelector(state => state.debug.debug);
   const userAddress = useAppSelector(state => state.user.address);
-  const isWhitelisted = useAppSelector(state => state.user.isWhitelisted);
+  const whitelistedAmount = useAppSelector(state => state.user.whitelistedAmount);
   const gasPrice = useAppSelector(state => state.network.gasPrice);
   const plots = useAppSelector(state => state.plots.plots);
   const userSigner = useUserSigner(injectedProvider);
@@ -70,11 +70,12 @@ export default function BuyPlot({ plot, injectedProvider }: Props) {
   };
 
   const getButton = () => {
+    const isWhitelisted = whitelistedAmount ? whitelistedAmount > 1 : false;
     return (
       <button
         onClick={handleClick}
         className={`btn bg-primary w-full ${!userAddress || !isWhitelisted || numOwnedPlots >= 2 ? "opacity-50" : ""}`}
-        disabled={!userAddress || !isWhitelisted || numOwnedPlots >= 2}
+        disabled={!userAddress || !isWhitelisted}
       >
         Buy Now
       </button>
@@ -82,21 +83,17 @@ export default function BuyPlot({ plot, injectedProvider }: Props) {
   };
 
   const getTooltip = (button: JSX.Element) => {
+    const isWhitelisted = whitelistedAmount ? whitelistedAmount > 1 : false;
     let text = "Unable to purchase plot.";
     if (!userAddress) {
       text = "Connect your wallet to buy this plot.";
     } else if (!isWhitelisted) {
-      text =
-        "You do not have the proper citizen NFT to buy at this time. Please check citydao.io for the purchasing schedule, or buy a citizen NFT at citizen.citydao.io";
-    } else if (numOwnedPlots >= 2) {
-      text = "You have reached the maximum number of plots you can purchase from this parcel drop. (2)";
+      text = "You do not have any whitelisted spots remaining. Check back tomorrow.";
+    } else {
+      return button;
     }
     return <Tooltip title={text}>{button}</Tooltip>;
   };
 
-  if (!userAddress || !isWhitelisted || numOwnedPlots >= 2) {
-    return getTooltip(getButton());
-  } else {
-    return getButton();
-  }
+  return getTooltip(getButton());
 }

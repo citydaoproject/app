@@ -31,9 +31,8 @@ contract CityDaoParcel is ERC165, ERC721URIStorage, Ownable, IEIP2981, VRFConsum
   using Counters for Counters.Counter;
   Counters.Counter private _tokenIds;
 
-  // The citizen NFT contract and its corresponding token IDs. A token must be listed in the _citizenNftIds in order to be whitelisted.
+  // The citizen NFT contract
   address private _citizenNftContract;
-  uint256[] private _citizenNftIds;
 
   // Implementing EIP2981 for royalties
   struct TokenRoyalty {
@@ -47,11 +46,10 @@ contract CityDaoParcel is ERC165, ERC721URIStorage, Ownable, IEIP2981, VRFConsum
   uint256 internal fee;
   uint256 public randomResult;
 
-  // In order to mint a token, the caller must either be a whitelisted address or posses a whitelisted citizen NFT.
-  // List of whitelisted citizen NFT IDs
-  mapping(uint256 => bool) private _citizenWhitelist;
-  // List of whitelisted wallet addresses
-  mapping(address => bool) private _addressWhitelist;
+  // List of wallet addresses with the amount of NFTs they can purchase
+  mapping(address => uint256) private _whitelistedAmounts;
+  address[] private _enteredAddresses;
+  bool private _allowWhitelisting = false;
 
   // Maps the plot ID to the sold (minted) status of the plot (true = sold, false = not sold)
   mapping(uint256 => bool) private _plotIdToSoldStatus;
@@ -83,8 +81,8 @@ contract CityDaoParcel is ERC165, ERC721URIStorage, Ownable, IEIP2981, VRFConsum
   event PlotMinted(address, uint256);
   // Emitted whenever a plot is first created and listed for sale
   event PlotCreated(uint256);
-  // Emitted whenever a series of addresses are whitelisted
-  event WhitelistedAddress(address[]);
+  // Emitted whenever an address is whitelisted
+  event WhitelistedAddress(address);
   // Emitted whenever the plots metadata is updated
   event PlotsMetadataUpdated(string);
   // Emitted whenever the communal land metadata is updated
@@ -93,16 +91,14 @@ contract CityDaoParcel is ERC165, ERC721URIStorage, Ownable, IEIP2981, VRFConsum
   event ParcelMetadataUpdated(string);
   // Emitted whenever the citizen NFT contract is set
   event CitizenNftContractSet(address);
-  // Emitted whenever the citizen NFT IDs are set
-  event CitizenNftIdsSet(uint256[]);
-  // Emmited whenever the citizen NFTs are whitelisted
-  event CitizenNftWhitelisted(uint256);
   // Emitted whenever eth is deposited into the contract from an address
   event LogEthDeposit(address);
   // Emitted whenever the an amount is withdrawn from the contract
   event LogEthWithdrawal(address, uint256);
   // Emitted whenever the token royalty is set
   event DefaultRoyaltySet(address recipient, uint16 bps);
+  // Emitted when raffle is entered
+  event EnteredRaffle(address);
 
   /**
   * @dev Initializes the contract by setting a `name` and a `symbol` to the token collection.
@@ -126,6 +122,10 @@ contract CityDaoParcel is ERC165, ERC721URIStorage, Ownable, IEIP2981, VRFConsum
     emit LogEthDeposit(msg.sender);
   }
 
+  function configVRF(bytes32 _keyHash, uint256 _fee) public onlyOwner {
+    keyHash = _keyHash;
+    fee = _fee;
+  }
 
   /** 
   * Requests randomness 
@@ -150,8 +150,14 @@ contract CityDaoParcel is ERC165, ERC721URIStorage, Ownable, IEIP2981, VRFConsum
   /**
   * Get random numbers from Chainlink VRF (run getRandomNumber() first)
   */
-  function drawRaffle(uint256 n) public view returns (uint256[] memory) {
-    return expand(randomResult, n);
+  function drawRaffle(uint256 n) public onlyOwner {
+    getRandomNumber();
+    uint256[] memory winners = expand(randomResult, n);
+    for (uint256 i = 0; i < n; i++) {
+      address winner =  _enteredAddresses[winners[i] % _enteredAddresses.length];
+      _whitelistedAmounts[winner] = _whitelistedAmounts[winner] + 1;
+      emit WhitelistedAddress(winner);
+    }
   }
 
   /**
@@ -270,7 +276,7 @@ contract CityDaoParcel is ERC165, ERC721URIStorage, Ownable, IEIP2981, VRFConsum
       public
       returns (uint256)
   {
-      require(isWhitelisted(msg.sender), "You don\'t have the right citizen NFT to buy this plot yet.");
+      require(_whitelistedAmounts[msg.sender] > 0, "You have purchased all your whitelisted plots.");
       require(!isSold(plotId), "This plot has already been sold!");
       uint256 _price = _plotIdToPrice[plotId];
       require(msg.value == _price, "You must pay the price of the plot!");
@@ -278,6 +284,7 @@ contract CityDaoParcel is ERC165, ERC721URIStorage, Ownable, IEIP2981, VRFConsum
       _safeMint(msg.sender, plotId);
       _setTokenURI(plotId, _plotIdToMetadata[plotId]);
 
+      _whitelistedAmounts[msg.sender] = _whitelistedAmounts[msg.sender] - 1;
       delete _plotIdToPrice[plotId];
       _plotIdToSoldStatus[plotId] = true;
 
@@ -404,75 +411,48 @@ contract CityDaoParcel is ERC165, ERC721URIStorage, Ownable, IEIP2981, VRFConsum
   * @notice Sets the citizen NFT contract address and NFT IDs, which will be used for citizen whitelisting.
   * @param nftContract address The address of the citizen NFT contract.
   */
-  function setCitizenNftContract(address nftContract, uint256[] memory nftIds) public onlyOwner {
+  function setCitizenNftContract(address nftContract) public onlyOwner {
     _citizenNftContract = nftContract;
-    setCitizenNftIds(nftIds);
     emit CitizenNftContractSet(nftContract);
   }
 
-  /**
-  * @notice Sets the citizen NFT IDs
-  * @dev In order to whitelist a citizen NFT, the ID must first be added here
-  */
-  function setCitizenNftIds(uint256[] memory ids) public onlyOwner {
-    _citizenNftIds = ids;
-    emit CitizenNftIdsSet(ids);
+  function beginWhitelisting() public onlyOwner {
+    _allowWhitelisting = true;
+  }
+  function endWhitelisting() public onlyOwner {
+    _allowWhitelisting = false;
   }
 
-  /**
-  * @notice Sets the whitelist status for an NFT of the set _citizenNftContract.
-  * @dev setCitizenNftIds must be called with the ID to whitelist before this function can be called.
-  * @param citizenId uint256 The ID of the NFT to whitelist.
-  * @param whitelisted bool Whether or not the NFT is whitelisted.
-  */
-  function whitelistNft(uint256 citizenId, bool whitelisted) public onlyOwner {
-    bool idExists = false;
-    for (uint i = 0; i < _citizenNftIds.length; i++) {
-      uint256 _citizenNftId = _citizenNftIds[i];
-      if (_citizenNftId == citizenId) {
-        idExists = true;
-        break;
-      }
+  function getWhitelistedAmount(address addr) public view returns (uint256) {
+    return _whitelistedAmounts[addr];
+  }
+
+  function enterRaffle() public {
+    require(_allowWhitelisting, "Whitelisting is disabled");
+    require(_citizenNftContract != address(0), "Citizen NFT contract not set!");
+    IERC1155 citizenNft = IERC1155(_citizenNftContract);
+
+    if (citizenNft.balanceOf(msg.sender, 69) > 0) { // has founding citizen NFT
+      _whitelistedAmounts[msg.sender] = 2;
+      emit WhitelistedAddress(msg.sender);
+    } else if (citizenNft.balanceOf(msg.sender, 42) > 0) { // has citizen NFT
+      _whitelistedAmounts[msg.sender] = 0;
+      _enteredAddresses.push(msg.sender);
+      emit EnteredRaffle(msg.sender);
+    } else {
+      revert("You must have a citizen NFT to enter the raffle");
     }
-    require(idExists, "Citizen NFT ID has not been set with setCitizenNftIds");
-    _citizenWhitelist[citizenId] = whitelisted;
-    emit CitizenNftWhitelisted(citizenId);
   }
 
   /**
   * @notice Whitelists a list of addresses.
   * @param _addresses address[] The ID of the NFT to whitelist.
-  * @param whitelisted bool Whether or not the addresses are whitelisted.
+  * @param amount uint256 The number of plots the address can purchase
   */
-  function whitelistAddresses(address[] memory _addresses, bool whitelisted) public onlyOwner {
+  function whitelistAddresses(address[] memory _addresses, uint256 amount) public onlyOwner {
     for (uint i = 0; i < _addresses.length; i++) {
-      _addressWhitelist[_addresses[i]] = whitelisted;
+      _whitelistedAmounts[_addresses[i]] = amount;
+      emit WhitelistedAddress(_addresses[i]);
     }
-    emit WhitelistedAddress(_addresses);
-  }
-
-  /**
-  * @notice Checks if a an address is whitelisted and possesses a whitelisted citizen NFT.
-  * @dev The _citizenNftContract must be set to check for whitelisted citizen NFTs. The _citizenNftIds must be set to check for whitelisted citizen NFTs. The address must be whitelisted AND possess a whitelisted NFT to pass.
-  * A standard citizen is no longer whielisted once they have two plots. A founding or first citizen can have up to five plots.
-  * @param sender address The address to check the whitelist status of.
-  */
-  function isWhitelisted(address sender) public view returns (bool) {
-    require(_citizenNftContract != address(0), "Citizen NFT contract not set!");
-    require(_citizenNftIds.length > 0, "No citizen NFTs have been set yet.");
-    IERC1155 citizenNft = IERC1155(_citizenNftContract);
-    bool whitelisted = false;
-    for (uint i = 0; i < _citizenNftIds.length; i++) {
-      uint256 _citizenNftId = _citizenNftIds[i];
-      if ( _citizenWhitelist[_citizenNftId] && citizenNft.balanceOf(sender, _citizenNftId) > 0) {
-        if (_addressWhitelist[sender] && _citizenNftId == 42 && balanceOf(sender) < 2) {
-          whitelisted = true;
-        } else if (_citizenNftId != 42 && balanceOf(sender) < 5) {
-          whitelisted = true;
-        }
-        break;
-      }
-    }
-    return whitelisted;
   }
 }

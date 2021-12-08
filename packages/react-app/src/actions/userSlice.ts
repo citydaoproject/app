@@ -2,12 +2,12 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface UserState {
   address?: string;
-  isWhitelisted?: boolean;
+  whitelistedAmount?: number;
 }
 
 const initialState: UserState = {
   address: undefined,
-  isWhitelisted: false,
+  whitelistedAmount: 0,
 };
 
 export const userSlice = createSlice({
@@ -17,12 +17,12 @@ export const userSlice = createSlice({
     setUserAddress: (state, action: PayloadAction<string>) => {
       state.address = action.payload;
     },
-    setIsWhitelisted: (state, action: PayloadAction<boolean>) => {
-      state.isWhitelisted = action.payload;
+    setWhitelistedAmount: (state, action: PayloadAction<number>) => {
+      state.whitelistedAmount = action.payload;
     },
   },
 });
 
-export const { setUserAddress, setIsWhitelisted } = userSlice.actions;
+export const { setUserAddress, setWhitelistedAmount } = userSlice.actions;
 
 export default userSlice.reducer;

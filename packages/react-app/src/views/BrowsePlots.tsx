@@ -11,10 +11,9 @@ import { Plot } from "../models/Plot";
 import { logoutOfWeb3Modal } from "../helpers";
 import { fetchedPlots, setCommunalLand, setParcelGeojson } from "../actions/plotsSlice";
 import { fetchMetadata } from "../data";
-import { GeojsonData } from "../models/GeojsonData";
 import { toast } from "react-toastify";
 import updatePlots from "../helpers/UpdatePlots";
-import { setIsWhitelisted } from "../actions/userSlice";
+import { setWhitelistedAmount } from "../actions/userSlice";
 
 interface Props {
   networkProvider: any;
@@ -29,9 +28,28 @@ export default function BrowsePlots({ networkProvider, web3Modal }: Props) {
   const parcel = useAppSelector(state => state.plots.parcel);
   const userAddress = useAppSelector(state => state.user.address);
   const contracts: any = useContractLoader(networkProvider);
+  const whitelistedAmount = useAppSelector(state => state.user.whitelistedAmount);
   const [injectedProvider, setInjectedProvider] = useState<ethers.providers.Web3Provider>();
 
   useUserSigner(injectedProvider); // initialize signer
+
+  useEffect(() => {
+    if (!userAddress) {
+      return;
+    }
+    if (whitelistedAmount && whitelistedAmount > 0) {
+      toast.dismiss("notWhitelisted");
+      toast.success(`You've been whitelisted to buy ${whitelistedAmount} plots 🎉`, {
+        toastId: "isWhitelisted",
+        autoClose: false,
+      });
+    } else {
+      toast.dismiss("isWhitelisted");
+      toast.error("You aren't whitelisted to buy any plots yet 😢", {
+        toastId: "notWhitelisted",
+      });
+    }
+  }, [whitelistedAmount, userAddress]);
 
   const loadWeb3Modal = useCallback(async () => {
     const provider = await web3Modal.connect();
@@ -83,8 +101,9 @@ export default function BrowsePlots({ networkProvider, web3Modal }: Props) {
   const readWhitelistStatus = async () => {
     try {
       if (contracts && contracts.CityDaoParcel && userAddress) {
-        const whitelisted = await contracts.CityDaoParcel.isWhitelisted(userAddress);
-        dispatch(setIsWhitelisted(whitelisted));
+        const whitelistedAmount = await contracts.CityDaoParcel.getWhitelistedAmount(userAddress);
+        console.log(whitelistedAmount);
+        dispatch(setWhitelistedAmount(whitelistedAmount));
       }
     } catch (e) {
       toast.error(`Failed to read from contract. Make sure you're on the ${process.env.REACT_APP_NETWORK} network.`, {
@@ -96,7 +115,7 @@ export default function BrowsePlots({ networkProvider, web3Modal }: Props) {
   };
   useEffect(() => {
     readWhitelistStatus();
-  }, [contracts, userAddress]);
+  }, [contracts, userAddress, plots]);
 
   updatePlots(contracts, plots, DEBUG).then((newPlots: Plot[]) => {
     if (newPlots.length !== plots.length) {

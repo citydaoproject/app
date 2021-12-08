@@ -13,40 +13,8 @@ const ipfs = ipfsAPI({
 const delayMS = 1000;
 
 const main = async () => {
-  // ADDRESS TO MINT TO:
-  const toAddress = "0xb40A70Aa5C30215c44F27BF990cBf4D3E5Acb384"; // this will be the temporary address to hold the plots on testnets, in practice will be owned by CityDAO
-
-  console.log("\n\n 🎫 Minting to " + toAddress + "...\n");
-
   const { deployer } = await getNamedAccounts();
   const parcelContract = await ethers.getContract("CityDaoParcel", deployer);
-
-  // royalty
-  await parcelContract.setRoyalty(
-    "0x2C68489f711eEf3e30fC0Cc20Bdaa436A3b4cc4a",
-    1000
-  );
-  const royaltyPrice = ethers.BigNumber.from("1000000000000000000");
-  const [addr, amount] = await parcelContract.royaltyInfo(1, royaltyPrice);
-  console.log(
-    `${ethers.utils.formatEther(royaltyPrice)} ETH royalty pays`,
-    ethers.utils.formatEther(amount)
-  );
-
-  // whitelist
-  await parcelContract.setCitizenNftContract(
-    "0xbEf235017f20859c4467a3aE3B7FE4CdF43d5f5C",
-    [7, 42, 69]
-  );
-  await parcelContract.whitelistNft(42, true);
-  await parcelContract.whitelistAddresses(
-    ["0x2C68489f711eEf3e30fC0Cc20Bdaa436A3b4cc4a"],
-    true
-  );
-  const whitelisted = await parcelContract.isWhitelisted(
-    "0x2C68489f711eEf3e30fC0Cc20Bdaa436A3b4cc4a"
-  );
-  console.log("Whitelisted: " + whitelisted);
 
   try {
     const parcelUri = await ipfs.add(JSON.stringify({ plots: parcel.parcel }));
@@ -89,11 +57,6 @@ const main = async () => {
   } catch (err) {
     console.log(err);
   }
-
-  // transfer contract to CityDAO
-  // console.log(
-  //   "Transferring ownership of CityDAO Plot Contract to " + toAddress + "..."
-  // );
 
   console.log("\n\n 🎫 Done!\n");
   console.log(await parcelContract.getPlotIds());

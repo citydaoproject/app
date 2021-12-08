@@ -49,7 +49,7 @@
     "graph-ship-local": "yarn graph-prepare && yarn graph-codegen && yarn graph-deploy-local",
     "deploy-and-graph": "yarn deploy && yarn graph-ship-local",
     "create-plots": "yarn workspace @scaffold-eth/hardhat create-plots",
-    "random-number": "yarn workspace @scaffold-eth/hardhat random-number",
+    "config-contract": "yarn workspace @scaffold-eth/hardhat config-contract",
     "citizen": "yarn workspace @scaffold-eth/hardhat citizen",
     "theme": "yarn workspace @scaffold-eth/react-app theme",
     "watch-theme": "yarn workspace @scaffold-eth/react-app watch"
