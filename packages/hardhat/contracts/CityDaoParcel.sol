@@ -151,13 +151,21 @@ contract CityDaoParcel is ERC165, ERC721URIStorage, Ownable, IEIP2981, VRFConsum
   * Get random numbers from Chainlink VRF (run getRandomNumber() first)
   */
   function drawRaffle(uint256 n) public onlyOwner {
-    getRandomNumber();
     uint256[] memory winners = expand(randomResult, n);
     for (uint256 i = 0; i < n; i++) {
-      address winner =  _enteredAddresses[winners[i] % _enteredAddresses.length];
+      address winner = _enteredAddresses[winners[i] % _enteredAddresses.length];
       _whitelistedAmounts[winner] = _whitelistedAmounts[winner] + 1;
       emit WhitelistedAddress(winner);
     }
+  }
+
+  function enteredRaffle(address _address) public view returns (bool) {
+    for (uint256 i = 0; i < _enteredAddresses.length; i++) {
+      if (_enteredAddresses[i] == _address) {
+        return true;
+      }
+    }
+    return false;
   }
 
   /**
@@ -174,20 +182,6 @@ contract CityDaoParcel is ERC165, ERC721URIStorage, Ownable, IEIP2981, VRFConsum
       emit LogEthWithdrawal(msg.sender, amount);
       return success;
   }
-
-  /**
-  * @notice creates a batch of plots
-  * @param prices The price of each plot (in wei)
-  * @param plotUris The metadata uri of each plot
-  */
-  function batchCreatePlots(uint256[] memory prices, string[] memory plotUris) public onlyOwner returns (uint256[] memory) {
-    require(prices.length == plotUris.length, "The number of prices and plotUris must match");
-    uint256[] memory plotIds = new uint256[](prices.length);
-    for (uint i = 0; i < prices.length; i++) {
-      plotIds[i] = createPlot(prices[i], plotUris[i]);
-    }
-    return plotIds;
-  } 
 
   /**
   * @notice Creates a new plot eligible to be sold.
@@ -421,6 +415,9 @@ contract CityDaoParcel is ERC165, ERC721URIStorage, Ownable, IEIP2981, VRFConsum
   }
   function endWhitelisting() public onlyOwner {
     _allowWhitelisting = false;
+  }
+  function isWhitelisting() public view returns (bool) {
+    return _allowWhitelisting;
   }
 
   function getWhitelistedAmount(address addr) public view returns (uint256) {

@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { ethers } from "ethers";
 
 import { useContractLoader, useAppSelector, useUserSigner } from "../hooks";
@@ -13,12 +13,19 @@ interface Props {
 
 export default function Whitelist({ networkProvider, web3Modal }: Props) {
   const DEBUG = useAppSelector(state => state.debug.debug);
-  const gasPrice = useAppSelector(state => state.network.gasPrice);
+  const userAddress = useAppSelector(state => state.user.address);
   const [injectedProvider, setInjectedProvider] = useState<ethers.providers.Web3Provider>();
+  const [whitelistingEnabled, setWhitelistingEnabled] = useState(false);
+  const [enteredRaffle, setEnteredRaffle] = useState(false);
 
-  const contracts: any = useContractLoader(injectedProvider);
-  const userSigner = useUserSigner(injectedProvider);
-  const tx = Transactor(userSigner, gasPrice);
+  const contracts: any = useContractLoader(networkProvider);
+
+  useEffect(() => {
+    if (contracts) {
+      contracts.CityDaoParcel.isWhitelisting().then(setWhitelistingEnabled);
+      userAddress && contracts.CityDaoParcel.enteredRaffle(userAddress).then(setEnteredRaffle);
+    }
+  }, [contracts, networkProvider, userAddress]);
 
   const loadWeb3Modal = useCallback(async () => {
     const provider = await web3Modal.connect();
@@ -42,18 +49,20 @@ export default function Whitelist({ networkProvider, web3Modal }: Props) {
     });
   }, [setInjectedProvider, DEBUG]);
 
-  const enterRaffle = async () => {
-    tx && contracts && (await tx(contracts.CityDaoParcel.enterRaffle()));
-  };
-
   return (
     <div className="flex flex-col flex-grow min-w-0 items-center justify-center gap-8">
       <img src="/logo512.png" alt="logo" className="w-64" />
-      <div className="primary-font text-xl">CityDAO Parcel 0 Drop</div>
-      <div className="flex flex-row gap-8">
-        <ConnectWalletButton onClick={loadWeb3Modal} />
-        <EnterRaffle onClick={enterRaffle} />
-      </div>
+      {whitelistingEnabled ? (
+        <>
+          <div className="primary-font text-xl">CityDAO Parcel 0 Drop</div>
+          <div className="flex flex-row gap-8">
+            <ConnectWalletButton onClick={loadWeb3Modal} />
+            <EnterRaffle injectedProvider={injectedProvider} inRaffle={enteredRaffle} />
+          </div>
+        </>
+      ) : (
+        <div className="primary-font text-xl">Whitelisting has ended.</div>
+      )}
     </div>
   );
 }

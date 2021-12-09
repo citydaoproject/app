@@ -51,9 +51,6 @@ const main = async () => {
       await sleep(delayMS);
       idx++;
     }
-    await parcelContract.transferOwnership(toAddress, {
-      gasLimit: 400000,
-    });
   } catch (err) {
     console.log(err);
   }
@@ -66,7 +63,7 @@ async function createPlot(plot, idx, plotUri, contract) {
   console.log(`Uploading plot${idx}...`);
 
   await contract.createPlot(
-    ethers.BigNumber.from(`${100000000000000000 * (idx + 1)}`),
+    ethers.BigNumber.from(`${0.1 * 10 ** 18}`),
     plotUri,
     {
       gasLimit: 400000,
