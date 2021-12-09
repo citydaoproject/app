@@ -20,11 +20,15 @@ export default function Whitelist({ networkProvider, web3Modal }: Props) {
 
   const contracts: any = useContractLoader(networkProvider);
 
-  useEffect(() => {
+  const updateStatus = () => {
     if (contracts) {
       contracts.CityDaoParcel.isWhitelisting().then(setWhitelistingEnabled);
       userAddress && contracts.CityDaoParcel.enteredRaffle(userAddress).then(setEnteredRaffle);
     }
+  };
+
+  useEffect(() => {
+    updateStatus();
   }, [contracts, networkProvider, userAddress]);
 
   const loadWeb3Modal = useCallback(async () => {
@@ -57,7 +61,7 @@ export default function Whitelist({ networkProvider, web3Modal }: Props) {
           <div className="primary-font text-xl">CityDAO Parcel 0 Drop</div>
           <div className="flex flex-row gap-8">
             <ConnectWalletButton onClick={loadWeb3Modal} />
-            <EnterRaffle injectedProvider={injectedProvider} inRaffle={enteredRaffle} />
+            <EnterRaffle injectedProvider={injectedProvider} inRaffle={enteredRaffle} resetStatus={updateStatus} />
           </div>
         </>
       ) : (

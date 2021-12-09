@@ -11,14 +11,13 @@ const main = async () => {
 
   // whitelist
   await parcelContract.setCitizenNftContract(
-    "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512"
+    "0xbEf235017f20859c4467a3aE3B7FE4CdF43d5f5C"
   );
   // await parcelContract.whitelistAddresses(
   //   ["0x2C68489f711eEf3e30fC0Cc20Bdaa436A3b4cc4a"],
   //   5
   // );
   await parcelContract.beginWhitelisting();
-  // await parcelContract.getRandomNumber();
   // await parcelContract.drawRaffle(5);
   // console.log(
   //   await parcelContract.getWhitelistedAmount(

@@ -24,7 +24,7 @@ const { isAddress, getAddress, formatUnits, parseUnits } = utils;
 //
 // Select the network you want to deploy to here:
 //
-const defaultNetwork = process.env.REACT_APP_NETWORK;
+const defaultNetwork = "rinkeby"; //process.env.REACT_APP_NETWORK;
 
 function mnemonic() {
   try {

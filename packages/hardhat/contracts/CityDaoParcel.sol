@@ -151,6 +151,7 @@ contract CityDaoParcel is ERC165, ERC721URIStorage, Ownable, IEIP2981, VRFConsum
   * Get random numbers from Chainlink VRF (run getRandomNumber() first)
   */
   function drawRaffle(uint256 n) public onlyOwner {
+    getRandomNumber();
     uint256[] memory winners = expand(randomResult, n);
     for (uint256 i = 0; i < n; i++) {
       address winner = _enteredAddresses[winners[i] % _enteredAddresses.length];
