@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { Col, Layout } from "antd";
 import { Content } from "antd/lib/layout/layout";
 import { ethers } from "ethers";
+import { Link } from "react-router-dom";
 
 import { useContractLoader, useAppSelector, useAppDispatch, useUserSigner } from "../hooks";
 import { PlotMap, ProgressBar, PlotDetail, LogoDisplay, Header } from "../components";
@@ -124,7 +125,9 @@ export default function BrowsePlots({ networkProvider, web3Modal }: Props) {
       <ProgressBar />
       <div className="flex flex-row flex-grow min-w-0">
         <Col className="sidebar">
-          <LogoDisplay />
+          <Link to="/whitelist">
+            <LogoDisplay />
+          </Link>
           {activePlot !== undefined ? (
             <PlotDetail plot={activePlot} contracts={contracts} injectedProvider={injectedProvider} />
           ) : (

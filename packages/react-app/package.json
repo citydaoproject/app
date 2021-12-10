@@ -24,6 +24,7 @@
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.8",
     "@types/mapbox-gl": "^2.4.1",
+    "@types/react-router-dom": "^5.3.2",
     "@typescript-eslint/eslint-plugin": "^4.32.0",
     "@typescript-eslint/parser": "^4.32.0",
     "@uniswap/sdk": "^3.0.3",
