@@ -48,6 +48,7 @@ export default function BrowsePlots({ networkProvider, web3Modal }: Props) {
       toast.dismiss("isWhitelisted");
       toast.error("You aren't whitelisted to buy any plots yet 😢", {
         toastId: "notWhitelisted",
+        autoClose: false,
       });
     }
   }, [whitelistedAmount, userAddress]);
