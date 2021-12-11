@@ -122,7 +122,7 @@ contract CityDaoParcel is ERC165, ERC721URIStorage, Ownable, IEIP2981, VRFConsum
     emit LogEthDeposit(msg.sender);
   }
 
-  function configVRF(bytes32 _keyHash, uint256 _fee) public onlyOwner {
+  function configVRF(bytes32 _keyHash, uint256 _fee) external onlyOwner {
     keyHash = _keyHash;
     fee = _fee;
   }
@@ -130,7 +130,7 @@ contract CityDaoParcel is ERC165, ERC721URIStorage, Ownable, IEIP2981, VRFConsum
   /** 
   * Requests randomness 
   */
-  function getRandomNumber() public returns (bytes32 requestId) {
+  function getRandomNumber() internal returns (bytes32 requestId) {
       require(LINK.balanceOf(address(this)) >= fee, "Not enough LINK - fill contract with at least 2 LINK (mainnet)");
       return requestRandomness(keyHash, fee);
   }
@@ -150,7 +150,7 @@ contract CityDaoParcel is ERC165, ERC721URIStorage, Ownable, IEIP2981, VRFConsum
   /**
   * Get random numbers from Chainlink VRF (run getRandomNumber() first)
   */
-  function drawRaffle(uint256 n) public onlyOwner {
+  function drawRaffle(uint256 n) external onlyOwner {
     getRandomNumber();
     uint256[] memory winners = expand(randomResult, n);
     for (uint256 i = 0; i < n; i++) {
@@ -160,7 +160,7 @@ contract CityDaoParcel is ERC165, ERC721URIStorage, Ownable, IEIP2981, VRFConsum
     }
   }
 
-  function enteredRaffle(address _address) public view returns (bool) {
+  function enteredRaffle(address _address) external view returns (bool) {
     for (uint256 i = 0; i < _enteredAddresses.length; i++) {
       if (_enteredAddresses[i] == _address) {
         return true;
@@ -176,7 +176,7 @@ contract CityDaoParcel is ERC165, ERC721URIStorage, Ownable, IEIP2981, VRFConsum
   *   Will return true if successfully withdrawn, otherwise throws.
   * @param amount The amount to withdraw (in wei)
   */
-  function withdraw(uint amount) public onlyOwner returns(bool) {
+  function withdraw(uint amount) external onlyOwner returns(bool) {
       require(amount <= address(this).balance, "The contract's balance is less than the requested amount");
       (bool success, ) = owner().call{value: amount}("");
       require(success, "Failed to withdraw funds");
@@ -193,7 +193,7 @@ contract CityDaoParcel is ERC165, ERC721URIStorage, Ownable, IEIP2981, VRFConsum
   * @param price The mint price of the plot (in wei)
   * @param plotUri The URI of the plot's metadata
   */
-  function createPlot(uint256 price, string memory plotUri) public onlyOwner returns (uint256) {
+  function createPlot(uint256 price, string calldata plotUri) external onlyOwner returns (uint256) {
     uint256 plotId = _tokenIds.current();
     _tokenIds.increment();
     _plotIdToPrice[plotId] = price;
@@ -211,14 +211,14 @@ contract CityDaoParcel is ERC165, ERC721URIStorage, Ownable, IEIP2981, VRFConsum
   *   Can only be called by the owner of the smart contract.
   * @param uri The uri of the parcel metadata. The metadata must contain a valid geojson object with the "features" key changed to "parcel".
   */
-  function setParcelMetadata(string memory uri) public onlyOwner {
+  function setParcelMetadata(string calldata uri) external onlyOwner {
     parcelMetadataUri = uri;
     emit ParcelMetadataUpdated(uri);
   }
   /**
   * @notice Gets overarching parcel metadata uri. The metadata will contain a valid geojson object with the "features" key changed to "parcel"
   */
-  function getParcelMetadataUri() public view returns (string memory) {
+  function getParcelMetadataUri() external view returns (string memory) {
     return parcelMetadataUri;
   }
 
@@ -229,7 +229,7 @@ contract CityDaoParcel is ERC165, ERC721URIStorage, Ownable, IEIP2981, VRFConsum
   *   The "plots" value should be an array of geojson polygons.
   * @param uri The uri of the plot metadata
   */
-  function setPlotsMetadata(string memory uri) public onlyOwner {
+  function setPlotsMetadata(string calldata uri) external onlyOwner {
     plotsMetadataUri = uri;
     emit PlotsMetadataUpdated(uri);
   }
@@ -238,7 +238,7 @@ contract CityDaoParcel is ERC165, ERC721URIStorage, Ownable, IEIP2981, VRFConsum
   * @dev The uri's metadata should contain a geojson object with the "features" key changed to "plots".
   *   The "plots" value should be an array of geojson polygons.
   */
-  function getPlotsMetadataUri() public view returns (string memory) {
+  function getPlotsMetadataUri() external view returns (string memory) {
     return plotsMetadataUri;
   }
 
@@ -248,7 +248,7 @@ contract CityDaoParcel is ERC165, ERC721URIStorage, Ownable, IEIP2981, VRFConsum
   * @dev The uri's metadata must contain a geojson object with the "features" key.
   * @param uri The uri of the plot metadata
   */
-  function setCommunalLandMetadata(string memory uri) public onlyOwner {
+  function setCommunalLandMetadata(string calldata uri) external onlyOwner {
     communalLandMetadataUri = uri;
     emit CommunalLandMetadataUpdated(uri);
   }
@@ -256,7 +256,7 @@ contract CityDaoParcel is ERC165, ERC721URIStorage, Ownable, IEIP2981, VRFConsum
   * @notice sets geojson metadata for the communal land area.
   * @dev The uri's metadata will contain a geojson object with the "features" key.
   */
-  function getCommunalLandMetadataUri() public view returns (string memory) {
+  function getCommunalLandMetadataUri() external view returns (string memory) {
     return communalLandMetadataUri;
   }
 
@@ -268,7 +268,7 @@ contract CityDaoParcel is ERC165, ERC721URIStorage, Ownable, IEIP2981, VRFConsum
   */
   function buyPlot(uint256 plotId)
       payable
-      public
+      external
       returns (uint256)
   {
       require(_whitelistedAmounts[msg.sender] > 0, "You have purchased all your whitelisted plots.");
@@ -345,12 +345,12 @@ contract CityDaoParcel is ERC165, ERC721URIStorage, Ownable, IEIP2981, VRFConsum
   * @notice Returns the price of the specified plot (in Gwei).
   * @param plotId uint256 ID of the token (plot) to get price for.
   */
-  function getPrice(uint256 plotId) public view returns (uint) {
+  function getPrice(uint256 plotId) external view returns (uint) {
     return _plotIdToPrice[plotId];
   }
 
 
-  function getTokenMetadataUri(uint256 tokenId) public view returns (string memory) {
+  function getTokenMetadataUri(uint256 tokenId) external view returns (string memory) {
     return _plotIdToMetadata[tokenId];
   }
 
@@ -358,7 +358,7 @@ contract CityDaoParcel is ERC165, ERC721URIStorage, Ownable, IEIP2981, VRFConsum
   * @notice Returns the list of plot IDs
   * @dev The plot IDs are returned in the same order as the sold status (setAllSoldStatus), owners (getOwners), and prices (getAllPrices). This enables coordinating between the plot IDs and their sold status / price / owner.
   */
-  function getPlotIds() public view returns (uint256[] memory) {
+  function getPlotIds() external view returns (uint256[] memory) {
     return _plotIds;
   }
 
@@ -366,7 +366,7 @@ contract CityDaoParcel is ERC165, ERC721URIStorage, Ownable, IEIP2981, VRFConsum
   * @notice Returns the list owners in the order corresponding to getPlotIds
   * @dev Returns the 0 address for plots that have not yet been sold (minted).
   */
-  function getOwners() public view returns (address[] memory) {
+  function getOwners() external view returns (address[] memory) {
     address[] memory _owners = new address[](_plotIds.length);
     for (uint i = 0; i < _plotIds.length; i++) {
       uint256 _plotId = _plotIds[i];
@@ -383,7 +383,7 @@ contract CityDaoParcel is ERC165, ERC721URIStorage, Ownable, IEIP2981, VRFConsum
   * @notice Returns the list of prices in the order corresponding to getPlotIds
   * @dev Returns the mint price regardless of sold status.
   */
-  function getAllPrices() public view returns (uint256[] memory) {
+  function getAllPrices() external view returns (uint256[] memory) {
     uint256[] memory ret = new uint256[](_plotIds.length);
     for (uint i = 0; i < _plotIds.length; i++) {
         ret[i] = _plotIdToPrice[_plotIds[i]];
@@ -394,7 +394,7 @@ contract CityDaoParcel is ERC165, ERC721URIStorage, Ownable, IEIP2981, VRFConsum
   /**
   * @notice Returns the list of sold statuses (as a boolean) in the order corresponding to getPlotIds
   */
-  function getAllSoldStatus() public view returns (bool[] memory) {
+  function getAllSoldStatus() external view returns (bool[] memory) {
     bool[] memory ret = new bool[](_plotIds.length);
     for (uint i = 0; i < _plotIds.length; i++) {
         ret[i] = _plotIdToSoldStatus[_plotIds[i]];
@@ -406,26 +406,26 @@ contract CityDaoParcel is ERC165, ERC721URIStorage, Ownable, IEIP2981, VRFConsum
   * @notice Sets the citizen NFT contract address and NFT IDs, which will be used for citizen whitelisting.
   * @param nftContract address The address of the citizen NFT contract.
   */
-  function setCitizenNftContract(address nftContract) public onlyOwner {
+  function setCitizenNftContract(address nftContract) external onlyOwner {
     _citizenNftContract = nftContract;
     emit CitizenNftContractSet(nftContract);
   }
 
-  function beginWhitelisting() public onlyOwner {
+  function beginWhitelisting() external onlyOwner {
     _allowWhitelisting = true;
   }
-  function endWhitelisting() public onlyOwner {
+  function endWhitelisting() external onlyOwner {
     _allowWhitelisting = false;
   }
-  function isWhitelisting() public view returns (bool) {
+  function isWhitelisting() external view returns (bool) {
     return _allowWhitelisting;
   }
 
-  function getWhitelistedAmount(address addr) public view returns (uint256) {
+  function getWhitelistedAmount(address addr) external view returns (uint256) {
     return _whitelistedAmounts[addr];
   }
 
-  function enterRaffle() public {
+  function enterRaffle() external {
     require(_allowWhitelisting, "Whitelisting is disabled");
     require(_citizenNftContract != address(0), "Citizen NFT contract not set!");
     IERC1155 citizenNft = IERC1155(_citizenNftContract);
@@ -447,7 +447,7 @@ contract CityDaoParcel is ERC165, ERC721URIStorage, Ownable, IEIP2981, VRFConsum
   * @param _addresses address[] The ID of the NFT to whitelist.
   * @param amount uint256 The number of plots the address can purchase
   */
-  function whitelistAddresses(address[] memory _addresses, uint256 amount) public onlyOwner {
+  function whitelistAddresses(address[] memory _addresses, uint256 amount) external onlyOwner {
     for (uint i = 0; i < _addresses.length; i++) {
       _whitelistedAmounts[_addresses[i]] = amount;
       emit WhitelistedAddress(_addresses[i]);
