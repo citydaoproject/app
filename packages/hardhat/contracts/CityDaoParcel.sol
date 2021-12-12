@@ -3,6 +3,7 @@ pragma experimental ABIEncoderV2;
 //SPDX-License-Identifier: MIT
 
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
@@ -25,7 +26,7 @@ interface IEIP2981 is IERC165 {
 
 /// @title CityDAO Parcel 0
 /// @author @gregfromstl
-contract CityDaoParcel is ERC165, ERC721URIStorage, Ownable, IEIP2981, VRFConsumerBase {
+contract CityDaoParcel is ERC165, ERC721URIStorage, Ownable, IEIP2981, VRFConsumerBase, ReentrancyGuard {
 
   // Counter to increment plot (token) IDs
   using Counters for Counters.Counter;
@@ -65,8 +66,8 @@ contract CityDaoParcel is ERC165, ERC721URIStorage, Ownable, IEIP2981, VRFConsum
   // The owner of a plot NFT will also be granted one governance vote in proposals involving the communal land designated in the communalLandMetadata found at the communalLandMetadataUri.
   uint256[] private _plotIds = new uint256[](0);
 
-  // The plot metadata marks the bounding area of each plot. 
-  // The plot metadata's order matches the order of the plot ids array. 
+  // The plot metadata marks the bounding area of each plot.
+  // The plot metadata's order matches the order of the plot ids array.
   // For example, the first plot metadata is for the first plot id in the array.
   string private plotsMetadataUri;
 
@@ -103,8 +104,8 @@ contract CityDaoParcel is ERC165, ERC721URIStorage, Ownable, IEIP2981, VRFConsum
   /**
   * @dev Initializes the contract by setting a `name` and a `symbol` to the token collection.
   */
-  constructor() 
-  ERC721("CityDAO Parcel 0", "PRCL0") 
+  constructor()
+  ERC721("CityDAO Parcel 0", "PRCL0")
   VRFConsumerBase(
       0xb3dCcb4Cf7a26f6cf6B120Cf5A73875B7BBc655B, // VRF Coordinator
       0x01BE23585060835E02B77ef475b0Cc51aA1e0709  // LINK Token
@@ -127,8 +128,8 @@ contract CityDaoParcel is ERC165, ERC721URIStorage, Ownable, IEIP2981, VRFConsum
     fee = _fee;
   }
 
-  /** 
-  * Requests randomness 
+  /**
+  * Requests randomness
   */
   function getRandomNumber() internal returns (bytes32 requestId) {
       require(LINK.balanceOf(address(this)) >= fee, "Not enough LINK - fill contract with at least 2 LINK (mainnet)");
@@ -269,20 +270,18 @@ contract CityDaoParcel is ERC165, ERC721URIStorage, Ownable, IEIP2981, VRFConsum
   function buyPlot(uint256 plotId)
       payable
       external
+      nonReentrant
       returns (uint256)
   {
       require(_whitelistedAmounts[msg.sender] > 0, "You have purchased all your whitelisted plots.");
       require(!isSold(plotId), "This plot has already been sold!");
-      uint256 _price = _plotIdToPrice[plotId];
-      require(msg.value == _price, "You must pay the price of the plot!");
-
-      _safeMint(msg.sender, plotId);
-      _setTokenURI(plotId, _plotIdToMetadata[plotId]);
-
+      require(msg.value == _plotIdToPrice[plotId], "You must pay the price of the plot!");
       _whitelistedAmounts[msg.sender] = _whitelistedAmounts[msg.sender] - 1;
       delete _plotIdToPrice[plotId];
       _plotIdToSoldStatus[plotId] = true;
+      _setTokenURI(plotId, _plotIdToMetadata[plotId]);
 
+      _safeMint(msg.sender, plotId);
       emit PlotMinted(msg.sender, plotId);
 
       return plotId;
