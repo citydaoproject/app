@@ -53,7 +53,7 @@ export default function PlotDetail({ plot, contracts, injectedProvider }: Props)
         <div className="block overflow-y-scroll p-4" style={{ maxHeight: "75vh" }}>
           <div className="flex flex-col space-y-4 primary-font text-lg">
             <motion.img
-              src={plotMetadata?.image ?? LAND_IMG}
+              src={LAND_IMG}
               alt={plot?.id.toString()}
               initial={{ x: -300, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
@@ -79,13 +79,11 @@ export default function PlotDetail({ plot, contracts, injectedProvider }: Props)
               <div className="flex flex-col justify-between p-4">
                 {plot.metadata.location && (
                   <div className="py-2 secondary-font text-base font-light text-gray-9">
-                    Location: {plot.metadata.location}
+                    Location: Amazon Rainforest
                   </div>
                 )}
                 {plotMetadata.terrain && (
-                  <div className="py-2 secondary-font text-base font-light text-gray-9">
-                    Terrain: {plotMetadata.terrain}
-                  </div>
+                  <div className="py-2 secondary-font text-base font-light text-gray-9">Terrain: Jungle</div>
                 )}
                 {plotMetadata.sqft && (
                   <div className="py-2 secondary-font text-base font-light text-gray-9">Size: {plotMetadata.sqft}</div>
@@ -118,7 +116,8 @@ export default function PlotDetail({ plot, contracts, injectedProvider }: Props)
               <div className="p-4 text-white">Owner Rights</div>
               <Divider />
               <div className="flex flex-col justify-between p-4 secondary-font text-base font-light text-gray-9">
-                {plotMetadata?.description ?? "Could not retrieve owner rights from the contract."}
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
+                dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
               </div>
             </motion.div>
           </div>

@@ -5,8 +5,8 @@ const main = async () => {
   const { deployer } = await getNamedAccounts();
   console.log(deployer);
   const citizenContract = await ethers.getContract("CitizenNFT", deployer);
-  citizenContract.issueNewCitizenships(
-    "0x2C68489f711eEf3e30fC0Cc20Bdaa436A3b4cc4a",
+  await citizenContract.issueNewCitizenships(
+    "0x3aDa0A88835691dAC6ae3EA2BDD4Af14Ee76B081",
     42,
     1
   );
