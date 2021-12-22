@@ -314,19 +314,19 @@ contract CityDaoParcel is ERC165, ERC721URIStorage, Ownable, IEIP2981, VRFConsum
 
   /**
   * @notice Returns royalty info (address to send fee, and fee to send)
-  * @param tokenId uint256 ID of the token to display information
-  * @param value uint256 sold price
+  * @param _tokenId uint256 ID of the token to display information
+  * @param _salePrice uint256 sold price
   */
-  function royaltyInfo(uint256 tokenId, uint256 value)
+  function royaltyInfo(uint256 _tokenId, uint256 _salePrice)
       public
       view
       override
-      returns (address, uint256)
+      returns (address receiver, uint256 royaltyAmount)
   {
       if (defaultRoyalty.recipient != address(0) && defaultRoyalty.bps != 0) {
           return (
               defaultRoyalty.recipient,
-              (value * defaultRoyalty.bps) / 10000
+              (_salePrice * defaultRoyalty.bps) / 10000
           );
       }
       return (address(0), 0);
