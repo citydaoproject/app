@@ -424,20 +424,28 @@ contract CityDaoParcel is ERC165, ERC721URIStorage, Ownable, IEIP2981, VRFConsum
     return _whitelistedAmounts[addr];
   }
 
+  function whitelistFoundingCitizens(address[] addresses) external onlyOwner {
+    require(_allowWhitelisting, "Whitelisting is disabled");
+    require(_citizenNftContract != address(0), "Citizen NFT contract not set!");
+    IERC1155 citizenNft = IERC1155(_citizenNftContract);
+
+    for (uint i = 0; i < addresses.length; i++) {
+      _whitelistedAmounts[addresses[i]] = 2;
+      emit WhitelistedAddress(addresses[i]);
+    }
+  }
+
   function enterRaffle() external {
     require(_allowWhitelisting, "Whitelisting is disabled");
     require(_citizenNftContract != address(0), "Citizen NFT contract not set!");
     IERC1155 citizenNft = IERC1155(_citizenNftContract);
 
-    if (citizenNft.balanceOf(msg.sender, 69) > 0) { // has founding citizen NFT
-      _whitelistedAmounts[msg.sender] = 2;
-      emit WhitelistedAddress(msg.sender);
-    } else if (citizenNft.balanceOf(msg.sender, 42) > 0) { // has citizen NFT
+    if (citizenNft.balanceOf(msg.sender, 42) > 0) { // has citizen NFT
       _whitelistedAmounts[msg.sender] = 0;
       _enteredAddresses.push(msg.sender);
       emit EnteredRaffle(msg.sender);
     } else {
-      revert("You must have a citizen NFT to enter the raffle");
+      revert("You must have a standard citizen NFT to enter the raffle");
     }
   }
 
@@ -446,7 +454,7 @@ contract CityDaoParcel is ERC165, ERC721URIStorage, Ownable, IEIP2981, VRFConsum
   * @param _addresses address[] The ID of the NFT to whitelist.
   * @param amount uint256 The number of plots the address can purchase
   */
-  function whitelistAddresses(address[] memory _addresses, uint256 amount) external onlyOwner {
+  function whitelistAddresses(address[] _addresses, uint256 amount) external onlyOwner {
     for (uint i = 0; i < _addresses.length; i++) {
       _whitelistedAmounts[_addresses[i]] = amount;
       emit WhitelistedAddress(_addresses[i]);
