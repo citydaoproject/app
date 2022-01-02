@@ -12,6 +12,8 @@ const ipfs = ipfsAPI({
 
 const delayMS = 1000;
 
+const START = 0;
+
 const main = async () => {
   const { deployer } = await getNamedAccounts();
   const parcelContract = await ethers.getContract("CityDaoParcel", deployer);
@@ -29,8 +31,8 @@ const main = async () => {
     await sleep(delayMS);
     await parcelContract.setCommunalLandMetadata(communalUri.path);
     console.log(`Posting IPFS hash (${plotsUri.path})`);
-    let idx = 0;
-    for (const plot of plots.plots) {
+    let idx = START;
+    for (const plot of plots.plots.slice(START)) {
       const plotUri = await ipfs.add(
         JSON.stringify({
           name: `CityDAO Parcel 0, Plot ${idx + 1}`,
@@ -66,7 +68,7 @@ async function createPlot(plot, idx, plotUri, contract) {
     ethers.BigNumber.from(`${0.1 * 10 ** 18}`),
     plotUri,
     {
-      gasLimit: 400000,
+      gasLimit: 30000,
     }
   );
   await sleep(5000);
