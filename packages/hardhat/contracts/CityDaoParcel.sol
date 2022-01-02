@@ -424,17 +424,6 @@ contract CityDaoParcel is ERC165, ERC721URIStorage, Ownable, IEIP2981, VRFConsum
     return _whitelistedAmounts[addr];
   }
 
-  function whitelistFoundingCitizens(address[] addresses) external onlyOwner {
-    require(_allowWhitelisting, "Whitelisting is disabled");
-    require(_citizenNftContract != address(0), "Citizen NFT contract not set!");
-    IERC1155 citizenNft = IERC1155(_citizenNftContract);
-
-    for (uint i = 0; i < addresses.length; i++) {
-      _whitelistedAmounts[addresses[i]] = 2;
-      emit WhitelistedAddress(addresses[i]);
-    }
-  }
-
   function enterRaffle() external {
     require(_allowWhitelisting, "Whitelisting is disabled");
     require(_citizenNftContract != address(0), "Citizen NFT contract not set!");
