@@ -11,6 +11,7 @@ module.exports = {
     },
     extend: {
       colors: {
+        "green-0": "rgba(153, 248, 181, 0.5)",
         "green-1": "#00FFA8",
         "green-2": "#038B5C",
       },
@@ -19,6 +20,9 @@ module.exports = {
       },
       padding: {
         "50px": "50px",
+      },
+      maxWidth: {
+        "750px": "750px",
       },
     },
   },
