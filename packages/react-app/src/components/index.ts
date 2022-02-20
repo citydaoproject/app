@@ -12,3 +12,4 @@ export { default as LogoDisplay } from "./LogoDisplay";
 export { default as Header } from "./Header";
 export { default as ConnectWalletButton } from "./ConnectWalletButton";
 export { default as SearchPlots } from "./SearchPlots";
+export { default as ParcelInfo } from "./ParcelInfo";

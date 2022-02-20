@@ -7,8 +7,20 @@ module.exports = {
       base: "14px",
       lg: "16px",
       xl: "20px",
+      xxl: "28px",
     },
-    extend: {},
+    extend: {
+      colors: {
+        "green-1": "#00FFA8",
+        "green-2": "#038B5C",
+      },
+      lineHeight: {
+        2: "10px",
+      },
+      padding: {
+        "50px": "50px",
+      },
+    },
   },
   variants: {
     extend: {},
