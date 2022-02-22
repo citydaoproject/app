@@ -94,7 +94,7 @@
     "extends": "react-app"
   },
   "scripts": {
-    "build": "craco build",
+    "build": "GENERATE_SOURCEMAP=false craco build",
     "eject": "craco eject",
     "prestart": "node ./scripts/create_contracts.js",
     "start": "craco start",
