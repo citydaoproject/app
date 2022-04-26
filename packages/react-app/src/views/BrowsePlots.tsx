@@ -123,7 +123,7 @@ export default function BrowsePlots({ networkProvider, web3Modal }: Props) {
 
   return (
     <>
-      <ProgressBar />
+      {/* <ProgressBar /> */}
       <div className="flex flex-row flex-grow min-w-0">
         <Col className="sidebar">
           <Link to="/whitelist">
