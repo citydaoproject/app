@@ -171,7 +171,11 @@ select:focus {
   }
 
   @media (max-width: 720px) {
-    width: 55%;
+    width: 35%;
+  }
+
+  @media (max-width: 450px) {
+    width: 50%;
   }
 }
 
@@ -225,7 +229,13 @@ select:focus {
 
 /* BrowsePlots Layout */
 .progress-bar-indicator {
+  margin-left: 3rem;
+
   @media (max-width: 475px) {
+    margin-left: 2rem;
+  }
+
+  @media (max-width: 425px) {
     margin-left: 0;
   }
 }
@@ -236,7 +246,9 @@ select:focus {
 }
 
 .search-plots-input {
-  @media (max-width: 400px) {
+  width: 100%;
+
+  @media (max-width: 500px) {
     max-width: 85%;
   }
 }
@@ -252,6 +264,11 @@ select:focus {
   @media (max-width: 1024px) {
     grid-template-columns: 1fr;
     grid-template-rows: 3rem repeat(2, 4rem) 300px 4rem 5fr;
+  }
+
+  // Responsive for mobile landscape screens
+  @media (max-height: 500px) {
+    grid-template-rows: 3rem repeat(2, 4rem) 300px 4rem 600px;
   }
 }
 
