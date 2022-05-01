@@ -1,6 +1,4 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Col, Layout } from "antd";
-import { Content } from "antd/lib/layout/layout";
 import { ethers } from "ethers";
 import { Link } from "react-router-dom";
 
@@ -96,6 +94,7 @@ export default function BrowsePlots({ networkProvider, web3Modal }: Props) {
       DEBUG && console.log(e);
     }
   };
+
   useEffect(() => {
     readParcel();
   }, [contracts]);
@@ -110,6 +109,7 @@ export default function BrowsePlots({ networkProvider, web3Modal }: Props) {
       dispatch(setWhitelistedAmount(0));
     }
   };
+
   useEffect(() => {
     readWhitelistStatus();
   }, [contracts, userAddress, plots]);
@@ -122,34 +122,26 @@ export default function BrowsePlots({ networkProvider, web3Modal }: Props) {
   });
 
   return (
-    <>
+    <div className="browse-plots-wrapper">
       <ProgressBar />
-      <div className="flex flex-row flex-grow min-w-0">
-        <Col className="sidebar">
-          <Link to="/whitelist">
-            <LogoDisplay />
-          </Link>
-          {activePlot !== undefined ? (
-            <PlotDetail plot={activePlot} contracts={contracts} injectedProvider={injectedProvider} />
-          ) : (
-            <PlotTabs />
-          )}
-        </Col>
-        <Layout className="site-layout">
-          <Content className="flex flex-col">
-            <Header connectWallet={loadWeb3Modal} />
-            {/* key prop is to cause rerendering whenever it changes */}
-            <PlotMap
-              key={plots.length}
-              parcel={parcel}
-              plots={plots}
-              startingCoordinates={[-109.25689639464197, 44.922331600075466]}
-              startingZoom={15.825123438299038}
-              startingPitch={20}
-            />
-          </Content>
-        </Layout>
-      </div>
-    </>
+      <Link to="/whitelist" className="logo-link">
+        <LogoDisplay />
+      </Link>
+      {activePlot !== undefined ? (
+        <PlotDetail plot={activePlot} contracts={contracts} injectedProvider={injectedProvider} />
+      ) : (
+        <PlotTabs />
+      )}
+      <Header connectWallet={loadWeb3Modal} />
+      {/* key prop is to cause rerendering whenever it changes */}
+      <PlotMap
+        key={plots.length}
+        parcel={parcel}
+        plots={plots}
+        startingCoordinates={[-109.25689639464197, 44.922331600075466]}
+        startingZoom={15.825123438299038}
+        startingPitch={20}
+      />
+    </div>
   );
 }

@@ -23,6 +23,7 @@
   height: 2px;
   margin: 0;
 }
+
 .sidebar {
   width: 400px;
 }
@@ -125,6 +126,14 @@
 .connect-wallet {
   background-color: @primary;
 }
+.connect-wallet-button {
+  font-size: 16px;
+
+  @media (max-width: 1024px) {
+    font-size: 12px;
+    margin-right: 0.75rem;
+  }
+}
 .connected {
   background-color: transparent;
   border: 1px solid @primary;
@@ -147,9 +156,6 @@
 .logo-display {
   border-color: @gray-4;
 }
-.header {
-  border-color: @gray-4;
-}
 
 /* search bar styles */
 input:focus,
@@ -162,6 +168,10 @@ select:focus {
   * {
     border-color: @gray-4;
     background-color: transparent;
+  }
+
+  @media (max-width: 720px) {
+    width: 55%;
   }
 }
 
@@ -211,4 +221,82 @@ select:focus {
   border-left: 10px @gray-2 solid;
   border-top: 10px @gray-2 solid;
   border-bottom: 10px @gray-2 solid;
+}
+
+/* BrowsePlots Layout */
+.progress-bar-indicator {
+  @media (max-width: 475px) {
+    margin-left: 0;
+  }
+}
+
+.ant-tabs-content-holder {
+  overflow-y: scroll;
+  margin-bottom: 0.75rem;
+}
+
+.search-plots-input {
+  @media (max-width: 400px) {
+    max-width: 85%;
+  }
+}
+
+.browse-plots-wrapper {
+  height: 100%;
+  display: grid;
+  grid-template-columns: 400px 1fr;
+  grid-template-rows: 3rem 4rem 1fr;
+  grid-column-gap: 0px;
+  grid-row-gap: 0px;
+
+  @media (max-width: 1024px) {
+    grid-template-columns: 1fr;
+    grid-template-rows: 3rem repeat(2, 4rem) 300px 4rem 5fr;
+  }
+}
+
+.progress-bar {
+  grid-area: 1 / 1 / 2 / 3;
+}
+.logo-link {
+  grid-area: 2 / 1 / 3 / 2;
+}
+.connect-wallet-section {
+  grid-area: 2 / 2 / 3 / 3;
+  border-color: @gray-4;
+  justify-content: flex-end;
+}
+.plot-detail {
+  grid-area: 3 / 1 / 4 / 2;
+}
+.plot-tabs {
+  grid-area: 3 / 1 / 4 / 2;
+  width: 100%;
+}
+.plot-map {
+  grid-area: 3 / 2 / 4 / 3;
+}
+
+@media (max-width: 1024px) {
+  .progress-bar {
+    grid-area: 1 / 1 / 2 / 2;
+  }
+  .logo-link {
+    grid-area: 2 / 1 / 3 / 2;
+  }
+  .connect-wallet-section {
+    grid-area: 3 / 1 / 4 / 2;
+    justify-content: center;
+    max-width: 100vw;
+  }
+  .plot-map {
+    grid-area: 4 / 1 / 5 / 2;
+  }
+  .plot-tabs {
+    grid-area: 5 / 1 / 7 / 2;
+    max-width: 100vw;
+  }
+  .plot-detail {
+    grid-area: 6 / 1 / 7 / 2;
+  }
 }
