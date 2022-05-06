@@ -51,7 +51,7 @@ export default function EnterRaffle({ injectedProvider, inRaffle, resetStatus }:
     <Tooltip title={userAddress && !inRaffle ? null : tooltip}>
       <button
         onClick={() => userAddress && !inRaffle && raffleRules()}
-        className={`connect-wallet-button connect-wallet secondary-font text-lg px-4 h-9 rounded ${
+        className={`connect-wallet-button connect-wallet secondary-font px-4 h-9 rounded ${
           !userAddress || inRaffle ? "opacity-50" : ""
         } flex items-center justify-center`}
       >

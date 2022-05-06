@@ -110,7 +110,7 @@ export default function PlotMap({ parcel, plots, startingCoordinates, startingZo
   }, [highlightedPlot, map.current]);
 
   return (
-    <div className="flex-grow flex flex-col relative">
+    <div className="plot-map flex-grow flex flex-col relative">
       <AnimatePresence>{!mapLoaded && <Loading />}</AnimatePresence>
       <div ref={mapContainer} className="absolute left-0 right-0 top-0 bottom-0 plot-map" />
     </div>
@@ -122,7 +122,7 @@ function Loading() {
     <motion.div
       initial={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="bg-black absolute left-0 right-0 top-0 bottom-0 z-10 flex items-center justify-center"
+      className="plot-map bg-black absolute left-0 right-0 top-0 bottom-0 z-10 flex items-center justify-center"
     >
       <img src={loading} alt="loading" />
     </motion.div>
