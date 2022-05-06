@@ -109,6 +109,7 @@
   @media (max-width: 720px) {
     overflow-y: scroll;
     height: auto;
+    background-color: @gray-2;
   }
 }
 
@@ -242,6 +243,18 @@ select:focus {
   border-left: 10px @gray-2 solid;
   border-top: 10px @gray-2 solid;
   border-bottom: 10px @gray-2 solid;
+}
+
+/* Plot Detail */
+.plot-detail-content {
+  overflow-y: scroll;
+  max-height: 75vh;
+
+  @media (max-width: 1024px) {
+    overflow-y: initial;
+    padding-bottom: 2rem;
+    max-height: initial;
+  }
 }
 
 /* BrowsePlots Layout */

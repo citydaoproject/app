@@ -50,7 +50,7 @@ export default function PlotDetail({ plot, contracts, injectedProvider }: Props)
         </div>
         <Divider />
 
-        <div className="block overflow-y-scroll p-4" style={{ maxHeight: "75vh" }}>
+        <div className="plot-detail-content block p-4">
           <div className="flex flex-col space-y-4 primary-font text-lg">
             <motion.img
               src={plotMetadata?.image ?? LAND_IMG}
