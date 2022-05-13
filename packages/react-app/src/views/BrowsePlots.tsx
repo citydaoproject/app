@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { ethers } from "ethers";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 
 import { useContractLoader, useAppSelector, useAppDispatch, useUserSigner } from "../hooks";
 import { PlotMap, ProgressBar, PlotDetail, LogoDisplay, Header } from "../components";
@@ -10,7 +11,6 @@ import { Plot } from "../models/Plot";
 import { logoutOfWeb3Modal } from "../helpers";
 import { fetchedPlots, setCommunalLand, setParcelGeojson } from "../actions/plotsSlice";
 import { fetchMetadata } from "../data";
-import { toast } from "react-toastify";
 import updatePlots from "../helpers/UpdatePlots";
 import { setWhitelistedAmount } from "../actions/userSlice";
 
@@ -52,25 +52,29 @@ export default function BrowsePlots({ networkProvider, web3Modal }: Props) {
   }, [whitelistedAmount, userAddress]);
 
   const loadWeb3Modal = useCallback(async () => {
-    const provider = await web3Modal.connect();
+    try {
+      const provider = await web3Modal.connect();
 
-    setInjectedProvider(new ethers.providers.Web3Provider(provider));
-
-    provider.on("chainChanged", (chainId: string) => {
-      DEBUG && console.log(`chain changed to ${chainId}! updating providers`);
       setInjectedProvider(new ethers.providers.Web3Provider(provider));
-    });
 
-    provider.on("accountsChanged", () => {
-      DEBUG && console.log(`account changed!`);
-      setInjectedProvider(new ethers.providers.Web3Provider(provider));
-    });
+      provider.on("chainChanged", (chainId: string) => {
+        DEBUG && console.log(`chain changed to ${chainId}! updating providers`);
+        setInjectedProvider(new ethers.providers.Web3Provider(provider));
+      });
 
-    // Subscribe to session disconnection
-    provider.on("disconnect", (code: string, reason: string) => {
-      DEBUG && console.log(code, reason);
-      logoutOfWeb3Modal(web3Modal);
-    });
+      provider.on("accountsChanged", () => {
+        DEBUG && console.log(`account changed!`);
+        setInjectedProvider(new ethers.providers.Web3Provider(provider));
+      });
+
+      // Subscribe to session disconnection
+      provider.on("disconnect", (code: string, reason: string) => {
+        DEBUG && console.log(code, reason);
+        logoutOfWeb3Modal(web3Modal);
+      });
+    } catch (error) {
+      toast.error("Error connecting to a wallet");
+    }
   }, [setInjectedProvider, DEBUG]);
 
   const readParcel = async () => {
