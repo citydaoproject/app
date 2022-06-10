@@ -97,6 +97,7 @@
   },
   "scripts": {
     "build": "GENERATE_SOURCEMAP=false craco build",
+    "install-with-deps": "yum install libsecret-devel -y && yarn install",
     "eject": "craco eject",
     "prestart": "node ./scripts/create_contracts.js",
     "start": "craco start",
