@@ -7,7 +7,7 @@ import { useAppDispatch } from "../hooks";
 import { setActivePlot } from "../actions/plotsSlice";
 
 import LAND_IMG from "../assets/images/SampleLandImage.png";
-import { BuyPlot, ViewPlot } from ".";
+import { ViewPlot } from ".";
 import { fetchMetadata } from "../data";
 
 interface Props {
@@ -40,9 +40,6 @@ export default function PlotDetail({ plot, contracts, injectedProvider }: Props)
               Plot #{"0".repeat(4 - (plot.id.toString().length ?? 0))}
               {plot.id}
             </span>
-            <span className="plot-price secondary-font text-base font-light text-gray-9 leading-6">
-              {plot?.price && `(${plot.price.toString()} ETH)`}
-            </span>
           </div>
           <a onClick={() => dispatch(setActivePlot(undefined))}>
             <CloseOutlined style={{ fontSize: 20 }} />
@@ -65,7 +62,7 @@ export default function PlotDetail({ plot, contracts, injectedProvider }: Props)
               exit={{ x: -300, opacity: 0 }}
               transition={{ delay: 0.1 }}
             >
-              {plot?.sold ? <ViewPlot plot={plot} /> : <BuyPlot plot={plot} injectedProvider={injectedProvider} />}
+              <ViewPlot plot={plot} />
             </motion.div>
             <motion.div
               className="border-gray-4 text-left"
