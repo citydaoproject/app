@@ -62,7 +62,17 @@ export default function PlotDetail({ plot, contracts, injectedProvider }: Props)
               exit={{ x: -300, opacity: 0 }}
               transition={{ delay: 0.1 }}
             >
-              <ViewPlot plot={plot} />
+              <div className="plot-detail-buttons-wrapper">
+                <ViewPlot plot={plot} />
+                <a
+                  href="https://ipfs.io/ipfs/QmVorF3YxN6KT4RSqBUHDNM3ti1bSPrdZdQHLaEvQfmNNs"
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  className="read-agreement-btn btn w-full"
+                >
+                  Read Agreement
+                </a>
+              </div>
             </motion.div>
             <motion.div
               className="border-gray-4 text-left"
