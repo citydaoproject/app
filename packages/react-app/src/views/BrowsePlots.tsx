@@ -44,7 +44,7 @@ export default function BrowsePlots({ networkProvider, web3Modal }: Props) {
       });
     } else {
       toast.dismiss("isWhitelisted");
-      toast.error("You aren't whitelisted to buy any plots yet 😢", {
+      toast.error("You don’t own a Parcel-0 NFT in your wallet: " + userAddress?.slice(0, 6) + "..." + userAddress?.slice(-5, -1), {
         toastId: "notWhitelisted",
         autoClose: false,
       });
