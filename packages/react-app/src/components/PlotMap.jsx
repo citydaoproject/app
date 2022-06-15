@@ -5,12 +5,18 @@ import "mapbox-gl/dist/mapbox-gl.css";
 
 import { useAppSelector } from "../hooks";
 import { AnimatePresence, motion } from "framer-motion";
+import { stringifyPlotId } from "../helpers/stringifyPlotId";
 
 mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_TOKEN;
 
 export default function PlotMap({ parcel, plots, startingCoordinates, startingZoom, startingPitch }) {
   const mapContainer = useRef(null);
   const map = useRef(null);
+  let popup = new mapboxgl.Popup({
+    maxWidth: "unset",
+    closeButton: false,
+    closeOnClick: false
+  });
   const [mapLoaded, setMapLoaded] = useState(false);
 
   const highlightedPlot = useAppSelector(state => state.plots.highlightedPlot);
@@ -25,6 +31,29 @@ export default function PlotMap({ parcel, plots, startingCoordinates, startingZo
         zoom: startingZoom,
         pitch: startingPitch,
       });
+
+      let popupTitle = `<p class="plot-title">Plot #${stringifyPlotId(activePlot.id)}</p>`;
+      let popupContent = "<div class='popup-content'><div class='cordinates'>";
+      let coordinates = activePlot.metadata.geojson.geometry.coordinates[0];
+      coordinates.map((codinate, index) => {
+        if (index < 4) {
+          popupContent += `<span>${codinate}</span>`;
+        }
+      })
+      popupContent += "</div>";
+      popupContent += "</div>";
+
+      const lats = coordinates.map((codinate) => codinate[0]);
+      const lngs = coordinates.map((codinate) => codinate[1]);
+      const centerLat = (Math.min(...lats) + Math.max(...lats)) / 2;
+      const centerLng = (Math.min(...lngs) + Math.max(...lngs)) / 2;
+
+      popup.setLngLat([centerLat, centerLng]).setHTML(popupTitle + popupContent).addTo(map.current);
+    } else {
+      const popups = document.getElementsByClassName("mapboxgl-popup");
+      if (popups.length) {
+        popups[0].remove();
+      }
     }
   }, [activePlot]);
 
@@ -98,16 +127,34 @@ export default function PlotMap({ parcel, plots, startingCoordinates, startingZo
   }, [map.current, plots]);
 
   // Add/remove plot highlight when highlighted plot changes
+  // useEffect(() => {
+  //   if (map?.current && highlightedPlot && !map.current.getLayer("highlighted_fill") && mapLoaded) {
+  //     addOutlineToMap(highlightedPlot.metadata.geojson, "highlighted", "#fff");
+  //     addFilledToMap(highlightedPlot.metadata.geojson, "highlighted");
+  //   } else if (map?.current && map.current.getLayer("highlighted_fill") && mapLoaded) {
+  //     map.current.removeLayer("highlighted_fill");
+  //     map.current.removeLayer("highlighted_outline");
+  //     map.current.removeSource("highlighted");
+  //   }
+  // }, [highlightedPlot, map.current]);
+
   useEffect(() => {
-    if (map?.current && highlightedPlot && !map.current.getLayer("highlighted_fill") && mapLoaded) {
-      addOutlineToMap(highlightedPlot.metadata.geojson, "highlighted", "#fff");
-      addFilledToMap(highlightedPlot.metadata.geojson, "highlighted");
-    } else if (map?.current && map.current.getLayer("highlighted_fill") && mapLoaded) {
-      map.current.removeLayer("highlighted_fill");
-      map.current.removeLayer("highlighted_outline");
-      map.current.removeSource("highlighted");
+    if (map?.current && plots && mapLoaded) {
+      for (let i = 0; ; i++) {
+        if (map.current.getLayer(`highlighted${i}_fill`)) {
+          map.current.removeLayer(`highlighted${i}_fill`);
+          map.current.removeLayer(`highlighted${i}_outline`);
+          map.current.removeSource(`highlighted${i}`);
+        } else {
+          break;
+        }
+      }
+      plots.map((plot, index) => {
+        addOutlineToMap(plot.metadata.geojson, "highlighted" + index, "#fff");
+        addFilledToMap(plot.metadata.geojson, "highlighted" + index);
+      })
     }
-  }, [highlightedPlot, map.current]);
+  }, [plots, map.current, mapLoaded])
 
   return (
     <div className="plot-map flex-grow flex flex-col relative">
