@@ -1,10 +1,11 @@
 import React from "react";
-import { Plot } from "../models/Plot";
+import { NewPlot, Plot } from "../models/Plot";
+import { PARCEL_OPENSEA } from "../constants";
 
 interface Props {
-  plot?: Plot;
+  plot?: NewPlot;
 }
 
 export default function ViewPlot({ plot }: Props) {
-  return <button className="btn w-full">View on Rarible</button>;
+  return <button className="view-plot-btn btn w-full" onClick={() => window.open(PARCEL_OPENSEA + plot?.id, "_blank")}>View on Opensea</button>;
 }

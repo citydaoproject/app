@@ -4,6 +4,7 @@
 @white: #fff;
 @primary: #06be7f;
 @primary-4: #0c6e4d;
+@secondary: #767636;
 @gray-1: #141414;
 @gray-2: #1d1d1d;
 @gray-3: #262626;
@@ -337,6 +338,39 @@ select:focus {
     overflow-y: initial;
     padding-bottom: 2rem;
     max-height: initial;
+  }
+}
+
+.plot-detail-buttons-wrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+
+  @media (max-width: 475px) {
+    flex-direction: column;
+  }
+}
+
+.view-plot-btn {
+  background-color: @primary;
+  margin-right: 5px;
+  max-width: 220px;
+
+  @media (max-width: 475px) {
+    margin-right: 0;
+    margin-bottom: 5px;
+  }
+}
+
+.read-agreement-btn {
+  background-color: @secondary;
+  margin-left: 5px;
+  max-width: 220px;
+
+  @media (max-width: 475px) {
+    margin-left: 0;
+    margin-top: 5px;
   }
 }
 

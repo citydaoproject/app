@@ -1,6 +1,7 @@
 import React from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Plot } from "../models/Plot";
+import { NewPlot } from "../models/Plot";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import { setHighlightedPlot } from "../actions";
 import { setActivePlot } from "../actions/plotsSlice";
@@ -9,7 +10,7 @@ import LAND_IMG from "../assets/images/SampleLandImage.png";
 import { stringifyPlotId } from "../helpers/stringifyPlotId";
 
 interface Props {
-  plot: Plot;
+  plot: NewPlot;
   delay: number;
 }
 
@@ -33,15 +34,11 @@ export default function PlotButton({ plot, delay }: Props) {
       >
         <div className="flex justify-between w-full p-1 items-center">
           <div className="flex justify-start items-center">
-            <img src={LAND_IMG} alt={plot?.id.toString()} className="img-small" />
+            <img src={LAND_IMG} alt={plot.id.toString()} className="img-small" />
             <span className="plot-title primary-font text-lg font-medium leading-6 mx-2">
               Plot #{stringifyPlotId(plot.id)}
             </span>
-            <span className="text-lg secondary-font text-gray-9 leading-6 third-font mb-1">Parcel {plot.parcel}</span>
           </div>
-          <span className="plot-price primary-font text-lg font-light leading-6 float-right items-center">
-            {plot?.price !== undefined && `${plot.price.toString()} ETH`}
-          </span>
         </div>
       </motion.button>
     </AnimatePresence>

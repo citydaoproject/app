@@ -13,3 +13,10 @@ export interface PlotMetadata {
   location?: string;
   coordinates?: string;
 }
+
+export interface NewPlot {
+  id: number;
+  geometry: any;
+  properties: any;
+  type: string;
+}

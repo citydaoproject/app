@@ -1,14 +1,16 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Plot } from "../models/Plot";
+import { NewPlot } from "../models/Plot";
 
 interface PlotsState {
   plots: Plot[];
   parcel: Plot;
   communal: any[];
-  highlightedPlot?: Plot;
-  activePlot?: Plot;
+  highlightedPlot?: NewPlot;
+  activePlot?: NewPlot;
   idFilter?: string;
   fetching: boolean;
+  numDisplay: any;
 }
 
 const initialState: PlotsState = {
@@ -24,6 +26,7 @@ const initialState: PlotsState = {
   highlightedPlot: undefined,
   activePlot: undefined,
   fetching: true,
+  numDisplay: 10,
 };
 
 export const plotsState = createSlice({
@@ -33,12 +36,12 @@ export const plotsState = createSlice({
     setPlots: (state, action: PayloadAction<Plot[]>) => {
       state.plots = action.payload;
     },
-    setHighlightedPlot: (state, action: PayloadAction<Plot | undefined>) => {
+    setHighlightedPlot: (state, action: PayloadAction<NewPlot | undefined>) => {
       if (!state.activePlot) {
         state.highlightedPlot = action.payload;
       }
     },
-    setActivePlot: (state, action: PayloadAction<Plot | undefined>) => {
+    setActivePlot: (state, action: PayloadAction<NewPlot | undefined>) => {
       state.activePlot = action.payload;
       state.highlightedPlot = action.payload;
     },
@@ -54,6 +57,9 @@ export const plotsState = createSlice({
     setCommunalLand: (state, action: PayloadAction<any[]>) => {
       state.communal = action.payload;
     },
+    setNumDisplayPlots: (state, action: PayloadAction<number | undefined>) => {
+      state.numDisplay = action.payload;
+    },
   },
 });
 
@@ -65,6 +71,7 @@ export const {
   fetchedPlots,
   setParcelGeojson,
   setCommunalLand,
+  setNumDisplayPlots,
 } = plotsState.actions;
 
 export default plotsState.reducer;

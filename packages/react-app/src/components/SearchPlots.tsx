@@ -16,7 +16,7 @@ export default function SearchPlots() {
         placeholder="Search for plot #..."
         className="search-plots-input bg-transparent h-full px-2 text-gray-7"
         onChange={e => dispatch(setIdFilter(e.target.value))}
-        value={idFilter}
+        value={idFilter ?? ""}
       />
       <div className="flex items-center justify-center h-full w-9 bg-transparent border-l">
         <SearchOutlined />

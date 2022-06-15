@@ -11,8 +11,10 @@ import { Plot } from "../models/Plot";
 import { logoutOfWeb3Modal } from "../helpers";
 import { fetchedPlots, setCommunalLand, setParcelGeojson } from "../actions/plotsSlice";
 import { fetchMetadata } from "../data";
+import { plotsList } from "../data";
 import updatePlots from "../helpers/UpdatePlots";
 import { setWhitelistedAmount } from "../actions/userSlice";
+
 
 interface Props {
   networkProvider: any;
@@ -101,7 +103,7 @@ export default function BrowsePlots({ networkProvider, web3Modal }: Props) {
   };
 
   useEffect(() => {
-    readParcel();
+    // readParcel();
   }, [contracts]);
 
   const readWhitelistStatus = async () => {
@@ -119,12 +121,16 @@ export default function BrowsePlots({ networkProvider, web3Modal }: Props) {
     readWhitelistStatus();
   }, [contracts, userAddress, plots]);
 
-  updatePlots(contracts, plots, DEBUG).then((newPlots: Plot[]) => {
-    if (newPlots.length !== plots.length) {
-      dispatch(setPlots(newPlots));
-      dispatch(fetchedPlots());
-    }
-  });
+  // updatePlots(contracts, plots, DEBUG).then((newPlots: Plot[]) => {
+  //   if (newPlots.length !== plots.length) {
+  //     dispatch(setPlots(newPlots));
+  //     dispatch(fetchedPlots());
+  //   }
+  // });
+
+  useEffect(() => {
+    // dispatch(setPlots(plotsList));
+  }, [])
 
   return (
     <div className="browse-plots-wrapper">
@@ -143,8 +149,8 @@ export default function BrowsePlots({ networkProvider, web3Modal }: Props) {
         key={plots.length}
         parcel={parcel}
         plots={plots}
-        startingCoordinates={[-109.25689639464197, 44.922331600075466]}
-        startingZoom={15.825123438299038}
+        startingCoordinates={[-105.19309144352508, 41.154548195958476]}
+        startingZoom={16.125123438299038}
         startingPitch={20}
       />
     </div>

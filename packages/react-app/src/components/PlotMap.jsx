@@ -6,6 +6,7 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import { useAppSelector } from "../hooks";
 import { AnimatePresence, motion } from "framer-motion";
 import { stringifyPlotId } from "../helpers/stringifyPlotId";
+import { plotsList } from "../data";
 
 mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_TOKEN;
 
@@ -22,19 +23,20 @@ export default function PlotMap({ parcel, plots, startingCoordinates, startingZo
   const highlightedPlot = useAppSelector(state => state.plots.highlightedPlot);
   const activePlot = useAppSelector(state => state.plots.activePlot);
   const communal = useAppSelector(state => state.plots.communal);
+  const [newPlots, setNewPlots] = useState(plotsList)
 
   // zoom to plot on selection
   useEffect(() => {
     if (map.current && activePlot) {
       map.current.flyTo({
-        center: activePlot.metadata.geojson.geometry.coordinates[0][0],
+        center: activePlot.geometry.coordinates[0][0],
         zoom: startingZoom,
         pitch: startingPitch,
       });
 
       let popupTitle = `<p class="plot-title">Plot #${stringifyPlotId(activePlot.id)}</p>`;
       let popupContent = "<div class='popup-content'><div class='cordinates'>";
-      let coordinates = activePlot.metadata.geojson.geometry.coordinates[0];
+      let coordinates = activePlot.geometry.coordinates[0];
       coordinates.map((codinate, index) => {
         if (index < 4) {
           popupContent += `<span>${codinate}</span>`;
@@ -139,7 +141,7 @@ export default function PlotMap({ parcel, plots, startingCoordinates, startingZo
   // }, [highlightedPlot, map.current]);
 
   useEffect(() => {
-    if (map?.current && plots && mapLoaded) {
+    if (map?.current && newPlots.features && mapLoaded) {
       for (let i = 0; ; i++) {
         if (map.current.getLayer(`highlighted${i}_fill`)) {
           map.current.removeLayer(`highlighted${i}_fill`);
@@ -149,12 +151,14 @@ export default function PlotMap({ parcel, plots, startingCoordinates, startingZo
           break;
         }
       }
-      plots.map((plot, index) => {
-        addOutlineToMap(plot.metadata.geojson, "highlighted" + index, "#fff");
-        addFilledToMap(plot.metadata.geojson, "highlighted" + index);
-      })
+      console.log(newPlots.features)
+      // newPlots.features.map((plot, index) => {
+      //   console.log(plot)
+        addOutlineToMap(newPlots, "highlighted" + 0, "#fff");
+        addFilledToMap(newPlots, "highlighted" + 0);
+      // })
     }
-  }, [plots, map.current, mapLoaded])
+  }, [newPlots.features, map.current, mapLoaded])
 
   return (
     <div className="plot-map flex-grow flex flex-col relative">
