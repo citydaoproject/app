@@ -66,18 +66,18 @@ export default function PlotTabs() {
           emptyMessage={fetchingPlots ? "Loading..." : "No plots have been purchased. You could be the first!"}
         />
       </TabPane> */}
-      {/* <TabPane tab="Your Land" key="3">
+      <TabPane tab="Your Land" key="3">
         {idFilter && (
           <FilterNote filterText={idFilter} />
         )}
-        {userAddress && (
+        {/* {userAddress && (
           <PlotList
             plots={plots.filter(plot => plot.owner === userAddress)}
             emptyMessage={fetchingPlots ? "Loading..." : "You don't own any plots yet."}
           />
-        )}
+        )} */}
         {!userAddress && <span className="text-gray-7 third-font">Connect your wallet to see your owned plots</span>}
-      </TabPane> */}
+      </TabPane>
     </Tabs>
   );
 }
