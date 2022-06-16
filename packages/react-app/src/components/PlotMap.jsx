@@ -38,11 +38,11 @@ export default function PlotMap({ parcel, plots, startingCoordinates, startingZo
       let popupTitle = `<p class="plot-title">Plot #${stringifyPlotId(activePlot.id)}</p>`;
       let popupContent = "<div class='popup-content'><div class='cordinates'>";
       let coordinates = activePlot.geometry.coordinates[0][0];
-      coordinates.map((codinate, index) => {
-        if (index < 4) {
-          popupContent += `<span>${codinate}</span>`;
-        }
-      })
+      // coordinates.map((codinate, index) => {
+      //   if (index < 4) {
+      //     popupContent += `<span>${codinate}</span>`;
+      //   }
+      // })
       popupContent += "</div>";
       const openseaBtn = "<button class='view-plot-btn btn w-full' id='view_opensea'>View on Opensea</button>";
       popupContent += openseaBtn;
