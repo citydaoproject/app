@@ -112,9 +112,9 @@ export default function PlotDetail({ plot, contracts, injectedProvider }: Props)
                     Coordinates:
                     <br />
                     {/* {plot.metadata.coordinates} */}
-                    {plot.geometry.coordinates[0][0][1]}°N
+                    {plot.geometry.coordinates[0][0][0][1]}°N
                     <br />
-                    {plot.geometry.coordinates[0][0][0]}°W
+                    {plot.geometry.coordinates[0][0][0][0]}°W
                   </div>
                 )}
                 {/* )} */}

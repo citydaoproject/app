@@ -149,8 +149,8 @@ export default function BrowsePlots({ networkProvider, web3Modal }: Props) {
         key={plots.length}
         parcel={parcel}
         plots={plots}
-        startingCoordinates={[-105.19309144352508, 41.154548195958476]}
-        startingZoom={16.125123438299038}
+        startingCoordinates={[-109.25689639464197, 44.922331600075466]}
+        startingZoom={15.825123438299038}
         startingPitch={20}
       />
     </div>

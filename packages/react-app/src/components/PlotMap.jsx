@@ -29,14 +29,14 @@ export default function PlotMap({ parcel, plots, startingCoordinates, startingZo
   useEffect(() => {
     if (map.current && activePlot) {
       map.current.flyTo({
-        center: activePlot.geometry.coordinates[0][0],
+        center: activePlot.geometry.coordinates[0][0][0],
         zoom: startingZoom,
         pitch: startingPitch,
       });
 
       let popupTitle = `<p class="plot-title">Plot #${stringifyPlotId(activePlot.id)}</p>`;
       let popupContent = "<div class='popup-content'><div class='cordinates'>";
-      let coordinates = activePlot.geometry.coordinates[0];
+      let coordinates = activePlot.geometry.coordinates[0][0];
       coordinates.map((codinate, index) => {
         if (index < 4) {
           popupContent += `<span>${codinate}</span>`;
@@ -74,13 +74,13 @@ export default function PlotMap({ parcel, plots, startingCoordinates, startingZo
         type: "line",
         paint: {
           "line-color": color,
-          "line-width": 2,
+          "line-width": 1,
         },
       });
     }
   };
 
-  const addFilledToMap = (geojson, string_id, opacity = 0.5, color = "#eff551") => {
+  const addFilledToMap = (geojson, string_id, opacity = 0.3, color = "#eff551") => {
     if (map?.current) {
       if (!map.current.getSource(string_id)) {
         map.current.addSource(string_id, {
@@ -113,50 +113,52 @@ export default function PlotMap({ parcel, plots, startingCoordinates, startingZo
   }, []);
 
   // Draw parcel outline and communal land
+  // useEffect(() => {
+  //   if (map?.current) {
+  //     map.current.on("load", function () {
+  //       if (map.current && map.current.getSource("parcel")) return; // skip if already added
+  //       addOutlineToMap(parcel.metadata.geojson, "parcel");
+  //       communal.forEach((plot, idx) => {
+  //         addFilledToMap(plot, idx.toString(), 1, "#06be7f");
+  //       });
+  //       setTimeout(() => {
+  //         setMapLoaded(true);
+  //       }, 1000);
+  //     });
+  //   }
+  // }, [map.current, plots]);
+
+  // Add/remove plot highlight when highlighted plot changes
   useEffect(() => {
-    if (map?.current) {
+    if (map?.current && highlightedPlot && !map.current.getLayer("highlighted_fill") && mapLoaded) {
+      addOutlineToMap(highlightedPlot, "highlighted", "#00cf6b");
+      addFilledToMap(highlightedPlot, "highlighted", 0.5, "#00cf6b");
+    } else if (map?.current && map.current.getLayer("highlighted_fill") && mapLoaded) {
+      map.current.removeLayer("highlighted_fill");
+      map.current.removeLayer("highlighted_outline");
+      map.current.removeSource("highlighted");
+    }
+  }, [highlightedPlot, map.current]);
+
+  useEffect(() => {
+    if (map?.current && newPlots.features) {
       map.current.on("load", function () {
-        if (map.current && map.current.getSource("parcel")) return; // skip if already added
-        addOutlineToMap(parcel.metadata.geojson, "parcel");
-        communal.forEach((plot, idx) => {
-          addFilledToMap(plot, idx.toString(), 1, "#06be7f");
-        });
+        for (let i = 0; ; i++) {
+          if (map.current.getLayer(`parcel${i}_fill`)) {
+            map.current.removeLayer(`parcel${i}_fill`);
+            map.current.removeLayer(`parcel${i}_outline`);
+            map.current.removeSource(`parcel${i}`);
+          } else {
+            break;
+          }
+        }
+        console.log(newPlots.features)
+        addOutlineToMap(newPlots, "parcel" + 0, "#fff");
+        addFilledToMap(newPlots, "parcel" + 0);
         setTimeout(() => {
           setMapLoaded(true);
         }, 1000);
       });
-    }
-  }, [map.current, plots]);
-
-  // Add/remove plot highlight when highlighted plot changes
-  // useEffect(() => {
-  //   if (map?.current && highlightedPlot && !map.current.getLayer("highlighted_fill") && mapLoaded) {
-  //     addOutlineToMap(highlightedPlot.metadata.geojson, "highlighted", "#fff");
-  //     addFilledToMap(highlightedPlot.metadata.geojson, "highlighted");
-  //   } else if (map?.current && map.current.getLayer("highlighted_fill") && mapLoaded) {
-  //     map.current.removeLayer("highlighted_fill");
-  //     map.current.removeLayer("highlighted_outline");
-  //     map.current.removeSource("highlighted");
-  //   }
-  // }, [highlightedPlot, map.current]);
-
-  useEffect(() => {
-    if (map?.current && newPlots.features && mapLoaded) {
-      for (let i = 0; ; i++) {
-        if (map.current.getLayer(`highlighted${i}_fill`)) {
-          map.current.removeLayer(`highlighted${i}_fill`);
-          map.current.removeLayer(`highlighted${i}_outline`);
-          map.current.removeSource(`highlighted${i}`);
-        } else {
-          break;
-        }
-      }
-      console.log(newPlots.features)
-      // newPlots.features.map((plot, index) => {
-      //   console.log(plot)
-        addOutlineToMap(newPlots, "highlighted" + 0, "#fff");
-        addFilledToMap(newPlots, "highlighted" + 0);
-      // })
     }
   }, [newPlots.features, map.current, mapLoaded])
 
