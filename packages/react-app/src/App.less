@@ -157,14 +157,16 @@
 /* Map style */
 .mapboxgl-map .mapboxgl-popup {
 
-  &,
-  .mapboxgl-popup-tip {
-    background-color: rgba(0, 0, 0, 0);
-  }
-
-  * {
+  *:not(.view-plot-btn) {
     background-color: white;
     color: #000;
+  }
+  .view-plot-btn {
+    margin-top: 5px;
+  }
+
+  &, .mapboxgl-popup-tip {
+    background-color: rgba(0, 0, 0, 0);
   }
 }
 
