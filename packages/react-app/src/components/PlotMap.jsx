@@ -12,7 +12,7 @@ import { setActivePlot } from "../actions/plotsSlice";
 
 mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_TOKEN;
 
-export default function PlotMap({ parcel, plots, startingCoordinates, startingZoom, startingPitch }) {
+export default function PlotMap({ startingCoordinates, startingZoom, startingPitch }) {
   const dispatch = useAppDispatch();
   const mapContainer = useRef(null);
   const map = useRef(null);
@@ -32,7 +32,7 @@ export default function PlotMap({ parcel, plots, startingCoordinates, startingZo
     if (map.current && activePlot) {
       map.current.flyTo({
         center: activePlot.geometry.coordinates[0][0][0],
-        zoom: startingZoom,
+        // zoom: startingZoom,
         pitch: startingPitch,
       });
 
@@ -116,22 +116,6 @@ export default function PlotMap({ parcel, plots, startingCoordinates, startingZo
       pitch: startingPitch,
     });
   }, []);
-
-  // Draw parcel outline and communal land
-  // useEffect(() => {
-  //   if (map?.current) {
-  //     map.current.on("load", function () {
-  //       if (map.current && map.current.getSource("parcel")) return; // skip if already added
-  //       addOutlineToMap(parcel.metadata.geojson, "parcel");
-  //       communal.forEach((plot, idx) => {
-  //         addFilledToMap(plot, idx.toString(), 1, "#06be7f");
-  //       });
-  //       setTimeout(() => {
-  //         setMapLoaded(true);
-  //       }, 1000);
-  //     });
-  //   }
-  // }, [map.current, plots]);
 
   // Add/remove plot highlight when highlighted plot changes
   useEffect(() => {

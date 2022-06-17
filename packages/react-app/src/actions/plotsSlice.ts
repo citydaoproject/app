@@ -1,13 +1,12 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Plot } from "../models/Plot";
-import { NewPlot } from "../models/Plot";
 
 interface PlotsState {
-  plots: NewPlot[];
-  parcel: Plot;
+  plots: Plot[];
+  // parcel: Plot;
   communal: any[];
-  highlightedPlot?: NewPlot;
-  activePlot?: NewPlot;
+  highlightedPlot?: Plot;
+  activePlot?: Plot;
   idFilter?: string;
   fetching: boolean;
   numDisplay: any;
@@ -15,13 +14,12 @@ interface PlotsState {
 
 const initialState: PlotsState = {
   plots: [],
-  parcel: {
-    id: 0,
-    parcel: -1,
-    sold: false,
-    owner: "",
-    metadata: { geojson: {} },
-  },
+  // parcel: {
+  //   id: 0,
+  //   geometry: {},
+  //   properties: {},
+  //   type: string
+  // },
   communal: [],
   highlightedPlot: undefined,
   activePlot: undefined,
@@ -33,15 +31,15 @@ export const plotsState = createSlice({
   name: "plots",
   initialState,
   reducers: {
-    setPlots: (state, action: PayloadAction<NewPlot[]>) => {
+    setPlots: (state, action: PayloadAction<Plot[]>) => {
       state.plots = action.payload;
     },
-    setHighlightedPlot: (state, action: PayloadAction<NewPlot | undefined>) => {
+    setHighlightedPlot: (state, action: PayloadAction<Plot | undefined>) => {
       if (!state.activePlot) {
         state.highlightedPlot = action.payload;
       }
     },
-    setActivePlot: (state, action: PayloadAction<NewPlot | undefined>) => {
+    setActivePlot: (state, action: PayloadAction<Plot | undefined>) => {
       state.activePlot = action.payload;
       state.highlightedPlot = action.payload;
     },
@@ -51,9 +49,9 @@ export const plotsState = createSlice({
     fetchedPlots: state => {
       state.fetching = false;
     },
-    setParcelGeojson: (state, action: PayloadAction<any>) => {
-      state.parcel.metadata.geojson = action.payload;
-    },
+    // setParcelGeojson: (state, action: PayloadAction<any>) => {
+    //   state.parcel.metadata.geojson = action.payload;
+    // },
     setCommunalLand: (state, action: PayloadAction<any[]>) => {
       state.communal = action.payload;
     },
@@ -69,7 +67,7 @@ export const {
   setActivePlot,
   setIdFilter,
   fetchedPlots,
-  setParcelGeojson,
+  // setParcelGeojson,
   setCommunalLand,
   setNumDisplayPlots,
 } = plotsState.actions;

@@ -9,7 +9,7 @@ import { setPlots } from "../actions";
 import { PlotTabs } from "../components";
 import { Plot } from "../models/Plot";
 import { logoutOfWeb3Modal } from "../helpers";
-import { fetchedPlots, setCommunalLand, setParcelGeojson } from "../actions/plotsSlice";
+import { fetchedPlots, setCommunalLand } from "../actions/plotsSlice";
 import { fetchMetadata } from "../data";
 import { plotsList } from "../data";
 import updatePlots from "../helpers/UpdatePlots";
@@ -26,7 +26,7 @@ export default function BrowsePlots({ networkProvider, web3Modal }: Props) {
   const DEBUG = useAppSelector(state => state.debug.debug);
   const plots = useAppSelector(state => state.plots.plots);
   const activePlot = useAppSelector(state => state.plots.activePlot);
-  const parcel = useAppSelector(state => state.plots.parcel);
+  // const parcel = useAppSelector(state => state.plots.parcel);
   const userAddress = useAppSelector(state => state.user.address);
   const contracts: any = useContractLoader(networkProvider);
   const whitelistedAmount = useAppSelector(state => state.user.whitelistedAmount);
@@ -80,27 +80,27 @@ export default function BrowsePlots({ networkProvider, web3Modal }: Props) {
     }
   }, [setInjectedProvider, DEBUG]);
 
-  const readParcel = async () => {
-    try {
-      if (contracts && contracts.CityDaoParcel) {
-        const parcelUri = await contracts.CityDaoParcel.getParcelMetadataUri();
-        const parcelManifestBuffer = await fetchMetadata(parcelUri);
-        const parcelMetadata = JSON.parse(parcelManifestBuffer.toString()) as any;
-        dispatch(setParcelGeojson(parcelMetadata.plots[0] as any));
+  // const readParcel = async () => {
+  //   try {
+  //     if (contracts && contracts.CityDaoParcel) {
+  //       const parcelUri = await contracts.CityDaoParcel.getParcelMetadataUri();
+  //       const parcelManifestBuffer = await fetchMetadata(parcelUri);
+  //       const parcelMetadata = JSON.parse(parcelManifestBuffer.toString()) as any;
+  //       dispatch(setParcelGeojson(parcelMetadata.plots[0] as any));
 
-        const communalUri = await contracts.CityDaoParcel.getCommunalLandMetadataUri();
-        const communalManifestBuffer = await fetchMetadata(communalUri);
-        const communalMetadata = JSON.parse(communalManifestBuffer.toString()) as any;
-        dispatch(setCommunalLand(communalMetadata.features as any[]));
-      }
-    } catch (e) {
-      toast.error(`Failed to find parcel. Make sure you're on the ${process.env.REACT_APP_NETWORK} network.`, {
-        className: "error",
-        toastId: "contract-fail",
-      });
-      DEBUG && console.log(e);
-    }
-  };
+  //       const communalUri = await contracts.CityDaoParcel.getCommunalLandMetadataUri();
+  //       const communalManifestBuffer = await fetchMetadata(communalUri);
+  //       const communalMetadata = JSON.parse(communalManifestBuffer.toString()) as any;
+  //       dispatch(setCommunalLand(communalMetadata.features as any[]));
+  //     }
+  //   } catch (e) {
+  //     toast.error(`Failed to find parcel. Make sure you're on the ${process.env.REACT_APP_NETWORK} network.`, {
+  //       className: "error",
+  //       toastId: "contract-fail",
+  //     });
+  //     DEBUG && console.log(e);
+  //   }
+  // };
 
   useEffect(() => {
     // readParcel();
@@ -128,13 +128,8 @@ export default function BrowsePlots({ networkProvider, web3Modal }: Props) {
   //   }
   // });
 
-  useEffect(() => {
-    // dispatch(setPlots(plotsList));
-  }, [])
-
   return (
     <div className="browse-plots-wrapper">
-      <ProgressBar />
       <Link to="/whitelist" className="logo-link">
         <LogoDisplay />
       </Link>
@@ -147,8 +142,8 @@ export default function BrowsePlots({ networkProvider, web3Modal }: Props) {
       {/* key prop is to cause rerendering whenever it changes */}
       <PlotMap
         key={plots.length}
-        parcel={parcel}
-        plots={plots}
+        // parcel={parcel}
+        // plots={plots}
         startingCoordinates={[-109.25689639464197, 44.922331600075466]}
         startingZoom={15.825123438299038}
         startingPitch={20}

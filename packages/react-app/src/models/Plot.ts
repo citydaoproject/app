@@ -1,11 +1,11 @@
-export interface Plot {
-  id: number;
-  parcel: number;
-  sold: boolean;
-  owner: string;
-  price?: string;
-  metadata: PlotMetadata;
-}
+// export interface Plot {
+//   id: number;
+//   parcel: number;
+//   sold: boolean;
+//   owner: string;
+//   price?: string;
+//   metadata: PlotMetadata;
+// }
 
 export interface PlotMetadata {
   geojson?: any;
@@ -14,7 +14,7 @@ export interface PlotMetadata {
   coordinates?: string;
 }
 
-export interface NewPlot {
+export interface Plot {
   id: number;
   geometry: any;
   properties: any;

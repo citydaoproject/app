@@ -1,9 +1,9 @@
 import React from "react";
-import { NewPlot, Plot } from "../models/Plot";
+import { Plot } from "../models/Plot";
 import { PARCEL_OPENSEA } from "../constants";
 
 interface Props {
-  plot?: NewPlot;
+  plot?: Plot;
 }
 
 export default function ViewPlot({ plot }: Props) {

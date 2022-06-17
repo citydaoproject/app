@@ -23,7 +23,7 @@ const updatePlots = async (readContracts: any, currentPlots = [] as Plot[], DEBU
         try {
           let metadata: PlotMetadata = {};
           if (currentPlots.includes(plotIds[index])) {
-            metadata = currentPlots[index].metadata ?? {};
+            // metadata = currentPlots[index].metadata ?? {};
           } else {
             // geojson uses lng, lat (rather than lat, lng)
             const lng = plotsMetadata.plots[index]?.geometry?.coordinates[0][0][0] ?? null;
@@ -34,14 +34,14 @@ const updatePlots = async (readContracts: any, currentPlots = [] as Plot[], DEBU
               location: "Clark, WY",
             };
           }
-          newPlots.push({
-            id: plotId.toNumber(),
-            parcel: 0,
-            price: price ? ethers.utils.formatEther(price) : undefined,
-            sold: isSold,
-            owner: owner,
-            metadata: metadata,
-          });
+          // newPlots.push({
+          //   id: plotId.toNumber(),
+          //   parcel: 0,
+          //   price: price ? ethers.utils.formatEther(price) : undefined,
+          //   sold: isSold,
+          //   owner: owner,
+          //   metadata: metadata,
+          // });
         } catch (e) {
           toast.error("Failed to read plot metadata. Please try again or contact CityDAO support.", {
             className: "error",

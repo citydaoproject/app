@@ -7,7 +7,7 @@ import PlotList from "./PlotList";
 import { stringifyPlotId } from "../helpers/stringifyPlotId";
 import FilterNote from "./FilterNote";
 import { plotsList } from "../data";
-import { NewPlot } from "../models/Plot";
+import { Plot } from "../models/Plot";
 
 const { TabPane } = Tabs;
 
@@ -16,15 +16,12 @@ export default function PlotTabs() {
   const fetchingPlots = useAppSelector((state: RootState) => state.plots.fetching);
   const idFilter = useAppSelector((state: RootState) => state.plots.idFilter);
   const currentNumDisplay = useAppSelector((state: RootState) => state.plots.numDisplay);
-  // const plots = useAppSelector((state: RootState) => state.plots.plots).filter(plot => {
-  //   return stringifyPlotId(plot.id).includes(idFilter ?? "");
-  // });
-  const [newPlots, setNewPlots] = useState<NewPlot[]>([])
+  const [newPlots, setNewPlots] = useState<Plot[]>([])
   const [newPlotsNum, setNewPlotsNum] = useState(0);
 
   useEffect(() => {
-    let plotData = plotsList.features as NewPlot[];
-    plotData.map((plot: NewPlot, index: number) => {
+    let plotData = plotsList.features as Plot[];
+    plotData.map((plot: Plot, index: number) => {
       if (plot["id"]) {
         return;
       }
@@ -35,7 +32,7 @@ export default function PlotTabs() {
   }, [])
 
   useEffect(() => {
-    let plotData = plotsList.features as NewPlot[];
+    let plotData = plotsList.features as Plot[];
     let filteredPlot = [];
     filteredPlot = plotData.filter(plot => {
       return stringifyPlotId(plot.id).includes(idFilter ?? "");

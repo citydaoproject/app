@@ -3,7 +3,6 @@ import { Divider } from "antd";
 import { AnimatePresence, motion } from "framer-motion";
 import { CloseOutlined } from "@ant-design/icons";
 import { Plot } from "../models/Plot";
-import { NewPlot } from "../models/Plot";
 import { useAppDispatch } from "../hooks";
 import { setActivePlot } from "../actions/plotsSlice";
 
@@ -12,7 +11,7 @@ import { BuyPlot, ViewPlot } from ".";
 import { fetchMetadata } from "../data";
 
 interface Props {
-  plot: NewPlot;
+  plot: Plot;
   contracts: any;
   injectedProvider: any;
 }
@@ -21,15 +20,15 @@ export default function PlotDetail({ plot, contracts, injectedProvider }: Props)
   const [plotMetadata, setPlotMetadata] = useState<any>({} as any);
   const dispatch = useAppDispatch();
 
-  const fetchPlotMetadata = useCallback(async () => {
-    const plotUri = await contracts.CityDaoParcel.getTokenMetadataUri(0);
-    const plotManifestBuffer = await fetchMetadata(plotUri);
-    return JSON.parse(plotManifestBuffer.toString()) as any;
-  }, [contracts]);
+  // const fetchPlotMetadata = useCallback(async () => {
+  //   const plotUri = await contracts.CityDaoParcel.getTokenMetadataUri(0);
+  //   const plotManifestBuffer = await fetchMetadata(plotUri);
+  //   return JSON.parse(plotManifestBuffer.toString()) as any;
+  // }, [contracts]);
 
-  useEffect(() => {
-    // fetchPlotMetadata().then(setPlotMetadata);
-  }, [contracts, plot]);
+  // useEffect(() => {
+  //   fetchPlotMetadata().then(setPlotMetadata);
+  // }, [contracts, plot]);
 
   return (
     <AnimatePresence>
@@ -41,9 +40,6 @@ export default function PlotDetail({ plot, contracts, injectedProvider }: Props)
               Plot #{"0".repeat(4 - (plot.id.toString().length ?? 0))}
               {plot.id}
             </span>
-            {/* <span className="plot-price secondary-font text-base font-light text-gray-9 leading-6">
-              {plot?.price && `(${plot.price.toString()} ETH)`}
-            </span> */}
           </div>
           <a onClick={() => dispatch(setActivePlot(undefined))}>
             <CloseOutlined style={{ fontSize: 20 }} />
@@ -65,7 +61,6 @@ export default function PlotDetail({ plot, contracts, injectedProvider }: Props)
               exit={{ x: -300, opacity: 0 }}
               transition={{ delay: 0.1 }}
             >
-              {/* {plot?.sold ? <ViewPlot plot={plot} /> : <BuyPlot plot={plot} injectedProvider={injectedProvider} />} */}
               <div className="plot-detail-buttons-wrapper">
                 <ViewPlot plot={plot} />
                 <a
@@ -88,45 +83,24 @@ export default function PlotDetail({ plot, contracts, injectedProvider }: Props)
               <div className="p-4 text-white">Properties</div>
               <Divider />
               <div className="flex flex-col justify-between p-4">
-                {/* {plot.metadata.location && ( */}
                 <div className="py-2 secondary-font text-base font-light text-gray-9">
-                  {/* Location: {plot.metadata.location} */}
                   Location: Clark, WY
                 </div>
-                {/* )} */}
-                {/* {plotMetadata.terrain && ( */}
                 <div className="py-2 secondary-font text-base font-light text-gray-9">
-                  {/* Terrain: {plotMetadata.terrain} */}
                   Terrain: Mountainous
                 </div>
-                {/* )} */}
-                {/* {plotMetadata.sqft && ( */}
                 <div className="py-2 secondary-font text-base font-light text-gray-9">
-                  {/* Size: {plotMetadata.sqft} */}
                   Size: ~1750 sqft
                 </div>
-                {/* )} */}
-                {/* {plot.metadata.coordinates && ( */}
                 {plot.geometry.coordinates && (
                   <div className="py-2 secondary-font text-base font-light text-gray-9">
                     Coordinates:
                     <br />
-                    {/* {plot.metadata.coordinates} */}
                     {plot.geometry.coordinates[0][0][0][1]}°N
                     <br />
                     {plot.geometry.coordinates[0][0][0][0]}°W
                   </div>
                 )}
-                {/* )} */}
-                {/* Fallback text */}
-                {/* {!plotMetadata.sqft &&
-                  !plotMetadata.terrain &&
-                  !plot.metadata.location &&
-                  !plot.metadata.coordinates && (
-                    <div className="py-2 secondary-font text-base font-light text-gray-9">
-                      No plot properties available.
-                    </div>
-                  )} */}
               </div>
             </motion.div>
             <motion.div
@@ -139,7 +113,6 @@ export default function PlotDetail({ plot, contracts, injectedProvider }: Props)
               <div className="p-4 text-white">Owner Rights</div>
               <Divider />
               <div className="flex flex-col justify-between p-4 secondary-font text-base font-light text-gray-9">
-                {/* {plotMetadata?.description ?? "Could not retrieve owner rights from the contract."} */}
                 This NFT denotes a lifetime lease of the plot specified in its geojson metadata. The plot is meant for conservation purposes and must be kept in its current state unless otherwise specified by a CityDAO contract. The owner of this NFT will also obtain one governance vote in proposals involving the communal land designated in the parcel contract.
               </div>
             </motion.div>

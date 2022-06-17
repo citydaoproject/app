@@ -33,17 +33,17 @@ export default function BuyPlot({ plot, injectedProvider }: Props) {
 
   const tx = Transactor(userSigner, gasPrice);
   const buyPlot = useCallback(async () => {
-    if (!plot.sold && userAddress && contracts?.CityDaoParcel) {
-      const price = BigNumber.from(ethers.utils.parseEther(plot.price ?? "0"));
-      tx && plot && (await tx(contracts.CityDaoParcel.buyPlot(plot.id, { value: price })));
-    } else if (plot.sold) {
-      throw new Error("Plot is already sold");
-    } else if (!userAddress) {
-      toast.error("Please connect your wallet to buy this plot.", {
-        className: "error",
-        toastId: "no-connected-wallet",
-      });
-    }
+    // if (!plot.sold && userAddress && contracts?.CityDaoParcel) {
+    //   const price = BigNumber.from(ethers.utils.parseEther(plot.price ?? "0"));
+    //   tx && plot && (await tx(contracts.CityDaoParcel.buyPlot(plot.id, { value: price })));
+    // } else if (plot.sold) {
+    //   throw new Error("Plot is already sold");
+    // } else if (!userAddress) {
+    //   toast.error("Please connect your wallet to buy this plot.", {
+    //     className: "error",
+    //     toastId: "no-connected-wallet",
+    //   });
+    // }
 
     // updatePlots(contracts, plots, DEBUG).then(newPlots => {
     //   dispatch(setPlots(newPlots));
