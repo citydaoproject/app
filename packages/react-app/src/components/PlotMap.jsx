@@ -3,15 +3,17 @@ import mapboxgl from "!mapbox-gl"; // eslint-disable-line import/no-webpack-load
 import loading from "../assets/images/loading.gif";
 import "mapbox-gl/dist/mapbox-gl.css";
 
-import { useAppSelector } from "../hooks";
+import { useAppSelector, useAppDispatch } from "../hooks";
 import { AnimatePresence, motion } from "framer-motion";
 import { stringifyPlotId } from "../helpers/stringifyPlotId";
 import { plotsList } from "../data";
 import { PARCEL_OPENSEA } from "../constants";
+import { setActivePlot } from "../actions/plotsSlice";
 
 mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_TOKEN;
 
 export default function PlotMap({ parcel, plots, startingCoordinates, startingZoom, startingPitch }) {
+  const dispatch = useAppDispatch();
   const mapContainer = useRef(null);
   const map = useRef(null);
   let popup = new mapboxgl.Popup({
@@ -20,7 +22,6 @@ export default function PlotMap({ parcel, plots, startingCoordinates, startingZo
     closeOnClick: false
   });
   const [mapLoaded, setMapLoaded] = useState(false);
-
   const highlightedPlot = useAppSelector(state => state.plots.highlightedPlot);
   const activePlot = useAppSelector(state => state.plots.activePlot);
   const communal = useAppSelector(state => state.plots.communal);
@@ -101,6 +102,7 @@ export default function PlotMap({ parcel, plots, startingCoordinates, startingZo
           "fill-opacity": opacity,
         },
       });
+      
     }
   };
 
@@ -144,26 +146,37 @@ export default function PlotMap({ parcel, plots, startingCoordinates, startingZo
   }, [highlightedPlot, map.current]);
 
   useEffect(() => {
-    if (map?.current && newPlots.features) {
+    if (map?.current && newPlots) {
       map.current.on("load", function () {
-        for (let i = 0; ; i++) {
-          if (map.current.getLayer(`parcel${i}_fill`)) {
-            map.current.removeLayer(`parcel${i}_fill`);
-            map.current.removeLayer(`parcel${i}_outline`);
-            map.current.removeSource(`parcel${i}`);
-          } else {
-            break;
-          }
+        console.log(newPlots)
+        if (!map.current.getLayer("parcel_outline")) {
+          addOutlineToMap(newPlots, "parcel", "#fff");
         }
-        console.log(newPlots.features)
-        addOutlineToMap(newPlots, "parcel" + 0, "#fff");
-        addFilledToMap(newPlots, "parcel" + 0);
+        if (!map.current.getLayer(`parcel_fill`)) {
+          addFilledToMap(newPlots, "parcel");
+        }
+
         setTimeout(() => {
           setMapLoaded(true);
+          map.current.on('mouseenter', 'parcel_fill', () => {
+            map.current.getCanvas().style.cursor = 'pointer';
+          });
+          map.current.on('mouseleave', 'parcel_fill', () => {
+            map.current.getCanvas().style.cursor = '';
+          });
+          map.current.on('click', 'parcel_fill', (e) => {
+            const clickedFeature = e.features[0];
+            let filteredPlot = [];
+            filteredPlot = newPlots.features.filter(plot => {
+              return plot.id == clickedFeature.id;
+            })
+            dispatch(setActivePlot(undefined));
+            dispatch(setActivePlot(filteredPlot[0]));
+          });
         }, 1000);
       });
     }
-  }, [newPlots.features, map.current, mapLoaded])
+  }, [newPlots, map.current])
 
   return (
     <div className="plot-map flex-grow flex flex-col relative">

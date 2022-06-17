@@ -3,7 +3,7 @@ import { Plot } from "../models/Plot";
 import { NewPlot } from "../models/Plot";
 
 interface PlotsState {
-  plots: Plot[];
+  plots: NewPlot[];
   parcel: Plot;
   communal: any[];
   highlightedPlot?: NewPlot;
@@ -33,7 +33,7 @@ export const plotsState = createSlice({
   name: "plots",
   initialState,
   reducers: {
-    setPlots: (state, action: PayloadAction<Plot[]>) => {
+    setPlots: (state, action: PayloadAction<NewPlot[]>) => {
       state.plots = action.payload;
     },
     setHighlightedPlot: (state, action: PayloadAction<NewPlot | undefined>) => {

@@ -28,7 +28,7 @@ export default function BuyPlot({ plot, injectedProvider }: Props) {
   const [numOwnedPlots, setNumOwnedPlots] = useState(0);
 
   useEffect(() => {
-    setNumOwnedPlots(plots.filter(plot => plot.owner === userAddress).length);
+    // setNumOwnedPlots(plots.filter(plot => plot.owner === userAddress).length);
   }, [plots]);
 
   const tx = Transactor(userSigner, gasPrice);
@@ -45,10 +45,10 @@ export default function BuyPlot({ plot, injectedProvider }: Props) {
       });
     }
 
-    updatePlots(contracts, plots, DEBUG).then(newPlots => {
-      dispatch(setPlots(newPlots));
-      dispatch(setActivePlot(undefined)); // reset active plot
-    });
+    // updatePlots(contracts, plots, DEBUG).then(newPlots => {
+    //   dispatch(setPlots(newPlots));
+    //   dispatch(setActivePlot(undefined)); // reset active plot
+    // });
 
     return true;
   }, [contracts, dispatch, plots, plot, userAddress, userSigner, tx]);

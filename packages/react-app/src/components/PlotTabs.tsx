@@ -16,9 +16,9 @@ export default function PlotTabs() {
   const fetchingPlots = useAppSelector((state: RootState) => state.plots.fetching);
   const idFilter = useAppSelector((state: RootState) => state.plots.idFilter);
   const currentNumDisplay = useAppSelector((state: RootState) => state.plots.numDisplay);
-  const plots = useAppSelector((state: RootState) => state.plots.plots).filter(plot => {
-    return stringifyPlotId(plot.id).includes(idFilter ?? "");
-  });
+  // const plots = useAppSelector((state: RootState) => state.plots.plots).filter(plot => {
+  //   return stringifyPlotId(plot.id).includes(idFilter ?? "");
+  // });
   const [newPlots, setNewPlots] = useState<NewPlot[]>([])
   const [newPlotsNum, setNewPlotsNum] = useState(0);
 
@@ -31,7 +31,6 @@ export default function PlotTabs() {
       plot["id"] = index + 1;
       return;
     })
-
     setNewPlots(plotData)
   }, [])
 
