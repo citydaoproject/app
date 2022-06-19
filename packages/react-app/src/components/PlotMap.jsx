@@ -129,6 +129,7 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
     }
   }, [highlightedPlot, map.current]);
 
+  //Add new plots on map after map loaded and set function for clicking on map
   useEffect(() => {
     if (map?.current && newPlots) {
       map.current.on("load", function () {

@@ -53,15 +53,6 @@ export default function PlotTabs() {
           emptyMessage={fetchingPlots ? "Loading..." : "We're sold out! Be on the lookout for the next drop."}
         />
       </TabPane>
-      {/* <TabPane tab="Sold" key="2">
-        {idFilter && (
-          <FilterNote filterText={idFilter} />
-        )}
-        <PlotList
-          plots={plots.filter(plot => plot.sold)}
-          emptyMessage={fetchingPlots ? "Loading..." : "No plots have been purchased. You could be the first!"}
-        />
-      </TabPane> */}
       <TabPane tab="Your Land" key="3">
         {idFilter && (
           <FilterNote filterText={idFilter} />
