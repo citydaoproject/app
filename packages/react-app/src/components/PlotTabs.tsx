@@ -18,23 +18,17 @@ export default function PlotTabs() {
 
   return (
     <Tabs defaultActiveKey="1" className="plot-tabs px-4">
-      <TabPane tab="Available" key="1">
+      <TabPane tab="All Parcels" key="1">
         <PlotList
-          plots={plots.filter(plot => !plot.sold)}
-          emptyMessage={fetchingPlots ? "Loading..." : "We're sold out! Be on the lookout for the next drop."}
+          plots={plots}
+          emptyMessage={fetchingPlots ? "Loading..." : "Couldn't load plots - please try again"}
         />
       </TabPane>
-      <TabPane tab="Sold" key="2">
-        <PlotList
-          plots={plots.filter(plot => plot.sold)}
-          emptyMessage={fetchingPlots ? "Loading..." : "No plots have been purchased. You could be the first!"}
-        />
-      </TabPane>
-      <TabPane tab="Your Land" key="3">
+      <TabPane tab="Your Land" key="2">
         {userAddress && (
           <PlotList
             plots={plots.filter(plot => plot.owner === userAddress)}
-            emptyMessage={fetchingPlots ? "Loading..." : "You don't own any plots yet."}
+            emptyMessage={fetchingPlots ? "Loading..." : "You don't own any plots yet"}
           />
         )}
         {!userAddress && <span className="text-gray-7 third-font">Connect your wallet to see your owned plots</span>}

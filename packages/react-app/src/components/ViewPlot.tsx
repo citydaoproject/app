@@ -6,5 +6,5 @@ interface Props {
 }
 
 export default function ViewPlot({ plot }: Props) {
-  return <button className="btn w-full">View on Rarible</button>;
+  return <button className="view-plot-btn btn w-full">View on Opensea</button>;
 }
