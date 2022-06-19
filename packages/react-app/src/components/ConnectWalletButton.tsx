@@ -14,7 +14,7 @@ export default function ConnectWalletButton({ onClick }: Props) {
         onClick={onClick}
         className={`connect-wallet-button ${
           userAddress ? "connected" : "connect-wallet"
-        } secondary-font text-lg px-4 h-9 rounded`}
+        } secondary-font px-4 h-9 rounded`}
       >
         {userAddress ? userAddress?.slice(0, 6) + "..." + userAddress?.slice(-5, -1) : "Connect Wallet"}
       </button>

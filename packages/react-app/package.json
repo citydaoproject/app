@@ -17,12 +17,14 @@
   "dependencies": {
     "@ant-design/icons": "^4.2.2",
     "@apollo/react-hooks": "^4.0.0",
+    "@coinbase/wallet-sdk": "^3.0.8",
     "@craco/craco": "5.0.0",
     "@ramp-network/ramp-instant-sdk": "^2.2.0",
     "@reduxjs/toolkit": "^1.6.1",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.8",
+    "@toruslabs/torus-embed": "^1.22.2",
     "@types/mapbox-gl": "^2.4.1",
     "@types/react-router-dom": "^5.3.2",
     "@typescript-eslint/eslint-plugin": "^4.32.0",
@@ -62,7 +64,7 @@
     "react-scripts": "^3.4.3",
     "react-toastify": "^8.0.3",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat",
-    "web3modal": "^1.9.1"
+    "web3modal": "^1.9.5"
   },
   "devDependencies": {
     "@testing-library/dom": "^6.12.2",
@@ -94,7 +96,7 @@
     "extends": "react-app"
   },
   "scripts": {
-    "build": "craco build",
+    "build": "GENERATE_SOURCEMAP=false craco build",
     "eject": "craco eject",
     "prestart": "node ./scripts/create_contracts.js",
     "start": "craco start",

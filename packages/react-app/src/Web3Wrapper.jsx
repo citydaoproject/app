@@ -1,4 +1,7 @@
 import WalletConnectProvider from "@walletconnect/web3-provider";
+import CoinbaseWalletSDK from "@coinbase/wallet-sdk";
+import Torus from "@toruslabs/torus-embed";
+
 import React from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import Web3Modal from "web3modal";
@@ -25,18 +28,41 @@ const networkProvider =
     ? new ethers.providers.StaticJsonRpcProvider(providerUrl)
     : new ethers.providers.InfuraProvider(network, INFURA_ID);
 
+const providerOptions = {
+  walletconnect: {
+    package: WalletConnectProvider,
+    options: {
+      infuraId: INFURA_ID,
+    },
+  },
+  coinbasewallet: {
+    package: CoinbaseWalletSDK,
+    options: {
+      appName: "CityDAO - Parcel Explorer",
+      infuraId: INFURA_ID,
+      chainId: targetNetwork.chainId,
+      darkMode: true,
+    },
+  },
+  torus: {
+    package: Torus,
+    options: {
+      networkParams: {
+        host: targetNetwork.rpcUrl,
+        chainId: targetNetwork.chainId,
+        networkId: targetNetwork.chainId,
+      },
+    },
+  },
+  binancechainwallet: {
+    package: true,
+  },
+};
 const web3Modal = new Web3Modal({
   // network: network,
   // cacheProvider: true,
   theme: "dark",
-  providerOptions: {
-    walletconnect: {
-      package: WalletConnectProvider, // required
-      options: {
-        infuraId: INFURA_ID,
-      },
-    },
-  },
+  providerOptions,
 });
 
 function Web3Wrapper() {

@@ -1,8 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Col, Layout } from "antd";
-import { Content } from "antd/lib/layout/layout";
 import { ethers } from "ethers";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 
 import { useContractLoader, useAppSelector, useAppDispatch, useUserSigner } from "../hooks";
 import { PlotMap, ProgressBar, PlotDetail, LogoDisplay, Header } from "../components";
@@ -12,7 +11,6 @@ import { Plot } from "../models/Plot";
 import { logoutOfWeb3Modal } from "../helpers";
 import { fetchedPlots, setCommunalLand, setParcelGeojson } from "../actions/plotsSlice";
 import { fetchMetadata } from "../data";
-import { toast } from "react-toastify";
 import updatePlots from "../helpers/UpdatePlots";
 import { setWhitelistedAmount } from "../actions/userSlice";
 
@@ -54,25 +52,29 @@ export default function BrowsePlots({ networkProvider, web3Modal }: Props) {
   }, [whitelistedAmount, userAddress]);
 
   const loadWeb3Modal = useCallback(async () => {
-    const provider = await web3Modal.connect();
+    try {
+      const provider = await web3Modal.connect();
 
-    setInjectedProvider(new ethers.providers.Web3Provider(provider));
-
-    provider.on("chainChanged", (chainId: string) => {
-      DEBUG && console.log(`chain changed to ${chainId}! updating providers`);
       setInjectedProvider(new ethers.providers.Web3Provider(provider));
-    });
 
-    provider.on("accountsChanged", () => {
-      DEBUG && console.log(`account changed!`);
-      setInjectedProvider(new ethers.providers.Web3Provider(provider));
-    });
+      provider.on("chainChanged", (chainId: string) => {
+        DEBUG && console.log(`chain changed to ${chainId}! updating providers`);
+        setInjectedProvider(new ethers.providers.Web3Provider(provider));
+      });
 
-    // Subscribe to session disconnection
-    provider.on("disconnect", (code: string, reason: string) => {
-      DEBUG && console.log(code, reason);
-      logoutOfWeb3Modal(web3Modal);
-    });
+      provider.on("accountsChanged", () => {
+        DEBUG && console.log(`account changed!`);
+        setInjectedProvider(new ethers.providers.Web3Provider(provider));
+      });
+
+      // Subscribe to session disconnection
+      provider.on("disconnect", (code: string, reason: string) => {
+        DEBUG && console.log(code, reason);
+        logoutOfWeb3Modal(web3Modal);
+      });
+    } catch (error) {
+      toast.error("Error connecting to a wallet");
+    }
   }, [setInjectedProvider, DEBUG]);
 
   const readParcel = async () => {
@@ -96,6 +98,7 @@ export default function BrowsePlots({ networkProvider, web3Modal }: Props) {
       DEBUG && console.log(e);
     }
   };
+
   useEffect(() => {
     readParcel();
   }, [contracts]);
@@ -110,6 +113,7 @@ export default function BrowsePlots({ networkProvider, web3Modal }: Props) {
       dispatch(setWhitelistedAmount(0));
     }
   };
+
   useEffect(() => {
     readWhitelistStatus();
   }, [contracts, userAddress, plots]);
@@ -122,34 +126,26 @@ export default function BrowsePlots({ networkProvider, web3Modal }: Props) {
   });
 
   return (
-    <>
-      {/* <ProgressBar /> */}
-      <div className="flex flex-row flex-grow min-w-0">
-        <Col className="sidebar">
-          <Link to="/whitelist">
-            <LogoDisplay />
-          </Link>
-          {activePlot !== undefined ? (
-            <PlotDetail plot={activePlot} contracts={contracts} injectedProvider={injectedProvider} />
-          ) : (
-            <PlotTabs />
-          )}
-        </Col>
-        <Layout className="site-layout">
-          <Content className="flex flex-col">
-            <Header connectWallet={loadWeb3Modal} />
-            {/* key prop is to cause rerendering whenever it changes */}
-            <PlotMap
-              key={plots.length}
-              parcel={parcel}
-              plots={plots}
-              startingCoordinates={[-109.25689639464197, 44.922331600075466]}
-              startingZoom={15.825123438299038}
-              startingPitch={20}
-            />
-          </Content>
-        </Layout>
-      </div>
-    </>
+    <div className="browse-plots-wrapper">
+      <ProgressBar />
+      <Link to="/whitelist" className="logo-link">
+        <LogoDisplay />
+      </Link>
+      {activePlot !== undefined ? (
+        <PlotDetail plot={activePlot} contracts={contracts} injectedProvider={injectedProvider} />
+      ) : (
+        <PlotTabs />
+      )}
+      <Header connectWallet={loadWeb3Modal} />
+      {/* key prop is to cause rerendering whenever it changes */}
+      <PlotMap
+        key={plots.length}
+        parcel={parcel}
+        plots={plots}
+        startingCoordinates={[-109.25689639464197, 44.922331600075466]}
+        startingZoom={15.825123438299038}
+        startingPitch={20}
+      />
+    </div>
   );
 }

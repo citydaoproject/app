@@ -10,7 +10,7 @@ export default function SearchPlots() {
       <input
         type="text"
         placeholder="Search for plot #..."
-        className="bg-transparent h-full px-2 text-gray-7 w-72"
+        className="search-plots-input bg-transparent h-full px-2 text-gray-7"
         onChange={e => dispatch(setIdFilter(e.target.value))}
       />
       <div className="flex items-center justify-center h-full w-9 bg-transparent border-l">
