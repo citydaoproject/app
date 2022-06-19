@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 
 import { useContractLoader, useAppSelector, useAppDispatch, useUserSigner } from "../hooks";
-import { PlotMap, ProgressBar, PlotDetail, LogoDisplay, Header } from "../components";
+import { PlotMap, PlotDetail, LogoDisplay, Header } from "../components";
 import { setPlots } from "../actions";
 import { PlotTabs } from "../components";
 import { Plot } from "../models/Plot";
@@ -13,6 +13,7 @@ import { fetchedPlots, setCommunalLand, setParcelGeojson } from "../actions/plot
 import { fetchMetadata } from "../data";
 import updatePlots from "../helpers/UpdatePlots";
 import { setWhitelistedAmount } from "../actions/userSlice";
+import { ParcelInfoContainer } from "../containers";
 
 interface Props {
   networkProvider: any;
@@ -127,7 +128,6 @@ export default function BrowsePlots({ networkProvider, web3Modal }: Props) {
 
   return (
     <div className="browse-plots-wrapper">
-      <ProgressBar />
       <Link to="/whitelist" className="logo-link">
         <LogoDisplay />
       </Link>
@@ -137,6 +137,7 @@ export default function BrowsePlots({ networkProvider, web3Modal }: Props) {
         <PlotTabs />
       )}
       <Header connectWallet={loadWeb3Modal} />
+      <ParcelInfoContainer />
       {/* key prop is to cause rerendering whenever it changes */}
       <PlotMap
         key={plots.length}

@@ -28,7 +28,7 @@ interface DataBoxProps {
 }
 function DataBox({ value, label, unit }: DataBoxProps): JSX.Element {
   return (
-    <div className="bg-transparent mt-12">
+    <div className="bg-transparent mt-6">
       <div className="dataBox bg-transparent flex">
         <span className="text-xxl leading-7 text-green-1 mr-2">{value}</span>
         <div className="text-sm text-gray-500 bg-transparent leading-4">
@@ -36,7 +36,7 @@ function DataBox({ value, label, unit }: DataBoxProps): JSX.Element {
           <div className="bg-transparent text-gray-500 leading-2">{unit}</div>
         </div>
       </div>
-      <img className="bg-transparent w-fit mt-7 mb-11" src={IconChart} alt="View History" />
+      <img className="bg-transparent w-fit mt-4 mb-4" src={IconChart} alt="View History" />
     </div>
   );
 }
@@ -50,7 +50,7 @@ export default function ParcelInfo({ sensorData }: Props): JSX.Element {
   const fetchedTime = tsToDate(timestamp);
 
   return (
-    <div className="parcel-info text-base bg-transparent rounded text-green-2 text-left w-full max-w-750px">
+    <div className="text-base bg-transparent rounded text-green-2 text-left w-full max-w-750px">
       <div className="bg-transparent flex">
         <img className="bg-transparent mr-4 self-center" src={IconGlobe} alt="Globe" />
         <div className="bg-transparent text-green-0">
@@ -59,7 +59,7 @@ export default function ParcelInfo({ sensorData }: Props): JSX.Element {
           BENNET CREEK ROAD, POWELL WYOMING 82435
         </div>
       </div>
-      <div className="text-green-1 mt-10">It’s currently {localisedTime}</div> [-7 GMT] -------------- Last transmissoin
+      <div className="text-green-1 mt-5">It’s currently {localisedTime}</div> [-7 GMT] -------------- Last transmissoin
       ~{timesAgo(fetchedTime)} ago{" "}
       <a href="https://portal.machinefi.com/apps/CityDAO" target="_blank" className="text-green-1" rel="noreferrer">
         view on MachineFi

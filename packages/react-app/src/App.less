@@ -257,6 +257,23 @@ select:focus {
   }
 }
 
+/* Parcel Info */
+.parcel-info {
+  border-left: 1px solid @gray-4;
+  padding: 1rem;
+}
+
+/* Header */
+.search-and-connect-wrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+
+  @media (max-width: 1024px) {
+    justify-content: initial;
+  }
+}
+
 /* BrowsePlots Layout */
 .progress-bar-indicator {
   margin-left: 3rem;
@@ -291,49 +308,47 @@ select:focus {
   height: 100%;
   display: grid;
   grid-template-columns: 400px 1fr;
-  grid-template-rows: 3rem 4rem 1fr;
+  grid-template-rows: 4rem 230px 1fr;
   grid-column-gap: 0px;
   grid-row-gap: 0px;
 
   @media (max-width: 1024px) {
     grid-template-columns: 1fr;
-    grid-template-rows: 3rem repeat(2, 4rem) 300px 4rem 5fr;
+    grid-template-rows: 0 repeat(2, 4rem) 300px 4rem 5fr;
   }
 
   // Responsive for mobile landscape screens
   @media (max-height: 500px) {
-    grid-template-rows: 3rem repeat(2, 4rem) 300px 4rem 600px;
+    grid-template-rows: 0 repeat(2, 4rem) 300px 4rem 600px;
   }
 }
 
-.progress-bar {
-  grid-area: 1 / 1 / 2 / 3;
-}
 .logo-link {
-  grid-area: 2 / 1 / 3 / 2;
+  grid-area: 1 / 1 / 2 / 2;
 }
 .connect-wallet-section {
-  grid-area: 2 / 2 / 3 / 3;
+  grid-area: 1 / 2 / 2 / 3;
   border-color: @gray-4;
-  justify-content: flex-end;
+  justify-content: space-between;
+}
+.parcel-info {
+  grid-area: 2 / 2 / 3 / 3;
 }
 .plot-detail {
-  grid-area: 3 / 1 / 4 / 2;
+  grid-area: 2 / 1 / 4 / 2;
 }
 .plot-tabs {
-  grid-area: 3 / 1 / 4 / 2;
+  grid-area: 2 / 1 / 4 / 2;
   width: 100%;
 }
 .plot-map {
   grid-area: 3 / 2 / 4 / 3;
+  border-left: 1px solid @gray-4;
 }
 
 @media (max-width: 1024px) {
-  .progress-bar {
-    grid-area: 1 / 1 / 2 / 2;
-  }
   .logo-link {
-    grid-area: 2 / 1 / 3 / 2;
+    grid-area: 1 / 1 / 2 / 2;
   }
   .connect-wallet-section {
     grid-area: 3 / 1 / 4 / 2;
