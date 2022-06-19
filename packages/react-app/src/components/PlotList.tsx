@@ -27,7 +27,7 @@ export default function PlotList({ plots, emptyMessage }: Props) {
   };
 
   return (
-    <div className="list block">
+    <div className="list flex flex-col">
       {displayedPlots.map((plot: Plot, idx: number) => (
         <motion.div className="list-item" key={plot.id} layout>
           {/* modulo delay by 10 because plot buttons are added in batches of 10 */}
