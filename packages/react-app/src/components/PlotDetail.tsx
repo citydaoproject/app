@@ -7,7 +7,7 @@ import { useAppDispatch } from "../hooks";
 import { setActivePlot } from "../actions/plotsSlice";
 
 import LAND_IMG from "../assets/images/SampleLandImage.png";
-import { BuyPlot, ViewPlot } from ".";
+import { ViewPlot } from ".";
 import { fetchMetadata } from "../data";
 
 interface Props {
