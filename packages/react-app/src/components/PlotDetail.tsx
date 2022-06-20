@@ -20,16 +20,6 @@ export default function PlotDetail({ plot, contracts, injectedProvider }: Props)
   const [plotMetadata, setPlotMetadata] = useState<any>({} as any);
   const dispatch = useAppDispatch();
 
-  const fetchPlotMetadata = useCallback(async () => {
-    const plotUri = await contracts.CityDaoParcel.getTokenMetadataUri(plot.id);
-    const plotManifestBuffer = await fetchMetadata(plotUri);
-    return JSON.parse(plotManifestBuffer.toString()) as any;
-  }, [contracts, plot.id]);
-
-  useEffect(() => {
-    fetchPlotMetadata().then(setPlotMetadata);
-  }, [contracts, plot]);
-
   return (
     <AnimatePresence>
       <div className="plot-detail">
@@ -46,7 +36,6 @@ export default function PlotDetail({ plot, contracts, injectedProvider }: Props)
           </a>
         </div>
         <Divider />
-
         <div className="plot-detail-content block p-4">
           <div className="flex flex-col space-y-4 primary-font text-lg">
             <motion.img
@@ -84,35 +73,24 @@ export default function PlotDetail({ plot, contracts, injectedProvider }: Props)
               <div className="p-4 text-white">Properties</div>
               <Divider />
               <div className="flex flex-col justify-between p-4">
-                {plot.metadata.location && (
-                  <div className="py-2 secondary-font text-base font-light text-gray-9">
-                    Location: {plot.metadata.location}
-                  </div>
-                )}
-                {plotMetadata.terrain && (
-                  <div className="py-2 secondary-font text-base font-light text-gray-9">
-                    Terrain: {plotMetadata.terrain}
-                  </div>
-                )}
-                {plotMetadata.sqft && (
-                  <div className="py-2 secondary-font text-base font-light text-gray-9">Size: {plotMetadata.sqft}</div>
-                )}
-                {plot.metadata.coordinates && (
+                <div className="py-2 secondary-font text-base font-light text-gray-9">
+                  Location: Clark, WY
+                </div>
+                <div className="py-2 secondary-font text-base font-light text-gray-9">
+                  Terrain: Mountainous
+                </div>
+                <div className="py-2 secondary-font text-base font-light text-gray-9">
+                  Size: ~1750 sqft
+                </div>
+                {plot.geometry.coordinates && (
                   <div className="py-2 secondary-font text-base font-light text-gray-9">
                     Coordinates:
                     <br />
-                    {plot.metadata.coordinates}
+                    {plot.geometry.coordinates[0][0][0][1]}°N
+                    <br />
+                    {plot.geometry.coordinates[0][0][0][0]}°W
                   </div>
                 )}
-                {/* Fallback text */}
-                {!plotMetadata.sqft &&
-                  !plotMetadata.terrain &&
-                  !plot.metadata.location &&
-                  !plot.metadata.coordinates && (
-                    <div className="py-2 secondary-font text-base font-light text-gray-9">
-                      No plot properties available.
-                    </div>
-                  )}
               </div>
             </motion.div>
             <motion.div
@@ -125,7 +103,7 @@ export default function PlotDetail({ plot, contracts, injectedProvider }: Props)
               <div className="p-4 text-white">Owner Rights</div>
               <Divider />
               <div className="flex flex-col justify-between p-4 secondary-font text-base font-light text-gray-9">
-                {plotMetadata?.description ?? "Could not retrieve owner rights from the contract."}
+                This NFT denotes a lifetime lease of the plot specified in its geojson metadata. The plot is meant for conservation purposes and must be kept in its current state unless otherwise specified by a CityDAO contract. The owner of this NFT will also obtain one governance vote in proposals involving the communal land designated in the parcel contract.
               </div>
             </motion.div>
           </div>

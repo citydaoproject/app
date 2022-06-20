@@ -18,6 +18,7 @@
   background-color: @gray-2;
   color: @white;
 }
+
 .ant-divider {
   width: 100%;
   background-color: @gray-4;
@@ -35,6 +36,7 @@
 
 .ant-btn.confirm {
   background-color: @primary;
+
   span {
     background-color: unset;
   }
@@ -44,35 +46,45 @@
 .bg-white {
   background-color: @white;
 }
+
 .bg-primary {
   background-color: @primary;
 }
+
 .bg-primary-4 {
   background-color: @primary-4;
 }
+
 .text-gray-1 {
   color: @gray-1;
 }
+
 .bg-gray-1 {
   background-color: @gray-1;
 }
+
 .text-gray-4 {
   color: @gray-4;
 }
+
 .border-gray-4 {
   border-color: @gray-4;
   border-radius: 4px;
   border-width: 2px;
 }
+
 .text-gray-7 {
   color: @gray-7;
 }
+
 .bg-gray-9 {
   background-color: @gray-9;
 }
+
 .text-gray-9 {
   color: @gray-9;
 }
+
 .bg-gradient {
   background: linear-gradient(90deg, @primary 0%, #a3fad1 100%);
 }
@@ -81,9 +93,11 @@
 .primary-font {
   font-family: "Space Grotesk", sans-serif;
 }
+
 .secondary-font {
   font-family: "Roboto Mono", monospace;
 }
+
 .third-font {
   font-family: "Source Sans Pro", sans-serif;
 }
@@ -92,10 +106,12 @@
 .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
   color: @primary;
 }
+
 .ant-tabs-tab .ant-tabs-tab-btn {
   @apply secondary-font;
   height: 15px;
 }
+
 .ant-tabs-ink-bar {
   background: @primary;
 }
@@ -121,6 +137,61 @@
   }
 }
 
+/* Filter style */
+.filter {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid @gray-5;
+  border-radius: 4px;
+  padding: 8px;
+
+  .close {
+    position: absolute;
+    display: flex;
+    right: 10px;
+  }
+}
+
+/* Map style */
+.mapboxgl-map .mapboxgl-popup {
+
+  *:not(.view-plot-btn) {
+    background-color: white;
+    color: #000;
+  }
+  .view-plot-btn {
+    margin-top: 5px;
+  }
+
+  &, .mapboxgl-popup-tip {
+    background-color: rgba(0, 0, 0, 0);
+  }
+}
+
+.mapboxgl-popup {
+  .mapboxgl-popup-content {
+    display: flex;
+    flex-direction: column;
+    align-items: baseline;
+    .plot-title {
+      margin-bottom: 10px;
+      font-size: 20px;
+    }
+  
+    .popup-content {
+      .cordinates {
+        display: flex;
+        flex-direction: column;
+        span {
+          line-height: 15px;
+        }
+      }
+    }
+  }
+}
+
 /* Button styles */
 .btn {
   color: @white;
@@ -128,19 +199,23 @@
   border-radius: 4px;
   padding: 8px 16px;
 }
+
 .highlight,
 .highlight * {
   background-color: @gray-3;
   border-color: @gray-6;
 }
+
 .img-small {
   width: 31px;
   height: 31px;
   border-radius: 4px;
 }
+
 .connect-wallet {
   background-color: @primary;
 }
+
 .connect-wallet-button {
   font-size: 16px;
 
@@ -149,16 +224,18 @@
     margin-right: 0.75rem;
   }
 }
+
 .connected {
   background-color: transparent;
   border: 1px solid @primary;
+
   :hover {
     cursor: default;
   }
 }
 
 /* Plot detail styles */
-.plot-detail > div.flex {
+.plot-detail>div.flex {
   margin: 24px;
 }
 
@@ -178,8 +255,10 @@ textarea:focus,
 select:focus {
   outline: none;
 }
+
 .search-plots {
   border-color: @gray-4;
+
   * {
     border-color: @gray-4;
     background-color: transparent;
@@ -197,12 +276,14 @@ select:focus {
 :root {
   --toastify-color-light: @gray-2;
 }
+
 .error * {
   color: white;
   @apply secondary-font;
 }
+
 .bn-notify-custom * {
-  background-color: @gray-2 !important;
+  background-color: @gray-2  !important;
   color: white;
   @apply secondary-font;
 }
@@ -211,15 +292,19 @@ select:focus {
 .web3modal-modal-hitbox {
   background-color: @gray-1;
 }
+
 .web3modal-provider-container {
-  background-color: @gray-2 !important;
+  background-color: @gray-2  !important;
+
   * {
     color: white;
     background-color: inherit !important;
   }
 }
+
 #walletconnect-wrapper {
-  background-color: @gray-2 !important;
+  background-color: @gray-2  !important;
+
   * {
     color: white;
     background-color: inherit !important;
@@ -325,7 +410,7 @@ select:focus {
   height: 100%;
   display: grid;
   grid-template-columns: 400px 1fr;
-  grid-template-rows: 3rem 4rem 1fr;
+  grid-template-rows: 0rem 4rem 1fr;
   grid-column-gap: 0px;
   grid-row-gap: 0px;
 
@@ -343,21 +428,26 @@ select:focus {
 .progress-bar {
   grid-area: 1 / 1 / 2 / 3;
 }
+
 .logo-link {
   grid-area: 2 / 1 / 3 / 2;
 }
+
 .connect-wallet-section {
   grid-area: 2 / 2 / 3 / 3;
   border-color: @gray-4;
   justify-content: flex-end;
 }
+
 .plot-detail {
   grid-area: 3 / 1 / 4 / 2;
 }
+
 .plot-tabs {
   grid-area: 3 / 1 / 4 / 2;
   width: 100%;
 }
+
 .plot-map {
   grid-area: 3 / 2 / 4 / 3;
 }
@@ -366,21 +456,26 @@ select:focus {
   .progress-bar {
     grid-area: 1 / 1 / 2 / 2;
   }
+
   .logo-link {
     grid-area: 2 / 1 / 3 / 2;
   }
+
   .connect-wallet-section {
     grid-area: 3 / 1 / 4 / 2;
     justify-content: center;
     max-width: 100vw;
   }
+
   .plot-map {
     grid-area: 4 / 1 / 5 / 2;
   }
+
   .plot-tabs {
     grid-area: 5 / 1 / 7 / 2;
     max-width: 100vw;
   }
+
   .plot-detail {
     grid-area: 6 / 1 / 7 / 2;
   }

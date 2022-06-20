@@ -3,27 +3,22 @@ import { Plot } from "../models/Plot";
 
 interface PlotsState {
   plots: Plot[];
-  parcel: Plot;
+  // parcel: Plot;
   communal: any[];
   highlightedPlot?: Plot;
   activePlot?: Plot;
   idFilter?: string;
   fetching: boolean;
+  numDisplay: any;
 }
 
 const initialState: PlotsState = {
   plots: [],
-  parcel: {
-    id: 0,
-    parcel: -1,
-    sold: false,
-    owner: "",
-    metadata: { geojson: {} },
-  },
   communal: [],
   highlightedPlot: undefined,
   activePlot: undefined,
   fetching: true,
+  numDisplay: 10,
 };
 
 export const plotsState = createSlice({
@@ -48,11 +43,11 @@ export const plotsState = createSlice({
     fetchedPlots: state => {
       state.fetching = false;
     },
-    setParcelGeojson: (state, action: PayloadAction<any>) => {
-      state.parcel.metadata.geojson = action.payload;
-    },
     setCommunalLand: (state, action: PayloadAction<any[]>) => {
       state.communal = action.payload;
+    },
+    setNumDisplayPlots: (state, action: PayloadAction<number | undefined>) => {
+      state.numDisplay = action.payload;
     },
   },
 });
@@ -63,8 +58,8 @@ export const {
   setActivePlot,
   setIdFilter,
   fetchedPlots,
-  setParcelGeojson,
   setCommunalLand,
+  setNumDisplayPlots,
 } = plotsState.actions;
 
 export default plotsState.reducer;
