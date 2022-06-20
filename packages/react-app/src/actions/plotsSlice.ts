@@ -14,12 +14,6 @@ interface PlotsState {
 
 const initialState: PlotsState = {
   plots: [],
-  // parcel: {
-  //   id: 0,
-  //   geometry: {},
-  //   properties: {},
-  //   type: string
-  // },
   communal: [],
   highlightedPlot: undefined,
   activePlot: undefined,
@@ -49,9 +43,6 @@ export const plotsState = createSlice({
     fetchedPlots: state => {
       state.fetching = false;
     },
-    // setParcelGeojson: (state, action: PayloadAction<any>) => {
-    //   state.parcel.metadata.geojson = action.payload;
-    // },
     setCommunalLand: (state, action: PayloadAction<any[]>) => {
       state.communal = action.payload;
     },
@@ -67,7 +58,6 @@ export const {
   setActivePlot,
   setIdFilter,
   fetchedPlots,
-  // setParcelGeojson,
   setCommunalLand,
   setNumDisplayPlots,
 } = plotsState.actions;

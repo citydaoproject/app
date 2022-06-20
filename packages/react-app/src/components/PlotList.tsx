@@ -35,7 +35,6 @@ export default function PlotList({ plots, totalNum, emptyMessage }: Props) {
           <PlotButton plot={plot} delay={idx % 10} />
         </motion.div>
       ))}
-      {/* {plots?.length > displayedPlots?.length && ( */}
       {totalNum > plots?.length && (
         <span onClick={increaseNumDisplayedPlots} className="text-gray-7 third-font cursor-pointer my-4 pb-4">
           Show more

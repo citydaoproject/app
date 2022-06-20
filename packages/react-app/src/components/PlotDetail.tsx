@@ -20,16 +20,6 @@ export default function PlotDetail({ plot, contracts, injectedProvider }: Props)
   const [plotMetadata, setPlotMetadata] = useState<any>({} as any);
   const dispatch = useAppDispatch();
 
-  // const fetchPlotMetadata = useCallback(async () => {
-  //   const plotUri = await contracts.CityDaoParcel.getTokenMetadataUri(0);
-  //   const plotManifestBuffer = await fetchMetadata(plotUri);
-  //   return JSON.parse(plotManifestBuffer.toString()) as any;
-  // }, [contracts]);
-
-  // useEffect(() => {
-  //   fetchPlotMetadata().then(setPlotMetadata);
-  // }, [contracts, plot]);
-
   return (
     <AnimatePresence>
       <div className="plot-detail">
