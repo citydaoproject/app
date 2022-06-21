@@ -30,7 +30,7 @@ yarn create-plots
 ```
 
 ### 4. Run the web app
-First, create `.env` in the `packages/web` directory with [the values from the Notion documentation](https://citydao.notion.site/Env-variables-9d5d8c5874c2400cb2554964cb61a86f)
+First, create a new `.env` file in the `packages/react-app` directory by copying `example.env` (Reach out to Dev Guild facilitators for the related API keys)
 
 Then start the web app locally on http://localhost:3000
 ```bash
