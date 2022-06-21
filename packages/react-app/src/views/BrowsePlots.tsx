@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 
 import { useContractLoader, useAppSelector, useAppDispatch, useUserSigner } from "../hooks";
-import { PlotMap, ProgressBar, PlotDetail, LogoDisplay, Header } from "../components";
+import { PlotMap, PlotDetail, LogoDisplay, Header } from "../components";
 import { setPlots } from "../actions";
 import { PlotTabs } from "../components";
 import { Plot } from "../models/Plot";
