@@ -7,6 +7,9 @@ export const BLOCKNATIVE_DAPPID = "0b58206a-f3c0-4701-a62f-73c7243e8c77";
 //Parcel-0 Opensea collection
 export const PARCEL_OPENSEA = "https://opensea.io/assets/ethereum/0x90384e76b6b3ddb47396ff85144819ded148900d/";
 
+// Parcel-0 Opensea collection ID
+export const PARCEL_0_OPENSEA_ID = "0x90384e76b6b3ddb47396ff85144819ded148900d";
+
 export const NETWORKS = {
   localhost: {
     name: "localhost",

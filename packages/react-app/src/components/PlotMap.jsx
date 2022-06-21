@@ -9,6 +9,7 @@ import { stringifyPlotId } from "../helpers/stringifyPlotId";
 import { plotsList } from "../data";
 import { PARCEL_OPENSEA } from "../constants";
 import { setActivePlot } from "../actions/plotsSlice";
+import { sliceUserAddress } from "../helpers/sliceUserAddress";
 
 mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_TOKEN;
 
@@ -25,7 +26,8 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
   const highlightedPlot = useAppSelector(state => state.plots.highlightedPlot);
   const activePlot = useAppSelector(state => state.plots.activePlot);
   const communal = useAppSelector(state => state.plots.communal);
-  const [newPlots, setNewPlots] = useState(plotsList)
+  const activePlotNftData = useAppSelector(state => state.plots.activePlotNftData);
+  const [newPlots, setNewPlots] = useState(plotsList);
 
   // zoom to plot on selection
   useEffect(() => {
@@ -41,6 +43,8 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
       popupContent += "</div>";
       const openseaBtn = "<button class='view-plot-btn btn w-full' id='view_opensea'>View on Opensea</button>";
       popupContent += openseaBtn;
+      if (activePlotNftData && activePlotNftData.owner && activePlotNftData.owner.address)
+        popupContent += sliceUserAddress(activePlotNftData.owner.address);
       popupContent += "</div>";
 
       const lats = coordinates.map((codinate) => codinate[0]);

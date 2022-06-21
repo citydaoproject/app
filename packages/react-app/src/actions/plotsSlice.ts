@@ -10,6 +10,7 @@ interface PlotsState {
   idFilter?: string;
   fetching: boolean;
   numDisplay: any;
+  activePlotNftData?: any;
 }
 
 const initialState: PlotsState = {
@@ -19,6 +20,7 @@ const initialState: PlotsState = {
   activePlot: undefined,
   fetching: true,
   numDisplay: 10,
+  activePlotNftData: undefined,
 };
 
 export const plotsState = createSlice({
@@ -49,6 +51,9 @@ export const plotsState = createSlice({
     setNumDisplayPlots: (state, action: PayloadAction<number | undefined>) => {
       state.numDisplay = action.payload;
     },
+    setActivePlotNftData: (state, action: PayloadAction<Plot | undefined>) => {
+      state.activePlotNftData = action.payload;
+    },
   },
 });
 
@@ -60,6 +65,7 @@ export const {
   fetchedPlots,
   setCommunalLand,
   setNumDisplayPlots,
+  setActivePlotNftData,
 } = plotsState.actions;
 
 export default plotsState.reducer;

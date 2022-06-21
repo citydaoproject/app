@@ -3,12 +3,13 @@ import { Divider } from "antd";
 import { AnimatePresence, motion } from "framer-motion";
 import { CloseOutlined } from "@ant-design/icons";
 import { Plot } from "../models/Plot";
-import { useAppDispatch } from "../hooks";
+import { useAppDispatch, useAppSelector } from "../hooks";
 import { setActivePlot } from "../actions/plotsSlice";
 
 import LAND_IMG from "../assets/images/SampleLandImage.png";
 import { ViewPlot } from ".";
 import { fetchMetadata } from "../data";
+import { sliceUserAddress } from "../helpers/sliceUserAddress";
 
 interface Props {
   plot: Plot;
@@ -18,6 +19,7 @@ interface Props {
 
 export default function PlotDetail({ plot, contracts, injectedProvider }: Props) {
   const [plotMetadata, setPlotMetadata] = useState<any>({} as any);
+  const activePlotNftData = useAppSelector(state => state.plots.activePlotNftData);
   const dispatch = useAppDispatch();
 
   return (
@@ -63,25 +65,30 @@ export default function PlotDetail({ plot, contracts, injectedProvider }: Props)
                 </a>
               </div>
             </motion.div>
-            <motion.div
-              className="border-gray-4 text-left"
+            <motion.p
               initial={{ x: -300, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               exit={{ x: -300, opacity: 0 }}
               transition={{ delay: 0.2 }}
             >
+              <span>
+                Owner:{" "}
+                {sliceUserAddress(activePlotNftData && activePlotNftData.owner && activePlotNftData.owner.address)}
+              </span>
+            </motion.p>
+            <motion.div
+              className="border-gray-4 text-left"
+              initial={{ x: -300, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              exit={{ x: -300, opacity: 0 }}
+              transition={{ delay: 0.3 }}
+            >
               <div className="p-4 text-white">Properties</div>
               <Divider />
               <div className="flex flex-col justify-between p-4">
-                <div className="py-2 secondary-font text-base font-light text-gray-9">
-                  Location: Clark, WY
-                </div>
-                <div className="py-2 secondary-font text-base font-light text-gray-9">
-                  Terrain: Mountainous
-                </div>
-                <div className="py-2 secondary-font text-base font-light text-gray-9">
-                  Size: ~1750 sqft
-                </div>
+                <div className="py-2 secondary-font text-base font-light text-gray-9">Location: Clark, WY</div>
+                <div className="py-2 secondary-font text-base font-light text-gray-9">Terrain: Mountainous</div>
+                <div className="py-2 secondary-font text-base font-light text-gray-9">Size: ~1750 sqft</div>
                 {plot.geometry.coordinates && (
                   <div className="py-2 secondary-font text-base font-light text-gray-9">
                     Coordinates:
@@ -103,7 +110,10 @@ export default function PlotDetail({ plot, contracts, injectedProvider }: Props)
               <div className="p-4 text-white">Owner Rights</div>
               <Divider />
               <div className="flex flex-col justify-between p-4 secondary-font text-base font-light text-gray-9">
-                This NFT denotes a lifetime lease of the plot specified in its geojson metadata. The plot is meant for conservation purposes and must be kept in its current state unless otherwise specified by a CityDAO contract. The owner of this NFT will also obtain one governance vote in proposals involving the communal land designated in the parcel contract.
+                This NFT denotes a lifetime lease of the plot specified in its geojson metadata. The plot is meant for
+                conservation purposes and must be kept in its current state unless otherwise specified by a CityDAO
+                contract. The owner of this NFT will also obtain one governance vote in proposals involving the communal
+                land designated in the parcel contract.
               </div>
             </motion.div>
           </div>
