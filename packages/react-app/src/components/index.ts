@@ -11,3 +11,4 @@ export { default as Header } from "./Header";
 export { default as ConnectWalletButton } from "./ConnectWalletButton";
 export { default as SearchPlots } from "./SearchPlots";
 export { default as FilterNote } from "./FilterNote";
+export { default as LocationDetail } from "./LocationDetail";

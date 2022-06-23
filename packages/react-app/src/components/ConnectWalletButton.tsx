@@ -12,11 +12,11 @@ export default function ConnectWalletButton({ onClick }: Props) {
     <Tooltip title={userAddress}>
       <button
         onClick={onClick}
-        className={`connect-wallet-button ${
+        className={`connect-wallet-button secondary-font ${
           userAddress ? "connected" : "connect-wallet"
         } secondary-font px-4 h-9 rounded`}
       >
-        {userAddress ? userAddress?.slice(0, 6) + "..." + userAddress?.slice(-5, -1) : "Connect Wallet"}
+        {userAddress ? userAddress?.slice(0, 6) + "..." + userAddress?.slice(-5, -1) : "Connect"}
       </button>
     </Tooltip>
   );

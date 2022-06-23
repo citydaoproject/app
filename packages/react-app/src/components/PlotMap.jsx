@@ -158,9 +158,9 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
   }, [newPlots, map.current])
 
   return (
-    <div className="plot-map flex-grow flex flex-col relative">
+    <div className="plot-map flex-grow flex flex-col relative bg-gray-1 border-r">
       <AnimatePresence>{!mapLoaded && <Loading />}</AnimatePresence>
-      <div ref={mapContainer} className="absolute left-0 right-0 top-0 bottom-0 plot-map" />
+      <div ref={mapContainer} className="absolute left-0 right-0 top-0 bottom-0" />
     </div>
   );
 }
@@ -170,7 +170,7 @@ function Loading() {
     <motion.div
       initial={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="plot-map bg-black absolute left-0 right-0 top-0 bottom-0 z-10 flex items-center justify-center"
+      className="bg-black absolute left-0 right-0 top-0 bottom-0 z-10 flex items-center justify-center"
     >
       <img src={loading} alt="loading" />
     </motion.div>

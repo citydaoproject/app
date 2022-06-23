@@ -4,9 +4,9 @@ import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 
 import { useContractLoader, useAppSelector, useAppDispatch, useUserSigner } from "../hooks";
-import { PlotMap, PlotDetail, LogoDisplay, Header } from "../components";
+import { PlotMap, PlotDetail, LogoDisplay, Header, LocationDetail } from "../components";
 import { setPlots } from "../actions";
-import { PlotTabs } from "../components";
+import { PlotTabs, SearchPlots } from "../components";
 import { Plot } from "../models/Plot";
 import { logoutOfWeb3Modal } from "../helpers";
 import { fetchedPlots, setCommunalLand } from "../actions/plotsSlice";
@@ -129,24 +129,32 @@ export default function BrowsePlots({ networkProvider, web3Modal }: Props) {
 
   return (
     <div className="browse-plots-wrapper">
-      <Link to="/whitelist" className="logo-link">
-        <LogoDisplay />
-      </Link>
+      <div className="logo-display flex items-center justify-between h-16 border-b pb-px">
+        <Link to="/whitelist" className="logo-link">
+          <LogoDisplay />
+        </Link>
+        <SearchPlots />
+      </div>
+
+      <Header connectWallet={loadWeb3Modal} />
       {activePlot !== undefined ? (
         <PlotDetail plot={activePlot} contracts={contracts} injectedProvider={injectedProvider} />
       ) : (
         <PlotTabs />
       )}
-      <Header connectWallet={loadWeb3Modal} />
+
       {/* key prop is to cause rerendering whenever it changes */}
-      <PlotMap
-        key={plots.length}
-        // parcel={parcel}
-        // plots={plots}
-        startingCoordinates={[-109.25689639464197, 44.922331600075466]}
-        startingZoom={15.825123438299038}
-        startingPitch={20}
-      />
+      <div className="main-content">
+        <PlotMap
+          key={plots.length}
+          // parcel={parcel}
+          // plots={plots}
+          startingCoordinates={[-109.25689639464197, 44.922331600075466]}
+          startingZoom={15.825123438299038}
+          startingPitch={20}
+        />
+        <LocationDetail />
+      </div>
     </div>
   );
 }
