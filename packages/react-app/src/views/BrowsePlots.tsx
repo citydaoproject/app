@@ -137,14 +137,20 @@ export default function BrowsePlots({ networkProvider, web3Modal }: Props) {
       </div>
 
       <Header connectWallet={loadWeb3Modal} />
-      {activePlot !== undefined ? (
+      {!userAddress && (
+        <div className="location-detail px-10 py-11 overflow-y-scroll">
+          <LocationDetail />
+          <TerrainDetail />
+        </div>
+      )}
+      { activePlot !== undefined ? (
         <PlotDetail plot={activePlot} contracts={contracts} injectedProvider={injectedProvider} />
       ) : (
         <PlotTabs />
       )}
 
       {/* key prop is to cause rerendering whenever it changes */}
-      <div className="main-content">
+      {/* <div className="main-content"> */}
         <PlotMap
           key={plots.length}
           // parcel={parcel}
@@ -153,11 +159,11 @@ export default function BrowsePlots({ networkProvider, web3Modal }: Props) {
           startingZoom={15.825123438299038}
           startingPitch={20}
         />
-        <div className="flex flex-row location-detail border-r tracking-wider">
+        {/* <div className="flex flex-row location-detail border-r tracking-wider">
           <LocationDetail />
           <TerrainDetail />
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }

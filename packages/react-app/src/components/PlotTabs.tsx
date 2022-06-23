@@ -42,7 +42,7 @@ export default function PlotTabs() {
   }, [idFilter])
 
   return (
-    <Tabs defaultActiveKey="1" className="plot-tabs px-4">
+    <Tabs defaultActiveKey="1" className="plot-tabs px-4" style={{ display: userAddress === undefined ? "none" : "block" }}>
       <TabPane tab="All parcels" key="1">
         {idFilter && (
           <FilterNote filterText={idFilter} />

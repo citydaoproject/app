@@ -18,9 +18,12 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
   const map = useRef(null);
   let popup = new mapboxgl.Popup({
     maxWidth: "unset",
-    closeButton: false,
+    closeButton: true,
     closeOnClick: false
   });
+  popup.on('close', function(e) {
+    dispatch(setActivePlot(undefined))
+})
   const [mapLoaded, setMapLoaded] = useState(false);
   const highlightedPlot = useAppSelector(state => state.plots.highlightedPlot);
   const activePlot = useAppSelector(state => state.plots.activePlot);
@@ -127,7 +130,6 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
   useEffect(() => {
     if (map?.current && newPlots) {
       map.current.on("load", function () {
-        console.log(newPlots)
         if (!map.current.getLayer("parcel_outline")) {
           addOutlineToMap(newPlots, "parcel", "#fff");
         }

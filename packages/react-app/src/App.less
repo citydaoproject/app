@@ -344,7 +344,7 @@ select:focus {
 /* Plot Detail */
 .plot-detail-content {
   overflow-y: scroll;
-  max-height: 75vh;
+  max-height: 93vh;
 
   @media (max-width: 1024px) {
     overflow-y: initial;
@@ -425,6 +425,10 @@ select:focus {
   grid-column-gap: 0px;
   grid-row-gap: 0px;
 
+  // .details {
+  //   grid-area: 3 / 2 / 4 / 3;
+  // }
+
   @media (max-width: 1024px) {
     grid-template-columns: 1fr;
     grid-template-rows: 3rem repeat(2, 4rem) 300px 4rem 5fr;
@@ -462,6 +466,7 @@ select:focus {
 
 .plot-map {
   height: 100%;
+  grid-area: 3 / 1 / 4 / 2;
   border-color: @primary-2;
 }
 
@@ -473,14 +478,20 @@ select:focus {
 .location-detail {
   padding: 4% 7% 6% 7%;
   border-color: @primary-2;
+  grid-area: 3 / 2 / 4 / 3;
 
   .address {
-    max-width: 260px;
+    text-align: left;
+    max-width: 250px;
   }
 
   .description {
-    max-width: 280px;
+    max-width: 210px;
   }
+}
+
+.plot-property {
+  border-bottom-color: rgba(245, 245, 245, 0.25);
 }
 
 @media (max-width: 1024px) {
