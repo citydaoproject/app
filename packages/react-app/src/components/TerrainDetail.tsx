@@ -27,21 +27,21 @@ export default function TerrainDeail() {
                         </div>
                     </div>
                     <div className="flex flex-row items-center w-full">
-                        <img className="bg-transparent mr-8" src={Mountain} alt="Mountain" />
+                        <img className="bg-transparent mr-8" src={Flat} alt="Flat" />
                         <div className="flex flex-col items-baseline">
                             <span className="primary-font text-lg">FLAT</span>
                             <span className="primary-font text-lg text-primary-3">7.7%</span>
                         </div>
                     </div>
                     <div className="flex flex-row items-center w-full">
-                        <img className="bg-transparent mr-8" src={Mountain} alt="Mountain" />
+                        <img className="bg-transparent mr-8" src={Rock} alt="Rock" />
                         <div className="flex flex-col items-baseline">
                             <span className="primary-font text-lg">ROCK</span>
                             <span className="primary-font text-lg text-primary-3">97.7%</span>
                         </div>
                     </div>
                     <div className="flex flex-row items-center w-full">
-                        <img className="bg-transparent mr-8" src={Mountain} alt="Mountain" />
+                        <img className="bg-transparent mr-8" src={Vegetation} alt="Vegetation" />
                         <div className="flex flex-col items-baseline">
                             <span className="primary-font text-lg">VEGETATION</span>
                             <span className="primary-font text-lg text-primary-3">3.3%</span>

@@ -53,7 +53,7 @@ export default function PlotDetail({ plot, contracts, injectedProvider }: Props)
             >
               <div className="flex flex-row justify-between plot-property border-b py-3.5">
                 <span className="text-left">Plot</span>
-                <span className="text-right">#{plot?.id}</span>
+                <span className="text-right text-primary-3">#{plot?.id}</span>
               </div>
             </motion.div>
             <motion.div
@@ -64,7 +64,7 @@ export default function PlotDetail({ plot, contracts, injectedProvider }: Props)
             >
               <div className="flex flex-row justify-between plot-property border-b py-3.5">
                 <span className="text-left">Owned by</span>
-                <span className="text-right">CASEY.ETH</span>
+                <span className="text-right text-primary-3">CASEY.ETH</span>
               </div>
             </motion.div>
             <motion.div
@@ -75,7 +75,7 @@ export default function PlotDetail({ plot, contracts, injectedProvider }: Props)
             >
               <div className="flex flex-row justify-between plot-property border-b py-3.5">
                 <span className="text-left">Approx. Size</span>
-                <span className="text-right">~1750 SQFT</span>
+                <span className="text-right text-primary-3">~1750 SQFT</span>
               </div>
             </motion.div>
             <motion.div
@@ -86,7 +86,7 @@ export default function PlotDetail({ plot, contracts, injectedProvider }: Props)
             >
               <div className="flex flex-row justify-between plot-property border-b py-3.5">
                 <span className="text-left">Terrain</span>
-                <span className="text-right">MOUNTAINOUS</span>
+                <span className="text-right text-primary-3">MOUNTAINOUS</span>
               </div>
             </motion.div>
             <motion.div
@@ -97,7 +97,7 @@ export default function PlotDetail({ plot, contracts, injectedProvider }: Props)
             >
               <div className="flex flex-row justify-between plot-property border-b py-3.5">
                 <span className="text-left">Vegetation</span>
-                <span className="text-right">SAGE BRUSH</span>
+                <span className="text-right text-primary-3">SAGE BRUSH</span>
               </div>
             </motion.div>
             <motion.div
@@ -108,7 +108,7 @@ export default function PlotDetail({ plot, contracts, injectedProvider }: Props)
             >
               <div className="flex flex-row justify-between plot-property border-b py-3.5">
                 <span className="text-left">Soil</span>
-                <span className="text-right">ROCK</span>
+                <span className="text-right text-primary-3">ROCK</span>
               </div>
             </motion.div>
             <motion.div
@@ -119,7 +119,7 @@ export default function PlotDetail({ plot, contracts, injectedProvider }: Props)
             >
               <div className="flex flex-row justify-between plot-property border-b py-3.5">
                 <span className="text-left">Coord.</span>
-                <span className="text-right">
+                <span className="text-right text-primary-3">
                   {plot.geometry.coordinates[0][0][0][1]}°N
                   <br />
                   {plot.geometry.coordinates[0][0][0][0]}°W
