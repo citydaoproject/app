@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 
 import { useContractLoader, useAppSelector, useAppDispatch, useUserSigner } from "../hooks";
-import { PlotMap, PlotDetail, LogoDisplay, Header, LocationDetail } from "../components";
+import { PlotMap, PlotDetail, LogoDisplay, Header, LocationDetail, TerrainDetail } from "../components";
 import { setPlots } from "../actions";
 import { PlotTabs, SearchPlots } from "../components";
 import { Plot } from "../models/Plot";
@@ -153,7 +153,10 @@ export default function BrowsePlots({ networkProvider, web3Modal }: Props) {
           startingZoom={15.825123438299038}
           startingPitch={20}
         />
-        <LocationDetail />
+        <div className="flex flex-row location-detail border-r tracking-wider">
+          <LocationDetail />
+          <TerrainDetail />
+        </div>
       </div>
     </div>
   );

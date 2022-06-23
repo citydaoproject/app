@@ -12,3 +12,4 @@ export { default as ConnectWalletButton } from "./ConnectWalletButton";
 export { default as SearchPlots } from "./SearchPlots";
 export { default as FilterNote } from "./FilterNote";
 export { default as LocationDetail } from "./LocationDetail";
+export { default as TerrainDetail } from "./TerrainDetail";
