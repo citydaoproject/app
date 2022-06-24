@@ -175,8 +175,29 @@
     background-color: rgba(0, 0, 0, 0);
   }
 
-  .mapboxgl-popup-tip {
-    border-top-color: @primary-5;
+  &.mapboxgl-popup-anchor-bottom,
+  &.mapboxgl-popup-anchor-bottom-right,
+  &.mapboxgl-popup-anchor-bottom-left {
+    .mapboxgl-popup-tip {
+      border-top-color: @primary-5;
+    }
+  }
+  &.mapboxgl-popup-anchor-top,
+  &.mapboxgl-popup-anchor-top-right,
+  &.mapboxgl-popup-anchor-top-left {
+    .mapboxgl-popup-tip {
+      border-bottom-color: #07120C;
+    }
+  }
+  &.mapboxgl-popup-anchor-left {
+    .mapboxgl-popup-tip {
+      border-right-color: #07120C;
+    }
+  }
+  &.mapboxgl-popup-anchor-right {
+    .mapboxgl-popup-tip {
+      border-left-color: #07120C;
+    }
   }
 }
 
