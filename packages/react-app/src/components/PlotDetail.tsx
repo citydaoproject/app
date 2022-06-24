@@ -49,9 +49,10 @@ export default function PlotDetail({ plot, contracts, injectedProvider }: Props)
               initial={{ x: -300, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               exit={{ x: -300, opacity: 0 }}
+              style={{marginTop: "0"}}
               transition={{ delay: 0.1 }}
             >
-              <div className="flex flex-row justify-between plot-property border-b py-3.5">
+              <div className="flex flex-row justify-between plot-property border-b py-3.5 mt-2">
                 <span className="text-left">Plot</span>
                 <span className="text-right text-primary-3">#{plot?.id}</span>
               </div>
@@ -60,9 +61,10 @@ export default function PlotDetail({ plot, contracts, injectedProvider }: Props)
               initial={{ x: -300, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               exit={{ x: -300, opacity: 0 }}
+              style={{marginTop: "0"}}
               transition={{ delay: 0.2 }}
             >
-              <div className="flex flex-row justify-between plot-property border-b py-3.5">
+              <div className="flex flex-row justify-between plot-property border-b py-3.5 mt-2">
                 <span className="text-left">Owned by</span>
                 <span className="text-right text-primary-3">CASEY.ETH</span>
               </div>
@@ -71,9 +73,10 @@ export default function PlotDetail({ plot, contracts, injectedProvider }: Props)
               initial={{ x: -300, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               exit={{ x: -300, opacity: 0 }}
+              style={{marginTop: "0"}}
               transition={{ delay: 0.2 }}
             >
-              <div className="flex flex-row justify-between plot-property border-b py-3.5">
+              <div className="flex flex-row justify-between plot-property border-b py-3.5 mt-2">
                 <span className="text-left">Approx. Size</span>
                 <span className="text-right text-primary-3">~1750 SQFT</span>
               </div>
@@ -82,9 +85,10 @@ export default function PlotDetail({ plot, contracts, injectedProvider }: Props)
               initial={{ x: -300, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               exit={{ x: -300, opacity: 0 }}
+              style={{marginTop: "0"}}
               transition={{ delay: 0.3 }}
             >
-              <div className="flex flex-row justify-between plot-property border-b py-3.5">
+              <div className="flex flex-row justify-between plot-property border-b py-3.5 mt-2">
                 <span className="text-left">Terrain</span>
                 <span className="text-right text-primary-3">MOUNTAINOUS</span>
               </div>
@@ -93,9 +97,10 @@ export default function PlotDetail({ plot, contracts, injectedProvider }: Props)
               initial={{ x: -300, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               exit={{ x: -300, opacity: 0 }}
+              style={{marginTop: "0"}}
               transition={{ delay: 0.4 }}
             >
-              <div className="flex flex-row justify-between plot-property border-b py-3.5">
+              <div className="flex flex-row justify-between plot-property border-b py-3.5 mt-2">
                 <span className="text-left">Vegetation</span>
                 <span className="text-right text-primary-3">SAGE BRUSH</span>
               </div>
@@ -104,9 +109,10 @@ export default function PlotDetail({ plot, contracts, injectedProvider }: Props)
               initial={{ x: -300, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               exit={{ x: -300, opacity: 0 }}
+              style={{marginTop: "0"}}
               transition={{ delay: 0.5 }}
             >
-              <div className="flex flex-row justify-between plot-property border-b py-3.5">
+              <div className="flex flex-row justify-between plot-property border-b py-3.5 mt-2">
                 <span className="text-left">Soil</span>
                 <span className="text-right text-primary-3">ROCK</span>
               </div>

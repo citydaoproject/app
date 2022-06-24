@@ -9,6 +9,8 @@ import { stringifyPlotId } from "../helpers/stringifyPlotId";
 import { plotsList } from "../data";
 import { PARCEL_OPENSEA } from "../constants";
 import { setActivePlot } from "../actions/plotsSlice";
+import Land from "../assets/images/SampleLandImage.png";
+import Info from "../assets/images/info.png";
 
 mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_TOKEN;
 
@@ -18,17 +20,18 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
   const map = useRef(null);
   let popup = new mapboxgl.Popup({
     maxWidth: "unset",
-    closeButton: true,
+    closeButton: false,
     closeOnClick: false
   });
-  popup.on('close', function(e) {
-    dispatch(setActivePlot(undefined))
-})
   const [mapLoaded, setMapLoaded] = useState(false);
   const highlightedPlot = useAppSelector(state => state.plots.highlightedPlot);
   const activePlot = useAppSelector(state => state.plots.activePlot);
   const communal = useAppSelector(state => state.plots.communal);
   const [newPlots, setNewPlots] = useState(plotsList)
+
+  const closePopup = () => {
+    dispatch(setActivePlot(undefined));
+  }
 
   // zoom to plot on selection
   useEffect(() => {
@@ -38,12 +41,15 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
         pitch: startingPitch,
       });
 
-      let popupTitle = `<p class="plot-title">Plot #${stringifyPlotId(activePlot.id)}</p>`;
+      let popupTitle = `<div class="flex items-center mb-2.5"><p class="text-primary-3 secondary-font text-lg">Plot #${stringifyPlotId(activePlot.id)}</p>`;
+      popupTitle += "<span class='primary-font text-base cursor-pointer absolute right-2.5' id='close-popup'>X</span>"
+      popupTitle += `<img class="bg-transparent absolute right-7 cursor-pointer" src=${Info} alt="Info" /></div>`
       let popupContent = "<div class='popup-content'><div class='cordinates'>";
       let coordinates = activePlot.geometry.coordinates[0][0];
       popupContent += "</div>";
-      const openseaBtn = "<button class='view-plot-btn btn w-full' id='view_opensea'>View on Opensea</button>";
-      popupContent += openseaBtn;
+      popupContent += `<img class="bg-transparent" src=${Land} alt="Land" />`
+      // const openseaBtn = "<button class='view-plot-btn btn w-full' id='view_opensea'>View on Opensea</button>";
+      // popupContent += openseaBtn;
       popupContent += "</div>";
 
       const lats = coordinates.map((codinate) => codinate[0]);
@@ -51,7 +57,8 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
       const centerLat = (Math.min(...lats) + Math.max(...lats)) / 2;
       const centerLng = (Math.min(...lngs) + Math.max(...lngs)) / 2;
       popup.setLngLat([centerLat, centerLng]).setHTML(popupTitle + popupContent).addTo(map.current);
-      document.getElementById('view_opensea').addEventListener('click', () => window.open(PARCEL_OPENSEA + activePlot.id, "_blank"));
+      // document.getElementById('view_opensea').addEventListener('click', () => window.open(PARCEL_OPENSEA + activePlot.id, "_blank"));
+      document.getElementById('close-popup').addEventListener('click', () => closePopup());
     } else {
       const popups = document.getElementsByClassName("mapboxgl-popup");
       if (popups.length) {
@@ -99,7 +106,7 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
           "fill-opacity": opacity,
         },
       });
-      
+
     }
   };
 
