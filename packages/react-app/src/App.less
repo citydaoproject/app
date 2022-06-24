@@ -167,11 +167,13 @@
   *:not(.view-plot-btn) {
     background-color: @primary-5;
   }
+
   .view-plot-btn {
     margin-top: 5px;
   }
 
-  &, .mapboxgl-popup-tip {
+  &,
+  .mapboxgl-popup-tip {
     background-color: rgba(0, 0, 0, 0);
   }
 
@@ -182,6 +184,7 @@
       border-top-color: @primary-5;
     }
   }
+
   &.mapboxgl-popup-anchor-top,
   &.mapboxgl-popup-anchor-top-right,
   &.mapboxgl-popup-anchor-top-left {
@@ -189,11 +192,13 @@
       border-bottom-color: #07120C;
     }
   }
+
   &.mapboxgl-popup-anchor-left {
     .mapboxgl-popup-tip {
       border-right-color: #07120C;
     }
   }
+
   &.mapboxgl-popup-anchor-right {
     .mapboxgl-popup-tip {
       border-left-color: #07120C;
@@ -206,17 +211,31 @@
     display: flex;
     flex-direction: column;
     align-items: baseline;
-  
+    padding: 10px;
+
     .popup-content {
+      width: 155px;
+      height: 155px;
+      overflow: hidden;
+      position: relative;
+
       .cordinates {
         display: flex;
         flex-direction: column;
+
         span {
           line-height: 15px;
         }
       }
+
       img {
-        max-width: 230px;
+        left: 50%;
+        position: relative;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        width: 200px;
+        height: 200px;
+        object-fit: cover;
       }
     }
   }
@@ -483,7 +502,6 @@ select:focus {
 
 .plot-tabs {
   grid-area: 3 / 2 / 4 / 3;
-  
   width: 100%;
 }
 
@@ -501,7 +519,6 @@ select:focus {
 .location-detail {
   padding: 4% 7% 6% 7%;
   border-color: @primary-2;
-  grid-area: 3 / 2 / 4 / 3;
 
   .address {
     text-align: left;

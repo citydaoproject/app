@@ -47,7 +47,7 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
       let popupContent = "<div class='popup-content'><div class='cordinates'>";
       let coordinates = activePlot.geometry.coordinates[0][0];
       popupContent += "</div>";
-      popupContent += `<img class="bg-transparent" src=${Land} alt="Land" />`
+      popupContent += `<img class="bg-transparent plot-image" src=${Land} alt="Land" />`
       // const openseaBtn = "<button class='view-plot-btn btn w-full' id='view_opensea'>View on Opensea</button>";
       // popupContent += openseaBtn;
       popupContent += "</div>";

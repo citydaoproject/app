@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 
 import { useContractLoader, useAppSelector, useAppDispatch, useUserSigner } from "../hooks";
-import { PlotMap, PlotDetail, LogoDisplay, Header, LocationDetail, TerrainDetail } from "../components";
+import { PlotMap, PlotDetail, LogoDisplay, Header, LocationDetail, TerrainDetail, SidePanel } from "../components";
 import { setPlots } from "../actions";
 import { PlotTabs, SearchPlots } from "../components";
 import { Plot } from "../models/Plot";
@@ -137,17 +137,7 @@ export default function BrowsePlots({ networkProvider, web3Modal }: Props) {
       </div>
 
       <Header connectWallet={loadWeb3Modal} />
-      {!userAddress && (
-        <div className="location-detail px-10 py-11 overflow-y-scroll">
-          <LocationDetail />
-          <TerrainDetail />
-        </div>
-      )}
-      { activePlot !== undefined ? (
-        <PlotDetail plot={activePlot} contracts={contracts} injectedProvider={injectedProvider} />
-      ) : (
-        <PlotTabs />
-      )}
+      <SidePanel contracts={contracts} injectedProvider={injectedProvider} />
 
       {/* key prop is to cause rerendering whenever it changes */}
       {/* <div className="main-content"> */}

@@ -42,29 +42,39 @@ export default function PlotTabs() {
   }, [idFilter])
 
   return (
-    <Tabs defaultActiveKey="1" className="plot-tabs px-4" style={{ display: userAddress === undefined ? "none" : "block" }}>
-      <TabPane tab="All parcels" key="1">
-        {idFilter && (
-          <FilterNote filterText={idFilter} />
-        )}
-        <PlotList
-          plots={newPlots?.slice(0, currentNumDisplay)}
-          totalNum={newPlotsNum}
-          emptyMessage={fetchingPlots ? "Loading..." : "We're sold out! Be on the lookout for the next drop."}
-        />
-      </TabPane>
-      <TabPane tab="Your Land" key="3">
-        {idFilter && (
-          <FilterNote filterText={idFilter} />
-        )}
-        {/* {userAddress && (
-          <PlotList
-            plots={plots.filter(plot => plot.owner === userAddress)}
-            emptyMessage={fetchingPlots ? "Loading..." : "You don't own any plots yet"}
-          />
-        )} */}
-        {!userAddress && <span className="text-gray-7 third-font">Connect your wallet to see your owned plots</span>}
-      </TabPane>
-    </Tabs>
+    <div className="plot-tabs">
+      {idFilter && (
+        <FilterNote filterText={idFilter} />
+      )}
+      <PlotList
+        plots={newPlots?.slice(0, currentNumDisplay)}
+        totalNum={newPlotsNum}
+        emptyMessage={fetchingPlots ? "Loading..." : "We're sold out! Be on the lookout for the next drop."}
+      />
+    </div>
+    // <Tabs defaultActiveKey="1" className="plot-tabs px-4" style={{ display: userAddress === undefined ? "none" : "block" }}>
+    //   <TabPane tab="All parcels" key="1">
+    //     {idFilter && (
+    //       <FilterNote filterText={idFilter} />
+    //     )}
+    //     <PlotList
+    //       plots={newPlots?.slice(0, currentNumDisplay)}
+    //       totalNum={newPlotsNum}
+    //       emptyMessage={fetchingPlots ? "Loading..." : "We're sold out! Be on the lookout for the next drop."}
+    //     />
+    //   </TabPane>
+    //   <TabPane tab="Your Land" key="3">
+    //     {idFilter && (
+    //       <FilterNote filterText={idFilter} />
+    //     )}
+    //     {/* {userAddress && (
+    //       <PlotList
+    //         plots={plots.filter(plot => plot.owner === userAddress)}
+    //         emptyMessage={fetchingPlots ? "Loading..." : "You don't own any plots yet"}
+    //       />
+    //     )} */}
+    //     {!userAddress && <span className="text-gray-7 third-font">Connect your wallet to see your owned plots</span>}
+    //   </TabPane>
+    // </Tabs>
   );
 }

@@ -44,6 +44,8 @@ export default function PlotDetail({ plot, contracts, injectedProvider }: Props)
               initial={{ x: -300, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               exit={{ x: -300, opacity: 0 }}
+              style={{ height: "240px" }}
+              className="object-cover"
             />
             <motion.div
               initial={{ x: -300, opacity: 0 }}
