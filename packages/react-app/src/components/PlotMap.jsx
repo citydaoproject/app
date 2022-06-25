@@ -9,6 +9,7 @@ import { stringifyPlotId } from "../helpers/stringifyPlotId";
 import { plotsList } from "../data";
 import { setActivePlot, setHighlightedPlot } from "../actions/plotsSlice";
 import Land from "../assets/images/SampleLandImage.png";
+import PlotsStatus from "./PlotsStatus";
 
 mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_TOKEN;
 
@@ -133,7 +134,7 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
   useEffect(() => {
     if (map?.current && activePlot && !map.current.getLayer("active_fill") && mapLoaded) {
       addOutlineToMap(activePlot, "active", 1, "#00cf6b");
-      addFilledToMap(activePlot, "active", 0.5, "#00cf6b");
+      addFilledToMap(activePlot, "active", 0.5, "#00FFA8");
     } else if (map?.current && map.current.getLayer("active_fill") && mapLoaded) {
       map.current.removeLayer("active_fill");
       map.current.removeLayer("active_outline");
@@ -212,6 +213,7 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
     <div className="plot-map flex-grow flex flex-col relative bg-gray-1 border-r">
       <AnimatePresence>{!mapLoaded && <Loading />}</AnimatePresence>
       <div ref={mapContainer} className="absolute left-0 right-0 top-0 bottom-0" />
+      <PlotsStatus acres={40} plots={newPlots.features.length} />
     </div>
   );
 }
@@ -221,7 +223,7 @@ function Loading() {
     <motion.div
       initial={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="bg-black absolute left-0 right-0 top-0 bottom-0 z-10 flex items-center justify-center"
+      className="bg-black absolute left-0 right-0 top-0 bottom-0 z-20 flex items-center justify-center"
     >
       <img src={loading} alt="loading" />
     </motion.div>

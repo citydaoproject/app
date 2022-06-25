@@ -14,3 +14,4 @@ export { default as FilterNote } from "./FilterNote";
 export { default as LocationDetail } from "./LocationDetail";
 export { default as TerrainDetail } from "./TerrainDetail";
 export { default as SidePanel } from "./SidePanel";
+export { default as PlotsStatus } from "./PlotsStatus";
