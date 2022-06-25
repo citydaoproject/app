@@ -87,9 +87,9 @@ function Web3Wrapper() {
           </Route>
         </Switch>
       </BrowserRouter>
-      {process.env.NODE_ENV === "development" ? (
+      {/* {process.env.NODE_ENV === "development" ? (
         <Wallet price={price} toAddress={userAddress} provider={networkProvider} />
-      ) : null}
+      ) : null} */}
     </>
   );
 }

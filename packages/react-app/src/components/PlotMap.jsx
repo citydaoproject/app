@@ -29,6 +29,8 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
   const communal = useAppSelector(state => state.plots.communal);
   const [newPlots, setNewPlots] = useState(plotsList)
 
+  let hoveredStateId = null;
+
   const closePopup = () => {
     dispatch(setActivePlot(undefined));
   }
@@ -43,7 +45,7 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
 
       let popupTitle = `<div class="flex items-center mb-2.5"><p class="text-primary-3 secondary-font text-lg">Plot #${stringifyPlotId(activePlot.id)}</p>`;
       popupTitle += "<span class='primary-font text-base cursor-pointer absolute right-2.5' id='close-popup'>X</span>"
-      popupTitle += `<img class="bg-transparent absolute right-7 cursor-pointer" src=${Info} alt="Info" /></div>`
+      popupTitle += `</div>`
       let popupContent = "<div class='popup-content'><div class='cordinates'>";
       let coordinates = activePlot.geometry.coordinates[0][0];
       popupContent += "</div>";
@@ -81,8 +83,18 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
         source: string_id,
         type: "line",
         paint: {
-          "line-color": color,
-          "line-width": 1,
+          "line-color": [
+            'case',
+            ['boolean', ['feature-state', 'hover'], false],
+            "#00cf6b",
+            "#eff551"
+          ],
+          "line-width": [
+            'case',
+            ['boolean', ['feature-state', 'hover'], false],
+            3,
+            1
+          ],
         },
       });
     }
@@ -103,10 +115,9 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
         type: "fill",
         paint: {
           "fill-color": color,
-          "fill-opacity": opacity,
+          "fill-opacity": opacity
         },
       });
-
     }
   };
 
@@ -138,10 +149,10 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
     if (map?.current && newPlots) {
       map.current.on("load", function () {
         if (!map.current.getLayer("parcel_outline")) {
-          addOutlineToMap(newPlots, "parcel", "#fff");
+          addOutlineToMap(newPlots, "parcel", "#eff551");
         }
         if (!map.current.getLayer(`parcel_fill`)) {
-          addFilledToMap(newPlots, "parcel");
+          addFilledToMap(newPlots, "parcel", 0, "#eff551");
         }
 
         setTimeout(() => {
@@ -151,6 +162,31 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
           });
           map.current.on('mouseleave', 'parcel_fill', () => {
             map.current.getCanvas().style.cursor = '';
+            if (hoveredStateId !== null) {
+              map.current.setFeatureState(
+                { source: 'parcel', id: hoveredStateId },
+                { hover: false }
+              );
+            }
+            hoveredStateId = null;
+          });
+          // When the user moves their mouse over the parcel_fill layer, we'll update the
+          // feature state for the feature under the mouse.
+          map.current.on('mousemove', 'parcel_fill', (e) => {
+            if (e.features.length > 0) {
+              if (hoveredStateId !== null) {
+                map.current.setFeatureState(
+                  { source: 'parcel', id: hoveredStateId },
+                  { hover: false }
+                );
+              }
+              hoveredStateId = e.features[0].id;
+              console.log(hoveredStateId)
+              map.current.setFeatureState(
+                { source: 'parcel', id: hoveredStateId },
+                { hover: true }
+              );
+            }
           });
           map.current.on('click', 'parcel_fill', (e) => {
             const clickedFeature = e.features[0];
