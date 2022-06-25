@@ -8,9 +8,8 @@ import { AnimatePresence, motion } from "framer-motion";
 import { stringifyPlotId } from "../helpers/stringifyPlotId";
 import { plotsList } from "../data";
 import { PARCEL_OPENSEA } from "../constants";
-import { setActivePlot } from "../actions/plotsSlice";
+import { setActivePlot, setHighlightedPlot } from "../actions/plotsSlice";
 import Land from "../assets/images/SampleLandImage.png";
-import Info from "../assets/images/info.png";
 
 mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_TOKEN;
 
@@ -29,7 +28,7 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
   const communal = useAppSelector(state => state.plots.communal);
   const [newPlots, setNewPlots] = useState(plotsList)
 
-  let hoveredStateId = null;
+  let highlightedPlotId = -1;
 
   const closePopup = () => {
     dispatch(setActivePlot(undefined));
@@ -43,6 +42,8 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
         pitch: startingPitch,
       });
 
+
+      //Create html content for popup
       let popupTitle = `<div class="flex items-center mb-2.5"><p class="text-primary-3 secondary-font text-lg">Plot #${stringifyPlotId(activePlot.id)}</p>`;
       popupTitle += "<span class='primary-font text-base cursor-pointer absolute right-2.5' id='close-popup'>X</span>"
       popupTitle += `</div>`
@@ -69,7 +70,7 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
     }
   }, [activePlot]);
 
-  const addOutlineToMap = (geojson, string_id, color = "#eff551") => {
+  const addOutlineToMap = (geojson, string_id, width = 1, color = "#eff551") => {
     if (map?.current) {
       if (!map.current.getSource(string_id)) {
         map.current.addSource(string_id, {
@@ -83,18 +84,8 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
         source: string_id,
         type: "line",
         paint: {
-          "line-color": [
-            'case',
-            ['boolean', ['feature-state', 'hover'], false],
-            "#00cf6b",
-            "#eff551"
-          ],
-          "line-width": [
-            'case',
-            ['boolean', ['feature-state', 'hover'], false],
-            3,
-            1
-          ],
+          "line-color": color,
+          "line-width": width,
         },
       });
     }
@@ -134,22 +125,32 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
 
   // Add/remove plot highlight when highlighted plot changes
   useEffect(() => {
-    if (map?.current && highlightedPlot && !map.current.getLayer("highlighted_fill") && mapLoaded) {
-      addOutlineToMap(highlightedPlot, "highlighted", "#00cf6b");
-      addFilledToMap(highlightedPlot, "highlighted", 0.5, "#00cf6b");
-    } else if (map?.current && map.current.getLayer("highlighted_fill") && mapLoaded) {
-      map.current.removeLayer("highlighted_fill");
+    if (map?.current && highlightedPlot && !map.current.getLayer("highlighted_outline") && mapLoaded) {
+      addOutlineToMap(highlightedPlot, "highlighted", 2, "#00cf6b");
+    } else if (map?.current && map.current.getLayer("highlighted_outline") && mapLoaded) {
       map.current.removeLayer("highlighted_outline");
       map.current.removeSource("highlighted");
     }
   }, [highlightedPlot, map.current]);
+
+  // Add/remove plot highlight when acitve plot changes
+  useEffect(() => {
+    if (map?.current && activePlot && !map.current.getLayer("active_fill") && mapLoaded) {
+      addOutlineToMap(activePlot, "active", 1, "#00cf6b");
+      addFilledToMap(activePlot, "active", 0.5, "#00cf6b");
+    } else if (map?.current && map.current.getLayer("active_fill") && mapLoaded) {
+      map.current.removeLayer("active_fill");
+      map.current.removeLayer("active_outline");
+      map.current.removeSource("active");
+    }
+  }, [activePlot, map.current]);
 
   //Add new plots on map after map loaded and set function for clicking on map
   useEffect(() => {
     if (map?.current && newPlots) {
       map.current.on("load", function () {
         if (!map.current.getLayer("parcel_outline")) {
-          addOutlineToMap(newPlots, "parcel", "#eff551");
+          addOutlineToMap(newPlots, "parcel",1 ,"#eff551");
         }
         if (!map.current.getLayer(`parcel_fill`)) {
           addFilledToMap(newPlots, "parcel", 0, "#eff551");
@@ -157,43 +158,52 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
 
         setTimeout(() => {
           setMapLoaded(true);
+
+          // When the user enter the mouse into parcel_fill layer, we'll update the
+          // cursor pointer
           map.current.on('mouseenter', 'parcel_fill', () => {
             map.current.getCanvas().style.cursor = 'pointer';
           });
+          // When the user leave parcel_fill layer, we'll update the
+          // cursor pointer
           map.current.on('mouseleave', 'parcel_fill', () => {
             map.current.getCanvas().style.cursor = '';
-            if (hoveredStateId !== null) {
-              map.current.setFeatureState(
-                { source: 'parcel', id: hoveredStateId },
-                { hover: false }
-              );
-            }
-            hoveredStateId = null;
+            dispatch(setHighlightedPlot(undefined));
           });
+
           // When the user moves their mouse over the parcel_fill layer, we'll update the
-          // feature state for the feature under the mouse.
+          // highlighted plot state
           map.current.on('mousemove', 'parcel_fill', (e) => {
             if (e.features.length > 0) {
-              if (hoveredStateId !== null) {
-                map.current.setFeatureState(
-                  { source: 'parcel', id: hoveredStateId },
-                  { hover: false }
-                );
+              const hoveredFeature = e.features[0];
+              let filteredPlot = [];
+
+              //Filter plot list by hovered plot id
+              filteredPlot = newPlots.features.filter(plot => {
+                return plot.id == hoveredFeature.id;
+              })
+              
+              //Return if highlighted plot is same with hovered plot
+              if(highlightedPlotId == hoveredFeature.id) {
+                return;
               }
-              hoveredStateId = e.features[0].id;
-              console.log(hoveredStateId)
-              map.current.setFeatureState(
-                { source: 'parcel', id: hoveredStateId },
-                { hover: true }
-              );
+              //Set highlighted plot
+              highlightedPlotId = hoveredFeature.id;
+              dispatch(setHighlightedPlot(undefined));
+              dispatch(setHighlightedPlot(filteredPlot[0]));
             }
           });
+
+          // When the user click plot on map, we'll update the
+          // selected plot state
           map.current.on('click', 'parcel_fill', (e) => {
             const clickedFeature = e.features[0];
             let filteredPlot = [];
+            //Filter plot list by hovered plot id
             filteredPlot = newPlots.features.filter(plot => {
               return plot.id == clickedFeature.id;
             })
+            //Set active plot
             dispatch(setActivePlot(undefined));
             dispatch(setActivePlot(filteredPlot[0]));
           });
