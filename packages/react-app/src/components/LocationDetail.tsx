@@ -1,14 +1,5 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { Plot } from "../models/Plot";
+import React from "react";
 import Location from "../assets/images/location.png"
-import Arrow from "../assets/images/arrow.png"
-import { Link } from "react-router-dom";
-
-interface Props {
-    plot: Plot;
-    contracts: any;
-    injectedProvider: any;
-}
 
 export default function LocationDetail() {
 
@@ -22,11 +13,6 @@ export default function LocationDetail() {
                 </div>
                 <span className="uppercase text-lg mb-4">DESCRIPTION</span>
                 <span className="primary-font text-lg text-left mb-8 description text-white text-opacity-75">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </span>
-                {/* <Link to="/whitelist" className="logo-link ">
-                    <div className="flex items-center primary-font text-lg">
-                        <span className="text-white text-opacity-75">View Snapshot</span> <img className="ml-4 h-auto bg-transparent " src={Arrow} alt="arrow" />
-                    </div>
-                </Link> */}
             </div>
         </div>
     );

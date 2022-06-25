@@ -7,7 +7,6 @@ import { useAppSelector, useAppDispatch } from "../hooks";
 import { AnimatePresence, motion } from "framer-motion";
 import { stringifyPlotId } from "../helpers/stringifyPlotId";
 import { plotsList } from "../data";
-import { PARCEL_OPENSEA } from "../constants";
 import { setActivePlot, setHighlightedPlot } from "../actions/plotsSlice";
 import Land from "../assets/images/SampleLandImage.png";
 
@@ -25,7 +24,6 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
   const [mapLoaded, setMapLoaded] = useState(false);
   const highlightedPlot = useAppSelector(state => state.plots.highlightedPlot);
   const activePlot = useAppSelector(state => state.plots.activePlot);
-  const communal = useAppSelector(state => state.plots.communal);
   const [newPlots, setNewPlots] = useState(plotsList)
 
   let highlightedPlotId = -1;
@@ -51,8 +49,6 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
       let coordinates = activePlot.geometry.coordinates[0][0];
       popupContent += "</div>";
       popupContent += `<img class="bg-transparent plot-image" src=${Land} alt="Land" />`
-      // const openseaBtn = "<button class='view-plot-btn btn w-full' id='view_opensea'>View on Opensea</button>";
-      // popupContent += openseaBtn;
       popupContent += "</div>";
 
       const lats = coordinates.map((codinate) => codinate[0]);
@@ -60,7 +56,6 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
       const centerLat = (Math.min(...lats) + Math.max(...lats)) / 2;
       const centerLng = (Math.min(...lngs) + Math.max(...lngs)) / 2;
       popup.setLngLat([centerLat, centerLng]).setHTML(popupTitle + popupContent).addTo(map.current);
-      // document.getElementById('view_opensea').addEventListener('click', () => window.open(PARCEL_OPENSEA + activePlot.id, "_blank"));
       document.getElementById('close-popup').addEventListener('click', () => closePopup());
     } else {
       const popups = document.getElementsByClassName("mapboxgl-popup");
@@ -86,6 +81,7 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
         paint: {
           "line-color": color,
           "line-width": width,
+          "line-opacity": 0.5
         },
       });
     }

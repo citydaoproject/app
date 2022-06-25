@@ -1,16 +1,8 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { Plot } from "../models/Plot";
+import React from "react";
 import Mountain from "../assets/images/mountain.png"
 import Flat from "../assets/images/flat.png"
 import Vegetation from "../assets/images/vegetation.png"
 import Rock from "../assets/images/rock.png"
-import { Link } from "react-router-dom";
-
-interface Props {
-    plot: Plot;
-    contracts: any;
-    injectedProvider: any;
-}
 
 export default function TerrainDeail() {
 
