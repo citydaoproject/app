@@ -2,19 +2,11 @@ import React, { useCallback, useEffect, useState } from "react";
 import { ethers } from "ethers";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
-
 import { useContractLoader, useAppSelector, useAppDispatch, useUserSigner } from "../hooks";
 import { PlotMap, PlotDetail, LogoDisplay, Header } from "../components";
-import { setPlots } from "../actions";
 import { PlotTabs } from "../components";
-import { Plot } from "../models/Plot";
 import { logoutOfWeb3Modal } from "../helpers";
-import { fetchedPlots, setActivePlotNftData, setCommunalLand } from "../actions/plotsSlice";
-import { fetchMetadata } from "../data";
-import { plotsList } from "../data";
-import updatePlots from "../helpers/UpdatePlots";
 import { setWhitelistedAmount } from "../actions/userSlice";
-import { PARCEL_0_OPENSEA_ID } from "../constants";
 
 interface Props {
   networkProvider: any;
@@ -31,37 +23,6 @@ export default function BrowsePlots({ networkProvider, web3Modal }: Props) {
   const contracts: any = useContractLoader(networkProvider);
   const whitelistedAmount = useAppSelector(state => state.user.whitelistedAmount);
   const [injectedProvider, setInjectedProvider] = useState<ethers.providers.Web3Provider>();
-
-  const activePlotNftData = useAppSelector(state => state.plots.activePlotNftData);
-  const assetNumber = activePlot && activePlot.id;
-
-  // Get the selected parcel nft metadata from the Opensea API
-  const getNftMetadata = (assetNumber: number) => {
-    const options = { method: "GET", headers: { "X-API-KEY": process.env.REACT_APP_OPENSEA_TOKEN ?? "" } };
-
-    // Prevent unnecessary API calls
-    const shouldFetch = !(parseInt(activePlotNftData && activePlotNftData.token_id) === assetNumber);
-
-    const nftMetadata = shouldFetch
-      ? fetch(
-          `https://api.opensea.io/api/v1/asset/${PARCEL_0_OPENSEA_ID}/${assetNumber.toString()}/?include_orders=false`,
-          options,
-        )
-          .then(response => response.json())
-          .then(response => dispatch(setActivePlotNftData(response)))
-          .catch(err => console.error(err))
-      : null;
-
-    return nftMetadata;
-  };
-
-  useEffect(() => {
-    if (assetNumber === undefined) {
-      return;
-    }
-
-    getNftMetadata(assetNumber);
-  }, [activePlot]);
 
   useUserSigner(injectedProvider); // initialize signer
 

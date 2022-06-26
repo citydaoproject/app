@@ -9,7 +9,7 @@ import { stringifyPlotId } from "../helpers/stringifyPlotId";
 import { plotsList } from "../data";
 import { PARCEL_OPENSEA } from "../constants";
 import { setActivePlot } from "../actions/plotsSlice";
-import { sliceUserAddress } from "../helpers/sliceUserAddress";
+import { useGetNftMetadata } from "../hooks/useGetNftMetadata";
 
 mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_TOKEN;
 
@@ -20,14 +20,21 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
   let popup = new mapboxgl.Popup({
     maxWidth: "unset",
     closeButton: false,
-    closeOnClick: false
+    closeOnClick: false,
   });
   const [mapLoaded, setMapLoaded] = useState(false);
   const highlightedPlot = useAppSelector(state => state.plots.highlightedPlot);
   const activePlot = useAppSelector(state => state.plots.activePlot);
   const communal = useAppSelector(state => state.plots.communal);
-  const activePlotNftData = useAppSelector(state => state.plots.activePlotNftData);
   const [newPlots, setNewPlots] = useState(plotsList);
+  const getNftMetadata = useGetNftMetadata(activePlot && activePlot.id);
+
+  // Get nft metadata each time the active plot is changed
+  useEffect(() => {
+    const activeAssetId = activePlot && activePlot.id;
+
+    activeAssetId && getNftMetadata(activeAssetId);
+  }, activePlot);
 
   // zoom to plot on selection
   useEffect(() => {
@@ -43,16 +50,19 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
       popupContent += "</div>";
       const openseaBtn = "<button class='view-plot-btn btn w-full' id='view_opensea'>View on Opensea</button>";
       popupContent += openseaBtn;
-      if (activePlotNftData && activePlotNftData.owner && activePlotNftData.owner.address)
-        popupContent += sliceUserAddress(activePlotNftData.owner.address);
       popupContent += "</div>";
 
-      const lats = coordinates.map((codinate) => codinate[0]);
-      const lngs = coordinates.map((codinate) => codinate[1]);
+      const lats = coordinates.map(codinate => codinate[0]);
+      const lngs = coordinates.map(codinate => codinate[1]);
       const centerLat = (Math.min(...lats) + Math.max(...lats)) / 2;
       const centerLng = (Math.min(...lngs) + Math.max(...lngs)) / 2;
-      popup.setLngLat([centerLat, centerLng]).setHTML(popupTitle + popupContent).addTo(map.current);
-      document.getElementById('view_opensea').addEventListener('click', () => window.open(PARCEL_OPENSEA + activePlot.id, "_blank"));
+      popup
+        .setLngLat([centerLat, centerLng])
+        .setHTML(popupTitle + popupContent)
+        .addTo(map.current);
+      document
+        .getElementById("view_opensea")
+        .addEventListener("click", () => window.open(PARCEL_OPENSEA + activePlot.id, "_blank"));
     } else {
       const popups = document.getElementsByClassName("mapboxgl-popup");
       if (popups.length) {
@@ -100,7 +110,6 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
           "fill-opacity": opacity,
         },
       });
-      
     }
   };
 
@@ -131,7 +140,7 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
   useEffect(() => {
     if (map?.current && newPlots) {
       map.current.on("load", function () {
-        console.log(newPlots)
+        console.log(newPlots);
         if (!map.current.getLayer("parcel_outline")) {
           addOutlineToMap(newPlots, "parcel", "#fff");
         }
@@ -141,25 +150,25 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
 
         setTimeout(() => {
           setMapLoaded(true);
-          map.current.on('mouseenter', 'parcel_fill', () => {
-            map.current.getCanvas().style.cursor = 'pointer';
+          map.current.on("mouseenter", "parcel_fill", () => {
+            map.current.getCanvas().style.cursor = "pointer";
           });
-          map.current.on('mouseleave', 'parcel_fill', () => {
-            map.current.getCanvas().style.cursor = '';
+          map.current.on("mouseleave", "parcel_fill", () => {
+            map.current.getCanvas().style.cursor = "";
           });
-          map.current.on('click', 'parcel_fill', (e) => {
+          map.current.on("click", "parcel_fill", e => {
             const clickedFeature = e.features[0];
             let filteredPlot = [];
             filteredPlot = newPlots.features.filter(plot => {
               return plot.id == clickedFeature.id;
-            })
+            });
             dispatch(setActivePlot(undefined));
             dispatch(setActivePlot(filteredPlot[0]));
           });
         }, 1000);
       });
     }
-  }, [newPlots, map.current])
+  }, [newPlots, map.current]);
 
   return (
     <div className="plot-map flex-grow flex flex-col relative">
