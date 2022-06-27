@@ -40,8 +40,6 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
         center: activePlot.geometry.coordinates[0][0][0],
         pitch: startingPitch,
       });
-
-
       //Create html content for popup
       let popupTitle = `<div class="flex items-center mb-2.5"><p class="text-primary-3 secondary-font text-lg">Plot #${stringifyPlotId(activePlot.id)}</p>`;
       popupTitle += "<span class='primary-font text-base cursor-pointer absolute right-2.5' id='close-popup'>X</span>"
@@ -124,7 +122,9 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
   useEffect(() => {
     if (map?.current && highlightedPlot && !map.current.getLayer("highlighted_outline") && mapLoaded) {
       addOutlineToMap(highlightedPlot, "highlighted", 2, "#00cf6b");
+      addFilledToMap(activePlot, "highlighted", 0.5, "#00FFA8");
     } else if (map?.current && map.current.getLayer("highlighted_outline") && mapLoaded) {
+      map.current.removeLayer("highlighted_fill");
       map.current.removeLayer("highlighted_outline");
       map.current.removeSource("highlighted");
     }
@@ -147,7 +147,7 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
     if (map?.current && newPlots) {
       map.current.on("load", function () {
         if (!map.current.getLayer("parcel_outline")) {
-          addOutlineToMap(newPlots, "parcel",1 ,"#eff551");
+          addOutlineToMap(newPlots, "parcel",1 ,"#00ffaa");
         }
         if (!map.current.getLayer(`parcel_fill`)) {
           addFilledToMap(newPlots, "parcel", 0, "#eff551");
