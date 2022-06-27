@@ -7,5 +7,5 @@ interface Props {
 }
 
 export default function ViewPlot({ plot }: Props) {
-  return <button className="view-plot-btn btn w-full" onClick={() => window.open(PARCEL_OPENSEA + plot?.id, "_blank")}>View on Opensea</button>;
+  return <button className="view-plot-btn btn w-full text-sm" onClick={() => window.open(PARCEL_OPENSEA + plot?.id, "_blank")}>View on Opensea</button>;
 }
