@@ -223,7 +223,7 @@ function Loading() {
     <motion.div
       initial={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="bg-black absolute left-0 right-0 top-0 bottom-0 z-20 flex items-center justify-center"
+      className="bg-black absolute left-0 right-0 top-0 bottom-0 z-10 flex items-center justify-center"
     >
       <img src={loading} alt="loading" />
     </motion.div>

@@ -266,12 +266,17 @@
   }
 }
 
+/* Web3Modal style */
+.web3modal-modal-lightbox {
+  z-index: 20;
+}
+
 /* Button styles */
 .btn {
   color: @white;
-  border: 1px solid @gray-5;
-  border-radius: 4px;
   padding: 8px 16px;
+  border-top: 1px solid @gray-5;
+  border-bottom: 1px solid @gray-5;
 }
 
 .highlight,
@@ -281,8 +286,8 @@
 }
 
 .img-small {
-  width: 31px;
-  height: 31px;
+  width: 76px;
+  height: auto;
   border-radius: 4px;
 }
 
@@ -433,6 +438,9 @@ select:focus {
 
 .view-plot-btn {
   background-color: @primary;
+  border: 1px solid @gray-5;
+  border-radius: 4px;
+  padding: 8px 16px;
   margin-right: 5px;
   max-width: 220px;
 
@@ -444,6 +452,9 @@ select:focus {
 
 .read-agreement-btn {
   background-color: @secondary;
+  border: 1px solid @gray-5;
+  border-radius: 4px;
+  padding: 8px 16px;
   margin-left: 5px;
   max-width: 220px;
 
