@@ -3,7 +3,10 @@
 
 @white: #fff;
 @primary: #06be7f;
+@primary-2: rgba(0, 255, 168, 0.5);
+@primary-3: #00FFA8;
 @primary-4: #0c6e4d;
+@primary-5: #07120C;
 @secondary: #767636;
 @gray-1: #141414;
 @gray-2: #1d1d1d;
@@ -15,7 +18,7 @@
 @gray-9: #dbdbdb;
 
 * {
-  background-color: @gray-2;
+  background-color: @primary-5;
   color: @white;
 }
 
@@ -60,7 +63,7 @@
 }
 
 .bg-gray-1 {
-  background-color: @gray-1;
+  background-color: @primary-5;
 }
 
 .text-gray-4 {
@@ -89,13 +92,17 @@
   background: linear-gradient(90deg, @primary 0%, #a3fad1 100%);
 }
 
+.text-primary-3 {
+  color: @primary-3;
+}
+
 /* Fonts */
 .primary-font {
-  font-family: "Space Grotesk", sans-serif;
+  font-family: "Inter", sans-serif;
 }
 
 .secondary-font {
-  font-family: "Roboto Mono", monospace;
+  font-family: "Inconsolata", monospace;
 }
 
 .third-font {
@@ -154,19 +161,73 @@
   }
 }
 
+/* Plots status bar */ 
+.plot-status {
+  .acres:before {
+    content: '';
+    width: 13px;
+    height: 13px;
+    margin-right: 7px;
+    border: 3px solid #FFFFFF;
+  }
+  .total-plots:before {
+    content: '';
+    width: 13px;
+    height: 13px;
+    margin-right: 7px;
+    border: 3px solid #00FFA8;
+  }
+  .common:before {
+    content: '';
+    width: 13px;
+    height: 13px;
+    margin-right: 7px;
+    border: 3px solid #E0E371;
+  }
+}
+
 /* Map style */
 .mapboxgl-map .mapboxgl-popup {
 
   *:not(.view-plot-btn) {
-    background-color: white;
-    color: #000;
+    background-color: @primary-5;
   }
+
   .view-plot-btn {
     margin-top: 5px;
   }
 
-  &, .mapboxgl-popup-tip {
+  &,
+  .mapboxgl-popup-tip {
     background-color: rgba(0, 0, 0, 0);
+  }
+
+  &.mapboxgl-popup-anchor-bottom,
+  &.mapboxgl-popup-anchor-bottom-right,
+  &.mapboxgl-popup-anchor-bottom-left {
+    .mapboxgl-popup-tip {
+      border-top-color: @primary-5;
+    }
+  }
+
+  &.mapboxgl-popup-anchor-top,
+  &.mapboxgl-popup-anchor-top-right,
+  &.mapboxgl-popup-anchor-top-left {
+    .mapboxgl-popup-tip {
+      border-bottom-color: #07120C;
+    }
+  }
+
+  &.mapboxgl-popup-anchor-left {
+    .mapboxgl-popup-tip {
+      border-right-color: #07120C;
+    }
+  }
+
+  &.mapboxgl-popup-anchor-right {
+    .mapboxgl-popup-tip {
+      border-left-color: #07120C;
+    }
   }
 }
 
@@ -175,29 +236,47 @@
     display: flex;
     flex-direction: column;
     align-items: baseline;
-    .plot-title {
-      margin-bottom: 10px;
-      font-size: 20px;
-    }
-  
+    padding: 10px;
+
     .popup-content {
+      width: 155px;
+      height: 155px;
+      overflow: hidden;
+      position: relative;
+
       .cordinates {
         display: flex;
         flex-direction: column;
+
         span {
           line-height: 15px;
         }
+      }
+
+      img {
+        left: 50%;
+        position: relative;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        width: 200px;
+        height: 200px;
+        object-fit: cover;
       }
     }
   }
 }
 
+/* Web3Modal style */
+.web3modal-modal-lightbox {
+  z-index: 20;
+}
+
 /* Button styles */
 .btn {
   color: @white;
-  border: 1px solid @gray-5;
-  border-radius: 4px;
   padding: 8px 16px;
+  border-top: 1px solid @gray-5;
+  border-bottom: 1px solid @gray-5;
 }
 
 .highlight,
@@ -207,17 +286,20 @@
 }
 
 .img-small {
-  width: 31px;
-  height: 31px;
+  width: 76px;
+  height: auto;
   border-radius: 4px;
 }
 
 .connect-wallet {
-  background-color: @primary;
+  background-color: @primary-5;
 }
 
 .connect-wallet-button {
   font-size: 16px;
+  color: @primary-3;
+  border: 1px solid rgba(0, 255, 168, 0.1);
+  text-transform: uppercase;
 
   @media (max-width: 1024px) {
     font-size: 12px;
@@ -246,7 +328,7 @@
 }
 
 .logo-display {
-  border-color: @gray-4;
+  border-color: @primary-2;
 }
 
 /* search bar styles */
@@ -326,15 +408,15 @@ select:focus {
 ::-webkit-scrollbar-thumb {
   background: @gray-5;
   border-radius: 20px;
-  border-left: 10px @gray-2 solid;
-  border-top: 10px @gray-2 solid;
-  border-bottom: 10px @gray-2 solid;
+  border-left: 10px @primary-5 solid;
+  border-top: 10px @primary-5 solid;
+  border-bottom: 10px @primary-5 solid;
 }
 
 /* Plot Detail */
 .plot-detail-content {
   overflow-y: scroll;
-  max-height: 75vh;
+  max-height: 93vh;
 
   @media (max-width: 1024px) {
     overflow-y: initial;
@@ -356,6 +438,9 @@ select:focus {
 
 .view-plot-btn {
   background-color: @primary;
+  border: 1px solid @gray-5;
+  border-radius: 4px;
+  padding: 8px 16px;
   margin-right: 5px;
   max-width: 220px;
 
@@ -367,6 +452,9 @@ select:focus {
 
 .read-agreement-btn {
   background-color: @secondary;
+  border: 1px solid @gray-5;
+  border-radius: 4px;
+  padding: 8px 16px;
   margin-left: 5px;
   max-width: 220px;
 
@@ -409,10 +497,15 @@ select:focus {
 .browse-plots-wrapper {
   height: 100%;
   display: grid;
-  grid-template-columns: 400px 1fr;
+  background-color: @primary-5;
+  grid-template-columns: 1fr 365px;
   grid-template-rows: 0rem 4rem 1fr;
   grid-column-gap: 0px;
   grid-row-gap: 0px;
+
+  // .details {
+  //   grid-area: 3 / 2 / 4 / 3;
+  // }
 
   @media (max-width: 1024px) {
     grid-template-columns: 1fr;
@@ -435,21 +528,46 @@ select:focus {
 
 .connect-wallet-section {
   grid-area: 2 / 2 / 3 / 3;
-  border-color: @gray-4;
+  border-color: @primary-2;
   justify-content: flex-end;
 }
 
 .plot-detail {
-  grid-area: 3 / 1 / 4 / 2;
+  grid-area: 3 / 2 / 4 / 3;
 }
 
 .plot-tabs {
-  grid-area: 3 / 1 / 4 / 2;
+  grid-area: 3 / 2 / 4 / 3;
   width: 100%;
 }
 
 .plot-map {
-  grid-area: 3 / 2 / 4 / 3;
+  height: 100%;
+  grid-area: 3 / 1 / 4 / 2;
+  border-color: @primary-2;
+}
+
+.main-content {
+  grid-area: 3 / 1 / 4 / 2;
+  margin-top: 5px;
+}
+
+.location-detail {
+  padding: 4% 7% 6% 7%;
+  border-color: @primary-2;
+
+  .address {
+    text-align: left;
+    max-width: 250px;
+  }
+
+  .description {
+    max-width: 210px;
+  }
+}
+
+.plot-property {
+  border-bottom-color: rgba(245, 245, 245, 0.25);
 }
 
 @media (max-width: 1024px) {
