@@ -6,7 +6,7 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import { useAppSelector, useAppDispatch } from "../hooks";
 import { AnimatePresence, motion } from "framer-motion";
 import { stringifyPlotId } from "../helpers/stringifyPlotId";
-import { plotsList } from "../data";
+import { plotsList, drainageData, roadData, entranceGateData, edgeData } from "../data";
 import { setActivePlot, setHighlightedPlot } from "../actions/plotsSlice";
 import Land from "../assets/images/SampleLandImage.png";
 import PlotsStatus from "./PlotsStatus";
@@ -25,7 +25,11 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
   const [mapLoaded, setMapLoaded] = useState(false);
   const highlightedPlot = useAppSelector(state => state.plots.highlightedPlot);
   const activePlot = useAppSelector(state => state.plots.activePlot);
-  const [newPlots, setNewPlots] = useState(plotsList)
+  const [newPlots] = useState(plotsList)
+  const [drainage] = useState(drainageData)
+  const [road] = useState(roadData)
+  const [entranceGate] = useState(entranceGateData)
+  const [edge] = useState(edgeData)
 
   let highlightedPlotId = -1;
 
@@ -64,7 +68,7 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
     }
   }, [activePlot]);
 
-  const addOutlineToMap = (geojson, string_id, width = 1, color = "#eff551") => {
+  const addOutlineToMap = (geojson, string_id, width = 1, opacity = 0.5, color = "#eff551") => {
     if (map?.current) {
       if (!map.current.getSource(string_id)) {
         map.current.addSource(string_id, {
@@ -80,7 +84,7 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
         paint: {
           "line-color": color,
           "line-width": width,
-          "line-opacity": 0.5
+          "line-opacity": opacity
         },
       });
     }
@@ -121,7 +125,7 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
   // Add/remove plot highlight when highlighted plot changes
   useEffect(() => {
     if (map?.current && highlightedPlot && !map.current.getLayer("highlighted_outline") && mapLoaded) {
-      addOutlineToMap(highlightedPlot, "highlighted", 2, "#00cf6b");
+      addOutlineToMap(highlightedPlot, "highlighted", 2, 0.5, "#00cf6b");
       addFilledToMap(activePlot, "highlighted", 0.5, "#00FFA8");
     } else if (map?.current && map.current.getLayer("highlighted_outline") && mapLoaded) {
       map.current.removeLayer("highlighted_fill");
@@ -133,7 +137,7 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
   // Add/remove plot highlight when acitve plot changes
   useEffect(() => {
     if (map?.current && activePlot && !map.current.getLayer("active_fill") && mapLoaded) {
-      addOutlineToMap(activePlot, "active", 1, "#00cf6b");
+      addOutlineToMap(activePlot, "active", 1, 0.5, "#00cf6b");
       addFilledToMap(activePlot, "active", 0.5, "#00FFA8");
     } else if (map?.current && map.current.getLayer("active_fill") && mapLoaded) {
       map.current.removeLayer("active_fill");
@@ -147,10 +151,22 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
     if (map?.current && newPlots) {
       map.current.on("load", function () {
         if (!map.current.getLayer("parcel_outline")) {
-          addOutlineToMap(newPlots, "parcel",1 ,"#00ffaa");
+          addOutlineToMap(newPlots, "parcel", 1, 0.5, "#00ffaa");
         }
         if (!map.current.getLayer(`parcel_fill`)) {
           addFilledToMap(newPlots, "parcel", 0, "#eff551");
+        }
+        if (!map.current.getLayer("drainage_outline")) {
+          addOutlineToMap(drainage, "drainage", 1, 1, "#E0E371");
+        }
+        if (!map.current.getLayer("road_outline")) {
+          addOutlineToMap(road, "road", 1, 1, "#E0E371");
+        }
+        if (!map.current.getLayer("entranceGate_outline")) {
+          addOutlineToMap(entranceGate, "entranceGate", 1, 1, "#E0E371");
+        }
+        if (!map.current.getLayer("edge_outline")) {
+          addOutlineToMap(edge, "edge", 2, 1, "#FFFFFF");
         }
 
         setTimeout(() => {
@@ -179,9 +195,9 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
               filteredPlot = newPlots.features.filter(plot => {
                 return plot.id == hoveredFeature.id;
               })
-              
+
               //Return if highlighted plot is same with hovered plot
-              if(highlightedPlotId == hoveredFeature.id) {
+              if (highlightedPlotId == hoveredFeature.id) {
                 return;
               }
               //Set highlighted plot
@@ -207,7 +223,7 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
         }, 1000);
       });
     }
-  }, [newPlots, map.current])
+  }, [newPlots, drainage, map.current])
 
   return (
     <div className="plot-map flex-grow flex flex-col relative bg-gray-1 border-r">
