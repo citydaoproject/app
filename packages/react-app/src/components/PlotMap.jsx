@@ -7,7 +7,7 @@ import { useAppSelector, useAppDispatch } from "../hooks";
 import { AnimatePresence, motion } from "framer-motion";
 import { stringifyPlotId } from "../helpers/stringifyPlotId";
 import { plotsList, drainageData, roadData, entranceGateData, edgeData, launchpadData } from "../data";
-import { setActivePlot, setHighlightedPlot } from "../actions/plotsSlice";
+import { setActivePlot, setHighlightedPlot, setIdFilter } from "../actions/plotsSlice";
 import Land from "../assets/images/SampleLandImage.png";
 import PlotsStatus from "./PlotsStatus";
 
@@ -25,6 +25,7 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
   const [mapLoaded, setMapLoaded] = useState(false);
   const highlightedPlot = useAppSelector(state => state.plots.highlightedPlot);
   const activePlot = useAppSelector(state => state.plots.activePlot);
+  const idFilter = useAppSelector(state => state.plots.idFilter);
   const [newPlots] = useState(plotsList)
   const [drainage] = useState(drainageData)
   const [road] = useState(roadData)
@@ -37,8 +38,22 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
     dispatch(setActivePlot(plot));
     if (!plot) {
       closePopup();
+      dispatch(setIdFilter(""));
     }
   }
+
+  useEffect(() => {
+    if(idFilter != "") {
+      let plotData = plotsList.features;
+      let filteredPlot = [];
+      filteredPlot = plotData.filter(plot => {
+        return stringifyPlotId(plot.id).includes(idFilter);
+      })
+      handleSetActivePlot(filteredPlot[0]);
+      return;
+    } 
+    handleSetActivePlot(undefined);
+  }, [idFilter])
 
   //remove popups
   const closePopup = () => {
