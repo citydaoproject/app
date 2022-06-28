@@ -46,7 +46,7 @@ export default function SidePanel({ contracts, injectedProvider }: Props) {
     }, [idFilter])
 
     return (
-        <div className="plot-tabs overflow-y-scroll">
+        <div className="plot-tabs overflow-auto">
             {activePlot !== undefined ? (
                 <PlotDetail plot={activePlot} contracts={contracts} injectedProvider={injectedProvider} />
             )

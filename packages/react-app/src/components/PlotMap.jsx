@@ -6,7 +6,7 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import { useAppSelector, useAppDispatch } from "../hooks";
 import { AnimatePresence, motion } from "framer-motion";
 import { stringifyPlotId } from "../helpers/stringifyPlotId";
-import { plotsList, drainageData, roadData, entranceGateData, edgeData } from "../data";
+import { plotsList, drainageData, roadData, entranceGateData, edgeData, launchpadData } from "../data";
 import { setActivePlot, setHighlightedPlot } from "../actions/plotsSlice";
 import Land from "../assets/images/SampleLandImage.png";
 import PlotsStatus from "./PlotsStatus";
@@ -33,8 +33,19 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
 
   let highlightedPlotId = -1;
 
+  const handleSetActivePlot = (plot) => {
+    dispatch(setActivePlot(plot));
+    if (!plot) {
+      closePopup();
+    }
+  }
+
+  //remove popups
   const closePopup = () => {
-    dispatch(setActivePlot(undefined));
+    const popups = document.getElementsByClassName("mapboxgl-popup");
+    if (popups.length) {
+      popups[0].remove();
+    }
   }
 
   // zoom to plot on selection
@@ -44,6 +55,9 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
         center: activePlot.geometry.coordinates[0][0][0],
         pitch: startingPitch,
       });
+
+      closePopup();
+
       //Create html content for popup
       let popupTitle = `<div class="flex items-center mb-2.5"><p class="text-primary-3 secondary-font text-lg">Plot #${stringifyPlotId(activePlot.id)}</p>`;
       popupTitle += "<span class='primary-font text-base cursor-pointer absolute right-2.5' id='close-popup'>X</span>"
@@ -59,12 +73,7 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
       const centerLat = (Math.min(...lats) + Math.max(...lats)) / 2;
       const centerLng = (Math.min(...lngs) + Math.max(...lngs)) / 2;
       popup.setLngLat([centerLat, centerLng]).setHTML(popupTitle + popupContent).addTo(map.current);
-      document.getElementById('close-popup').addEventListener('click', () => closePopup());
-    } else {
-      const popups = document.getElementsByClassName("mapboxgl-popup");
-      if (popups.length) {
-        popups[0].remove();
-      }
+      document.getElementById('close-popup').addEventListener('click', () => handleSetActivePlot(undefined));
     }
   }, [activePlot]);
 
@@ -168,6 +177,9 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
         if (!map.current.getLayer("edge_outline")) {
           addOutlineToMap(edge, "edge", 2, 1, "#FFFFFF");
         }
+        if (!map.current.getLayer("launchpad_outline")) {
+          addOutlineToMap(launchpadData, "launchpad", 1, 1, "#E0E371");
+        }
 
         setTimeout(() => {
           setMapLoaded(true);
@@ -217,8 +229,7 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
               return plot.id == clickedFeature.id;
             })
             //Set active plot
-            dispatch(setActivePlot(undefined));
-            dispatch(setActivePlot(filteredPlot[0]));
+            handleSetActivePlot(filteredPlot[0])
           });
         }, 1000);
       });
