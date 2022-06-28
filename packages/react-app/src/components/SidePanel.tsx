@@ -50,32 +50,26 @@ export default function SidePanel({ contracts, injectedProvider }: Props) {
             {activePlot !== undefined ? (
                 <PlotDetail plot={activePlot} contracts={contracts} injectedProvider={injectedProvider} />
             )
-            :
-            (
-                !userAddress ? (
-                    <div className="px-10 py-11">
-                        <LocationDetail />
-                        <TerrainDetail />
-                    </div>
-                )
                 :
                 (
-                    activePlot !== undefined ? (
-                        <PlotDetail plot={activePlot} contracts={contracts} injectedProvider={injectedProvider} />
-                    ) : (
-                        <>
-                            {idFilter && (
-                                <FilterNote filterText={idFilter} />
-                            )}
-                            <PlotList
-                                plots={newPlots?.slice(0, currentNumDisplay)}
-                                totalNum={newPlotsNum}
-                                emptyMessage={fetchingPlots ? "Loading..." : "We're sold out! Be on the lookout for the next drop."}
-                            />
-                        </>
+                    !userAddress ? (
+                        <div className="px-10 py-11">
+                            <LocationDetail />
+                            <TerrainDetail />
+                        </div>
                     )
-                )
-            )}
+                        :
+                        (
+                            activePlot !== undefined ? (
+                                <PlotDetail plot={activePlot} contracts={contracts} injectedProvider={injectedProvider} />
+                            ) : (
+                                <div className="px-10 py-11">
+                                    <LocationDetail />
+                                    <TerrainDetail />
+                                </div>
+                            )
+                        )
+                )}
         </div>
     );
 }
