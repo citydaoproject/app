@@ -38,7 +38,7 @@ export default function PlotDetail({ plot, contracts, injectedProvider }: Props)
             >
               <div className="flex flex-row justify-between plot-property border-b py-3.5 mt-2">
                 <span className="text-left">Plot</span>
-                <span className="text-right text-primary-3">#{plot?.id}</span>
+                <span className="text-right text-primary-3">#{plot?.id.toString().padStart(4, '0')}</span>
               </div>
             </motion.div>
             <motion.div

@@ -1,13 +1,14 @@
 import React, { useRef, useEffect, useState } from "react";
 import mapboxgl from "!mapbox-gl"; // eslint-disable-line import/no-webpack-loader-syntax
 import loading from "../assets/images/loading.gif";
+import CityDAO from "../assets/images/citydao.png";
 import "mapbox-gl/dist/mapbox-gl.css";
 
 import { useAppSelector, useAppDispatch } from "../hooks";
 import { AnimatePresence, motion } from "framer-motion";
 import { stringifyPlotId } from "../helpers/stringifyPlotId";
-import { plotsList, drainageData, roadData, entranceGateData, edgeData } from "../data";
-import { setActivePlot, setHighlightedPlot } from "../actions/plotsSlice";
+import { plotsList, drainageData, roadData, entranceGateData, edgeData, launchpadData } from "../data";
+import { setActivePlot, setHighlightedPlot, setIdFilter } from "../actions/plotsSlice";
 import Land from "../assets/images/SampleLandImage.png";
 import PlotsStatus from "./PlotsStatus";
 
@@ -25,6 +26,7 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
   const [mapLoaded, setMapLoaded] = useState(false);
   const highlightedPlot = useAppSelector(state => state.plots.highlightedPlot);
   const activePlot = useAppSelector(state => state.plots.activePlot);
+  const idFilter = useAppSelector(state => state.plots.idFilter);
   const [newPlots] = useState(plotsList)
   const [drainage] = useState(drainageData)
   const [road] = useState(roadData)
@@ -33,8 +35,33 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
 
   let highlightedPlotId = -1;
 
+  const handleSetActivePlot = (plot) => {
+    dispatch(setActivePlot(plot));
+    if (!plot) {
+      closePopup();
+      dispatch(setIdFilter(""));
+    }
+  }
+
+  useEffect(() => {
+    if (idFilter != "") {
+      let plotData = plotsList.features;
+      let filteredPlot = [];
+      filteredPlot = plotData.filter(plot => {
+        return stringifyPlotId(plot.id).includes(idFilter);
+      })
+      handleSetActivePlot(filteredPlot[0]);
+      return;
+    }
+    handleSetActivePlot(undefined);
+  }, [idFilter])
+
+  //remove popups
   const closePopup = () => {
-    dispatch(setActivePlot(undefined));
+    const popups = document.getElementsByClassName("mapboxgl-popup");
+    if (popups.length) {
+      popups[0].remove();
+    }
   }
 
   // zoom to plot on selection
@@ -44,6 +71,9 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
         center: activePlot.geometry.coordinates[0][0][0],
         pitch: startingPitch,
       });
+
+      closePopup();
+
       //Create html content for popup
       let popupTitle = `<div class="flex items-center mb-2.5"><p class="text-primary-3 secondary-font text-lg">Plot #${stringifyPlotId(activePlot.id)}</p>`;
       popupTitle += "<span class='primary-font text-base cursor-pointer absolute right-2.5' id='close-popup'>X</span>"
@@ -59,12 +89,7 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
       const centerLat = (Math.min(...lats) + Math.max(...lats)) / 2;
       const centerLng = (Math.min(...lngs) + Math.max(...lngs)) / 2;
       popup.setLngLat([centerLat, centerLng]).setHTML(popupTitle + popupContent).addTo(map.current);
-      document.getElementById('close-popup').addEventListener('click', () => closePopup());
-    } else {
-      const popups = document.getElementsByClassName("mapboxgl-popup");
-      if (popups.length) {
-        popups[0].remove();
-      }
+      document.getElementById('close-popup').addEventListener('click', () => handleSetActivePlot(undefined));
     }
   }, [activePlot]);
 
@@ -168,6 +193,47 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
         if (!map.current.getLayer("edge_outline")) {
           addOutlineToMap(edge, "edge", 2, 1, "#FFFFFF");
         }
+        if (!map.current.getLayer("launchpad_outline")) {
+          addOutlineToMap(launchpadData, "launchpad", 1, 1, "#E0E371");
+        }
+
+        map.current.loadImage(
+          CityDAO,
+          (error, image) => {
+            if (error) throw error;
+
+            // Add the image to the map style.
+            map.current.addImage('citydao', image);
+
+            // Add a data source containing one point feature.
+            map.current.addSource('point', {
+              'type': 'geojson',
+              'data': {
+                'type': 'FeatureCollection',
+                'features': [
+                  {
+                    'type': 'Feature',
+                    'geometry': {
+                      'type': 'Point',
+                      'coordinates': [-109.25995069963450, 44.924330148882462]
+                    }
+                  }
+                ]
+              }
+            });
+
+            // Add a layer to use the image to represent the data.
+            map.current.addLayer({
+              'id': 'points',
+              'type': 'symbol',
+              'source': 'point', // reference the data source
+              'layout': {
+                'icon-image': 'citydao', // reference the image
+                'icon-size': 0.5
+              }
+            });
+          }
+        );
 
         setTimeout(() => {
           setMapLoaded(true);
@@ -217,8 +283,7 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
               return plot.id == clickedFeature.id;
             })
             //Set active plot
-            dispatch(setActivePlot(undefined));
-            dispatch(setActivePlot(filteredPlot[0]));
+            handleSetActivePlot(filteredPlot[0])
           });
         }, 1000);
       });
