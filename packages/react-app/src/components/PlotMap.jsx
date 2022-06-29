@@ -67,27 +67,6 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
     }
   }
 
-  useEffect(() => {
-    if (idFilter != "") {
-      let plotData = plotsList.features;
-      let filteredPlot = [];
-      filteredPlot = plotData.filter(plot => {
-        return stringifyPlotId(plot.id).includes(idFilter);
-      })
-      handleSetActivePlot(filteredPlot[0]);
-      return;
-    }
-    handleSetActivePlot(undefined);
-  }, [idFilter])
-
-  //remove popups
-  const closePopup = () => {
-    const popups = document.getElementsByClassName("mapboxgl-popup");
-    if (popups.length) {
-      popups[0].remove();
-    }
-  }
-
   // Get nft metadata each time the active plot is changed
   useEffect(() => {
     const activeAssetId = activePlot && activePlot.id;
