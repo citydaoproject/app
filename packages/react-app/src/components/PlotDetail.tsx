@@ -1,10 +1,13 @@
 import React, { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Plot } from "../models/Plot";
-import { useAppDispatch } from "../hooks";
+import { useAppDispatch, useAppSelector } from "../hooks";
+import { setActivePlot } from "../actions/plotsSlice";
 
 import LAND_IMG from "../assets/images/SampleLandImage.png";
 import { ViewPlot } from ".";
+import { fetchMetadata } from "../data";
+import { sliceUserAddress } from "../helpers/sliceUserAddress";
 
 interface Props {
   plot: Plot;
@@ -14,6 +17,8 @@ interface Props {
 
 export default function PlotDetail({ plot, contracts, injectedProvider }: Props) {
   const [plotMetadata, setPlotMetadata] = useState<any>({} as any);
+  const activePlotNftData = useAppSelector(state => state.plots.activePlotNftData);
+  const dispatch = useAppDispatch();
 
   return (
     <AnimatePresence>
@@ -33,7 +38,7 @@ export default function PlotDetail({ plot, contracts, injectedProvider }: Props)
               initial={{ x: -300, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               exit={{ x: -300, opacity: 0 }}
-              style={{marginTop: "0"}}
+              style={{ marginTop: "0" }}
               transition={{ delay: 0.1 }}
             >
               <div className="flex flex-row justify-between plot-property border-b py-3.5 mt-2">
@@ -45,19 +50,22 @@ export default function PlotDetail({ plot, contracts, injectedProvider }: Props)
               initial={{ x: -300, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               exit={{ x: -300, opacity: 0 }}
-              style={{marginTop: "0"}}
+              style={{ marginTop: "0" }}
               transition={{ delay: 0.2 }}
             >
               <div className="flex flex-row justify-between plot-property border-b py-3.5 mt-2">
                 <span className="text-left">Owned by</span>
-                <span className="text-right text-primary-3">CASEY.ETH</span>
+                <span className="text-right text-primary-3">
+                  {" "}
+                  {sliceUserAddress(activePlotNftData && activePlotNftData.owner && activePlotNftData.owner.address)}
+                </span>
               </div>
             </motion.div>
             <motion.div
               initial={{ x: -300, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               exit={{ x: -300, opacity: 0 }}
-              style={{marginTop: "0"}}
+              style={{ marginTop: "0" }}
               transition={{ delay: 0.2 }}
             >
               <div className="flex flex-row justify-between plot-property border-b py-3.5 mt-2">
@@ -69,7 +77,7 @@ export default function PlotDetail({ plot, contracts, injectedProvider }: Props)
               initial={{ x: -300, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               exit={{ x: -300, opacity: 0 }}
-              style={{marginTop: "0"}}
+              style={{ marginTop: "0" }}
               transition={{ delay: 0.3 }}
             >
               <div className="flex flex-row justify-between plot-property border-b py-3.5 mt-2">
@@ -81,7 +89,7 @@ export default function PlotDetail({ plot, contracts, injectedProvider }: Props)
               initial={{ x: -300, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               exit={{ x: -300, opacity: 0 }}
-              style={{marginTop: "0"}}
+              style={{ marginTop: "0" }}
               transition={{ delay: 0.4 }}
             >
               <div className="flex flex-row justify-between plot-property border-b py-3.5 mt-2">
@@ -93,7 +101,7 @@ export default function PlotDetail({ plot, contracts, injectedProvider }: Props)
               initial={{ x: -300, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               exit={{ x: -300, opacity: 0 }}
-              style={{marginTop: "0"}}
+              style={{ marginTop: "0" }}
               transition={{ delay: 0.5 }}
             >
               <div className="flex flex-row justify-between plot-property border-b py-3.5 mt-2">
