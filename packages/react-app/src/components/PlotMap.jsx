@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, useState } from "react";
 import mapboxgl from "!mapbox-gl"; // eslint-disable-line import/no-webpack-loader-syntax
 import loading from "../assets/images/loading.gif";
+import CityDAO from "../assets/images/citydao.png";
 import "mapbox-gl/dist/mapbox-gl.css";
 
 import { useAppSelector, useAppDispatch } from "../hooks";
@@ -43,7 +44,7 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
   }
 
   useEffect(() => {
-    if(idFilter != "") {
+    if (idFilter != "") {
       let plotData = plotsList.features;
       let filteredPlot = [];
       filteredPlot = plotData.filter(plot => {
@@ -51,7 +52,7 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
       })
       handleSetActivePlot(filteredPlot[0]);
       return;
-    } 
+    }
     handleSetActivePlot(undefined);
   }, [idFilter])
 
@@ -195,6 +196,44 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
         if (!map.current.getLayer("launchpad_outline")) {
           addOutlineToMap(launchpadData, "launchpad", 1, 1, "#E0E371");
         }
+
+        map.current.loadImage(
+          CityDAO,
+          (error, image) => {
+            if (error) throw error;
+
+            // Add the image to the map style.
+            map.current.addImage('citydao', image);
+
+            // Add a data source containing one point feature.
+            map.current.addSource('point', {
+              'type': 'geojson',
+              'data': {
+                'type': 'FeatureCollection',
+                'features': [
+                  {
+                    'type': 'Feature',
+                    'geometry': {
+                      'type': 'Point',
+                      'coordinates': [-109.25995069963450, 44.924330148882462]
+                    }
+                  }
+                ]
+              }
+            });
+
+            // Add a layer to use the image to represent the data.
+            map.current.addLayer({
+              'id': 'points',
+              'type': 'symbol',
+              'source': 'point', // reference the data source
+              'layout': {
+                'icon-image': 'citydao', // reference the image
+                'icon-size': 0.5
+              }
+            });
+          }
+        );
 
         setTimeout(() => {
           setMapLoaded(true);
