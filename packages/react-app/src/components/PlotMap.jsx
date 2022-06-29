@@ -11,6 +11,8 @@ import { plotsList, drainageData, roadData, entranceGateData, edgeData, launchpa
 import { setActivePlot, setHighlightedPlot, setIdFilter } from "../actions/plotsSlice";
 import Land from "../assets/images/SampleLandImage.png";
 import PlotsStatus from "./PlotsStatus";
+import { PARCEL_OPENSEA } from "../constants";
+import { useGetNftMetadata } from "../hooks/useGetNftMetadata";
 
 mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_TOKEN;
 
@@ -21,7 +23,7 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
   let popup = new mapboxgl.Popup({
     maxWidth: "unset",
     closeButton: false,
-    closeOnClick: false
+    closeOnClick: false,
   });
   const [mapLoaded, setMapLoaded] = useState(false);
   const highlightedPlot = useAppSelector(state => state.plots.highlightedPlot);
@@ -32,6 +34,7 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
   const [road] = useState(roadData)
   const [entranceGate] = useState(entranceGateData)
   const [edge] = useState(edgeData)
+  const getNftMetadata = useGetNftMetadata(activePlot && activePlot.id);
 
   let highlightedPlotId = -1;
 
@@ -64,6 +67,34 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
     }
   }
 
+  useEffect(() => {
+    if (idFilter != "") {
+      let plotData = plotsList.features;
+      let filteredPlot = [];
+      filteredPlot = plotData.filter(plot => {
+        return stringifyPlotId(plot.id).includes(idFilter);
+      })
+      handleSetActivePlot(filteredPlot[0]);
+      return;
+    }
+    handleSetActivePlot(undefined);
+  }, [idFilter])
+
+  //remove popups
+  const closePopup = () => {
+    const popups = document.getElementsByClassName("mapboxgl-popup");
+    if (popups.length) {
+      popups[0].remove();
+    }
+  }
+
+  // Get nft metadata each time the active plot is changed
+  useEffect(() => {
+    const activeAssetId = activePlot && activePlot.id;
+
+    activeAssetId && getNftMetadata(activeAssetId);
+  }, activePlot);
+
   // zoom to plot on selection
   useEffect(() => {
     if (map.current && activePlot) {
@@ -84,8 +115,8 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
       popupContent += `<img class="bg-transparent plot-image" src=${Land} alt="Land" />`
       popupContent += "</div>";
 
-      const lats = coordinates.map((codinate) => codinate[0]);
-      const lngs = coordinates.map((codinate) => codinate[1]);
+      const lats = coordinates.map(codinate => codinate[0]);
+      const lngs = coordinates.map(codinate => codinate[1]);
       const centerLat = (Math.min(...lats) + Math.max(...lats)) / 2;
       const centerLng = (Math.min(...lngs) + Math.max(...lngs)) / 2;
       popup.setLngLat([centerLat, centerLng]).setHTML(popupTitle + popupContent).addTo(map.current);

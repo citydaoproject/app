@@ -2,13 +2,11 @@ import React, { useCallback, useEffect, useState } from "react";
 import { ethers } from "ethers";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
-
 import { useContractLoader, useAppSelector, useAppDispatch, useUserSigner } from "../hooks";
 import { PlotMap, LogoDisplay, Header, SidePanel } from "../components";
 import { SearchPlots } from "../components";
 import { logoutOfWeb3Modal } from "../helpers";
 import { setWhitelistedAmount } from "../actions/userSlice";
-
 
 interface Props {
   networkProvider: any;
@@ -38,10 +36,13 @@ export default function BrowsePlots({ networkProvider, web3Modal }: Props) {
       });
     } else {
       toast.dismiss("isWhitelisted");
-      toast.error("You don’t own a Parcel-0 NFT in your wallet: " + userAddress?.slice(0, 6) + "..." + userAddress?.slice(-5, -1), {
-        toastId: "notWhitelisted",
-        autoClose: false,
-      });
+      toast.error(
+        "You don’t own a Parcel-0 NFT in your wallet: " + userAddress?.slice(0, 6) + "..." + userAddress?.slice(-5, -1),
+        {
+          toastId: "notWhitelisted",
+          autoClose: false,
+        },
+      );
     }
   }, [whitelistedAmount, userAddress]);
 
