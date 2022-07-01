@@ -34,7 +34,7 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
   const [road] = useState(roadData)
   const [entranceGate] = useState(entranceGateData)
   const [edge] = useState(edgeData)
-  const getNftMetadata = useGetNftMetadata(activePlot && activePlot.id);
+  // const getNftMetadata = useGetNftMetadata(activePlot && activePlot.id);
 
   let highlightedPlotId = -1;
 
@@ -68,11 +68,11 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
   }
 
   // Get nft metadata each time the active plot is changed
-  useEffect(() => {
-    const activeAssetId = activePlot && activePlot.id;
+  // useEffect(() => {
+  //   const activeAssetId = activePlot && activePlot.id;
 
-    activeAssetId && getNftMetadata(activeAssetId);
-  }, activePlot);
+  //   activeAssetId && getNftMetadata(activeAssetId);
+  // }, activePlot);
 
   // zoom to plot on selection
   useEffect(() => {
@@ -213,6 +213,7 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
             if (error) throw error;
 
             // Add the image to the map style.
+            if(map.current.hasImage("citydao")) return;
             map.current.addImage('citydao', image);
 
             // Add a data source containing one point feature.
@@ -298,7 +299,7 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
         }, 1000);
       });
     }
-  }, [newPlots, drainage, map.current])
+  }, [newPlots, map.current])
 
   return (
     <div className="plot-map flex-grow flex flex-col relative bg-gray-1 border-r">
