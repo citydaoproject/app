@@ -10,9 +10,9 @@ import { stringifyPlotId } from "../helpers/stringifyPlotId";
 import { plotsList, drainageData, roadData, entranceGateData, edgeData, launchpadData } from "../data";
 import { setActivePlot, setHighlightedPlot, setIdFilter } from "../actions/plotsSlice";
 import Land from "../assets/images/SampleLandImage.png";
+import Icon2 from "../assets/images/icon2.png";
+import Arrow from "../assets/images/arrow.png";
 import PlotsStatus from "./PlotsStatus";
-import { PARCEL_OPENSEA } from "../constants";
-import { useGetNftMetadata } from "../hooks/useGetNftMetadata";
 
 mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_TOKEN;
 
@@ -21,6 +21,11 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
   const mapContainer = useRef(null);
   const map = useRef(null);
   let popup = new mapboxgl.Popup({
+    maxWidth: "unset",
+    closeButton: false,
+    closeOnClick: false,
+  });
+  let lunchadPadPopup = new mapboxgl.Popup({
     maxWidth: "unset",
     closeButton: false,
     closeOnClick: false,
@@ -34,7 +39,6 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
   const [road] = useState(roadData)
   const [entranceGate] = useState(entranceGateData)
   const [edge] = useState(edgeData)
-  // const getNftMetadata = useGetNftMetadata(activePlot && activePlot.id);
 
   let highlightedPlotId = -1;
 
@@ -66,13 +70,6 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
       popups[0].remove();
     }
   }
-
-  // Get nft metadata each time the active plot is changed
-  // useEffect(() => {
-  //   const activeAssetId = activePlot && activePlot.id;
-
-  //   activeAssetId && getNftMetadata(activeAssetId);
-  // }, activePlot);
 
   // zoom to plot on selection
   useEffect(() => {
@@ -206,6 +203,9 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
         if (!map.current.getLayer("launchpad_outline")) {
           addOutlineToMap(launchpadData, "launchpad", 1, 1, "#E0E371");
         }
+        if (!map.current.getLayer("launchpad_fill")) {
+          addFilledToMap(launchpadData, "launchpad", 0, "#E0E371");
+        }
 
         map.current.loadImage(
           CityDAO,
@@ -213,7 +213,7 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
             if (error) throw error;
 
             // Add the image to the map style.
-            if(map.current.hasImage("citydao")) return;
+            if (map.current.hasImage("citydao")) return;
             map.current.addImage('citydao', image);
 
             // Add a data source containing one point feature.
@@ -295,6 +295,40 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
             })
             //Set active plot
             handleSetActivePlot(filteredPlot[0])
+          });
+
+          map.current.on('mouseenter', 'launchpad_fill', (e) => {
+            console.log(e)
+            // Change the cursor style as a UI indicator.
+            map.current.getCanvas().style.cursor = 'pointer';
+
+            // Copy coordinates array.
+            const coordinates = e.features[0].geometry.coordinates[0];
+            let popupTitle = `<div class="flex flex-col items-start launchpad-popup"><img class="bg-transparent plot-image my-2" src=${Icon2} alt="Land" />`;
+            popupTitle += `<p class="secondary-font text-base my-1">LFG Landing</p>`;
+            popupTitle += "<p class='primary-font text-xs text-white text-opacity-75 my-1 text-left'>Lorem ipsum dolor sit amet, consectetur</p>";
+            popupTitle += `<a target="_blank" class="logo-link w-full my-1" href="#"><div class="flex items-center justify-between secondary-font text-base">View Proposals <img class="ml-4 h-auto bg-transparent " src=${Arrow} alt="arrow"></div></a>`;
+            popupTitle += `</div>`;
+
+            const lats = coordinates.map(codinate => codinate[0]);
+            const lngs = coordinates.map(codinate => codinate[1]);
+            const centerLat = (Math.min(...lats) + Math.max(...lats)) / 2;
+            const centerLng = (Math.min(...lngs) + Math.max(...lngs)) / 2;
+
+            // Ensure that if the map is zoomed out such that multiple
+            // copies of the feature are visible, the popup appears
+            // over the copy being pointed to.
+            // while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+            //   coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+            // }
+
+            // Populate the popup and set its coordinates
+            // based on the feature found.
+            lunchadPadPopup.setLngLat([centerLat, centerLng]).setHTML(popupTitle).addTo(map.current);
+          });
+          map.current.on('mouseleave', 'launchpad_fill', () => {
+            map.current.getCanvas().style.cursor = '';
+            lunchadPadPopup.remove();
           });
         }, 1000);
       });
