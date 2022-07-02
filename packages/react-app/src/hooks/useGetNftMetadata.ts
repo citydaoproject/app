@@ -1,11 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { setActivePlotNftData } from "../actions/plotsSlice";
 import { PARCEL_0_OPENSEA_ID } from "../constants";
 import { useAppDispatch } from "./";
 
-export const useGetNftMetadata = (activeAssetId: number) => {
+export const useGetNftMetadata = (activeAssetId: number | undefined) => {
   const dispatch = useAppDispatch();
   const [prevCalledId, setPrevCalledId] = useState(0);
+  const [nftMetaData, setNftMetaData] = useState<any>();
   const shouldFetch = activeAssetId !== prevCalledId;
 
   useEffect(() => {
@@ -13,7 +14,7 @@ export const useGetNftMetadata = (activeAssetId: number) => {
     setPrevCalledId(activeAssetId);
   }, [activeAssetId]);
 
-  const getNftMetadata = () => {
+  const fetchBalance = useCallback(async () => {
     const options = { method: "GET", headers: { "X-API-KEY": process.env.REACT_APP_OPENSEA_TOKEN ?? "" } };
 
     if (activeAssetId !== undefined) {
@@ -23,12 +24,19 @@ export const useGetNftMetadata = (activeAssetId: number) => {
           options,
         )
           .then(response => response.json())
-          .then(response => dispatch(setActivePlotNftData(response)))
+          .then(response => setNftMetaData(response))
           .catch(err => console.error(err));
     }
+  }, [activeAssetId])
 
-    return;
-  };
+  useEffect(() => {
+    if (activeAssetId) {
+      if (!activeAssetId) {
+        setPrevCalledId(activeAssetId);
+      }
+      fetchBalance()
+    }
+  }, [activeAssetId])
 
-  return getNftMetadata;
+  return nftMetaData;
 };

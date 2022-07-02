@@ -19,7 +19,7 @@ export default function PlotsStatus({ acres, plots }: Props) {
         Common Area
       </div>
       <div className="text-lg px-3.5 text-white text-opacity-75 secondary-font subdivision flex flex-row items-center">
-        7 Subdivisions
+        7 Zones
       </div>
     </div>
   );
