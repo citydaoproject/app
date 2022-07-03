@@ -11,9 +11,10 @@ import { setWhitelistedAmount } from "../actions/userSlice";
 interface Props {
   networkProvider: any;
   web3Modal: any;
+  mainnetProvider: ethers.providers.StaticJsonRpcProvider | null;
 }
 
-export default function BrowsePlots({ networkProvider, web3Modal }: Props) {
+export default function BrowsePlots({ networkProvider, web3Modal, mainnetProvider }: Props) {
   const dispatch = useAppDispatch();
   const DEBUG = useAppSelector(state => state.debug.debug);
   const plots = useAppSelector(state => state.plots.plots);
@@ -97,7 +98,7 @@ export default function BrowsePlots({ networkProvider, web3Modal }: Props) {
       </div>
 
       <Header connectWallet={loadWeb3Modal} />
-      <SidePanel contracts={contracts} injectedProvider={injectedProvider} />
+      <SidePanel contracts={contracts} injectedProvider={injectedProvider} mainnetProvider={mainnetProvider} />
 
       {/* key prop is to cause rerendering whenever it changes */}
       <PlotMap

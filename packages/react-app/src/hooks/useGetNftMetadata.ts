@@ -27,16 +27,16 @@ export const useGetNftMetadata = (activeAssetId: number | undefined) => {
           .then(response => setNftMetaData(response))
           .catch(err => console.error(err));
     }
-  }, [activeAssetId])
+  }, [activeAssetId]);
 
   useEffect(() => {
     if (activeAssetId) {
       if (!activeAssetId) {
         setPrevCalledId(activeAssetId);
       }
-      fetchBalance()
+      fetchBalance();
     }
-  }, [activeAssetId])
+  }, [activeAssetId]);
 
   return nftMetaData;
 };
