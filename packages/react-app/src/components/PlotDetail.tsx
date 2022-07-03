@@ -32,6 +32,13 @@ export default function PlotDetail({ plot, contracts, injectedProvider, mainnetP
   const nftMetaData = useGetNftMetadata(activePlot && activePlot.id);
   const ownerAddress = nftMetaData?.owner?.address ?? "";
   const ownerEnsName = useResolveEnsName(mainnetProvider, ownerAddress);
+  const [ownerDisplay, setOwnerDisplay] = useState("Loading...");
+
+  useEffect(() => {
+    if (ownerEnsName) {
+      setOwnerDisplay(ownerEnsName);
+    }
+  }, [ownerEnsName, ownerAddress]);
 
   const handleClosePopup = () => {
     dispatch(setActivePlot(undefined));
@@ -154,7 +161,7 @@ export default function PlotDetail({ plot, contracts, injectedProvider, mainnetP
               transition={{ delay: 0.5 }}
             >
               <div className="flex flex-col justify-between py-3.5 mt-3">
-                <span className="text-left primary-font tracking-wider mb-2">Owner</span>
+                <span className="text-left primary-font tracking-wider mb-2">NFT Owner</span>
                 <Link
                   to={{
                     pathname: `https://etherscan.io/address/${ownerAddress}`,
@@ -163,7 +170,7 @@ export default function PlotDetail({ plot, contracts, injectedProvider, mainnetP
                   className="logo-link w-full mb-2.5"
                 >
                   <div className="flex items-center justify-between secondary-font text-xl text-white text-opacity-75">
-                    {ownerAddress && ownerEnsName ? sliceUserAddress(ownerEnsName) : "Not found"}
+                    {ownerAddress && ownerEnsName ? sliceUserAddress(ownerDisplay) : "Not found"}
                     <img className="ml-4 h-auto bg-transparent " src={Arrow} alt="arrow" />
                   </div>
                 </Link>
