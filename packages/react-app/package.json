@@ -48,6 +48,7 @@
     "framer-motion": "^4.1.17",
     "graphiql": "^1.0.5",
     "graphql": "^15.3.0",
+    "http-proxy-middleware": "^2.0.6",
     "isomorphic-fetch": "^3.0.0",
     "less": "2.7.2",
     "node-watch": "^0.7.1",
