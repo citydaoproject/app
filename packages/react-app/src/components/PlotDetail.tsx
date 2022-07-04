@@ -161,7 +161,7 @@ export default function PlotDetail({ plot, contracts, injectedProvider, mainnetP
               transition={{ delay: 0.5 }}
             >
               <div className="flex flex-col justify-between py-3.5 mt-3">
-                <span className="text-left primary-font tracking-wider mb-2">NFT Owner</span>
+                <span className="text-left primary-font tracking-wider mb-2">Holder</span>
                 <Link
                   to={{
                     pathname: `https://etherscan.io/address/${ownerAddress}`,
