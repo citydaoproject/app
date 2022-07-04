@@ -200,12 +200,12 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
         if (!map.current.getLayer("edge_outline")) {
           addOutlineToMap(edge, "edge", 2, 1, "#FFFFFF");
         }
-        // if (!map.current.getLayer("launchpad_outline")) {
-        //   addOutlineToMap(launchpadData, "launchpad", 1, 1, "#E0E371");
-        // }
-        // if (!map.current.getLayer("launchpad_fill")) {
-        //   addFilledToMap(launchpadData, "launchpad", 0, "#E0E371");
-        // }
+        if (!map.current.getLayer("launchpad_outline")) {
+          addOutlineToMap(launchpadData, "launchpad", 1, 1, "#E0E371");
+        }
+        if (!map.current.getLayer("launchpad_fill")) {
+          addFilledToMap(launchpadData, "launchpad", 0, "#E0E371");
+        }
 
         map.current.loadImage(
           CityDAO,
@@ -296,30 +296,6 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
             //Set active plot
             handleSetActivePlot(filteredPlot[0])
           });
-
-          // map.current.on('mouseenter', 'launchpad_fill', (e) => {
-          //   // Change the cursor style as a UI indicator.
-          //   map.current.getCanvas().style.cursor = 'pointer';
-
-          //   const coordinates = e.features[0].geometry.coordinates[0];
-          //   let popupTitle = `<div class="flex flex-col items-start launchpad-popup"><img class="bg-transparent plot-image my-2" src=${Icon2} alt="Land" />`;
-          //   popupTitle += `<p class="secondary-font text-base my-1">LFG Landing</p>`;
-          //   popupTitle += "<p class='primary-font text-xs text-white text-opacity-75 my-1 text-left'>Lorem ipsum dolor sit amet, consectetur</p>";
-          //   popupTitle += `</div>`;
-
-          //   const lats = coordinates.map(codinate => codinate[0]);
-          //   const lngs = coordinates.map(codinate => codinate[1]);
-          //   const centerLat = (Math.min(...lats) + Math.max(...lats)) / 2;
-          //   const centerLng = (Math.min(...lngs) + Math.max(...lngs)) / 2;
-
-          //   // Populate the popup and set its coordinates
-          //   // based on the feature found.
-          //   lunchadPadPopup.setLngLat([centerLat, centerLng]).setHTML(popupTitle).addTo(map.current);
-          // });
-          // map.current.on('mouseleave', 'launchpad_fill', () => {
-          //   map.current.getCanvas().style.cursor = '';
-          //   lunchadPadPopup.remove();
-          // });
         }, 1000);
       });
     }
