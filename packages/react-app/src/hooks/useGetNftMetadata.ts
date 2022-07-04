@@ -15,28 +15,25 @@ export const useGetNftMetadata = (activeAssetId: number | undefined) => {
   }, [activeAssetId]);
 
   const fetchBalance = useCallback(async () => {
-    const options = { method: "GET", headers: { "X-API-KEY": process.env.REACT_APP_OPENSEA_TOKEN ?? "" } };
+    const options = { method: "GET" };
 
     if (activeAssetId !== undefined) {
       shouldFetch &&
-        fetch(
-          `https://api.opensea.io/api/v1/asset/${PARCEL_0_OPENSEA_ID}/${activeAssetId.toString()}/?include_orders=false`,
-          options,
-        )
+        fetch(`/api/v1/asset/${PARCEL_0_OPENSEA_ID}/${activeAssetId.toString()}/?include_orders=false`, options)
           .then(response => response.json())
           .then(response => setNftMetaData(response))
           .catch(err => console.error(err));
     }
-  }, [activeAssetId])
+  }, [activeAssetId]);
 
   useEffect(() => {
     if (activeAssetId) {
       if (!activeAssetId) {
         setPrevCalledId(activeAssetId);
       }
-      fetchBalance()
+      fetchBalance();
     }
-  }, [activeAssetId])
+  }, [activeAssetId]);
 
   return nftMetaData;
 };
