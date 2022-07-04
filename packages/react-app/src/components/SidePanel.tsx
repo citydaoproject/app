@@ -12,9 +12,10 @@ import { LocationDetail, TerrainDetail, PlotDetail } from "./"
 interface Props {
     contracts: any;
     injectedProvider: any;
+    mainnetProvider: any;
 }
 
-export default function SidePanel({ contracts, injectedProvider }: Props) {
+export default function SidePanel({ contracts, injectedProvider, mainnetProvider }: Props) {
     const userAddress = useAppSelector((state: RootState) => state.user.address);
     const fetchingPlots = useAppSelector((state: RootState) => state.plots.fetching);
     const idFilter = useAppSelector((state: RootState) => state.plots.idFilter);
@@ -48,7 +49,7 @@ export default function SidePanel({ contracts, injectedProvider }: Props) {
     return (
         <div className="plot-tabs overflow-auto">
             {activePlot !== undefined ? (
-                <PlotDetail plot={activePlot} contracts={contracts} injectedProvider={injectedProvider} />
+                <PlotDetail plot={activePlot} contracts={contracts} injectedProvider={injectedProvider} mainnetProvider={mainnetProvider} />
             )
                 :
                 (
@@ -61,7 +62,7 @@ export default function SidePanel({ contracts, injectedProvider }: Props) {
                         :
                         (
                             activePlot !== undefined ? (
-                                <PlotDetail plot={activePlot} contracts={contracts} injectedProvider={injectedProvider} />
+                                <PlotDetail plot={activePlot} contracts={contracts} injectedProvider={injectedProvider} mainnetProvider={mainnetProvider} />
                             ) : (
                                 <div className="px-10 py-11">
                                     <LocationDetail />
