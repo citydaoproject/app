@@ -9,6 +9,7 @@ export default function SearchPlots() {
   const dispatch = useDispatch();
   const idFilter = useAppSelector((state: RootState) => state.plots.idFilter);
   const [searchValue, setSearchValue] = useState("");
+  const [pasted, setPasted] = useState(false);
 
   const handleDisplayNFT = () => {
     dispatch(setIdFilter(searchValue))
@@ -18,6 +19,21 @@ export default function SearchPlots() {
       dispatch(setIdFilter(searchValue))
     }
   }
+
+  const handleChange = async (e : any) => {
+    if(pasted) {
+      const clipBoard = await navigator.clipboard.readText()
+      setSearchValue(clipBoard);
+      setPasted(false)
+    } else {
+      setSearchValue(e.target.value.replace("0", "").toString().padStart(4, '0'))
+    }
+  }
+
+  const handlePaste = (e: any) => {
+    setPasted(true)
+    
+  };
 
   useEffect(() => {
     if (idFilter == "") {
@@ -31,8 +47,9 @@ export default function SearchPlots() {
         type="text"
         placeholder="Search for plot #..."
         className="search-plots-input bg-transparent h-full px-2 text-gray-7"
-        onChange={e => setSearchValue(e.target.value.replace("0", "").toString().padStart(4, '0'))}
+        onChange={e => handleChange(e)}
         onKeyDown={e => handleKeyDown(e)}
+        onPaste={e => handlePaste(e)}
         value={searchValue}
       />
       <div

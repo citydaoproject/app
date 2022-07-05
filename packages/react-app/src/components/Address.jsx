@@ -15,16 +15,15 @@ export default function Address(props) {
     );
   }
 
-  let displayAddress = address.substr(0, 6);
+  let displayAddress = address.slice(0, 6) + "..." + address?.slice(-5, -1);
 
   if (ens && ens.indexOf("0x") < 0) {
     displayAddress = ens;
   } else if (props.size === "short") {
-    displayAddress += "..." + address.substr(-4);
+    displayAddress += "..." + address.slice(0, 6) + "..." + address?.slice(-5, -1);
   } else if (props.size === "long") {
     displayAddress = address;
   }
-
   return (
     <span style={{ display: "flex", alignItems: "center" }}>
       <span style={{ verticalAlign: "middle", display: "flex", alignItems: "center" }}>
