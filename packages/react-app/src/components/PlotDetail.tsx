@@ -3,8 +3,9 @@ import { Link } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { Plot } from "../models/Plot";
 import { useAppSelector, useAppDispatch } from "../hooks";
-
-import LAND_IMG from "../assets/images/SampleLandImage.png";
+import Address from "./Address";
+import Web3Wrapper from "../Web3Wrapper";
+import LAND_IMG from "../assets/images/Land.png";
 import { ViewPlot } from ".";
 import { stringifyPlotId } from "../helpers/stringifyPlotId";
 import { sliceUserAddress } from "../helpers/sliceUserAddress";
@@ -20,13 +21,13 @@ interface Props {
   plot: Plot;
   contracts: any;
   injectedProvider: any;
+  mainnetProvider: any;
 }
 
-export default function PlotDetail({ plot, contracts, injectedProvider }: Props) {
+export default function PlotDetail({ plot, contracts, injectedProvider, mainnetProvider }: Props) {
   const dispatch = useAppDispatch();
   const [plotMetadata, setPlotMetadata] = useState<any>({} as any);
   const activePlot = useAppSelector(state => state.plots.activePlot);
-
   const nftMetaData = useGetNftMetadata(activePlot && activePlot.id);
 
   const handleClosePopup = () => {
@@ -65,9 +66,7 @@ export default function PlotDetail({ plot, contracts, injectedProvider }: Props)
               initial={{ x: -300, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               exit={{ x: -300, opacity: 0 }}
-              style={{ height: "240px" }}
               transition={{ delay: 0.1 }}
-              className="object-cover"
             />
             <motion.div
               initial={{ x: -300, opacity: 0 }}
@@ -80,7 +79,7 @@ export default function PlotDetail({ plot, contracts, injectedProvider }: Props)
                 <span className="text-left primary-font mb-4 tracking-wider">SUBDIVISION</span>
                 <div className="flex flex-row items-center">
                   <img src={Icon1} className="mr-4" />
-                  <span className="text-right secondary-font text-lg text-white text-opacity-75 tracking-wider">Degen Valley</span>
+                  <span className="text-right secondary-font text-lg text-white text-opacity-75 tracking-wider">{activePlot?.properties.Name}</span>
                 </div>
               </div>
             </motion.div>
@@ -101,7 +100,7 @@ export default function PlotDetail({ plot, contracts, injectedProvider }: Props)
                       </div>
                       <span className="secondary-font text-xl text-white text-opacity-75 tracking-wider">Gravel</span>
                     </div>
-                    <span className="primary-font text-lg tracking-wider">63%</span>
+                    <span className="primary-font text-lg tracking-wider">{activePlot?.properties.HISTO_0}%</span>
                   </div>
                   <div className="flex flex-row items-center w-full justify-between">
                     <div className="flex flex-row items-center">
@@ -110,7 +109,7 @@ export default function PlotDetail({ plot, contracts, injectedProvider }: Props)
                       </div>
                       <span className="secondary-font text-xl text-white text-opacity-75 tracking-wider">Rock</span>
                     </div>
-                    <span className="primary-font text-lg tracking-wider">18%</span>
+                    <span className="primary-font text-lg tracking-wider">{activePlot?.properties.HISTO_4}%</span>
                   </div>
                   <div className="flex flex-row items-center w-full justify-between">
                     <div className="flex flex-row items-center">
@@ -119,7 +118,7 @@ export default function PlotDetail({ plot, contracts, injectedProvider }: Props)
                       </div>
                       <span className="secondary-font text-xl text-white text-opacity-75 tracking-wider">Vegeration</span>
                     </div>
-                    <span className="primary-font text-lg tracking-wider">13%</span>
+                    <span className="primary-font text-lg tracking-wider">{activePlot?.properties.HISTO_255}%</span>
                   </div>
                 </div>
               </div>
@@ -146,8 +145,8 @@ export default function PlotDetail({ plot, contracts, injectedProvider }: Props)
               <div className="flex flex-col justify-between py-3.5 mt-3">
                 <span className="text-left primary-font tracking-wider mb-2">Owner</span>
                 <Link to={{ pathname: `https://etherscan.io/address/${nftMetaData && nftMetaData.owner && nftMetaData.owner.address}` }} target={"_blank"} className="logo-link w-full mb-2.5">
-                  <div className="flex items-center justify-between secondary-font text-xl text-white text-opacity-75">
-                    {nftMetaData && sliceUserAddress(nftMetaData.owner && nftMetaData.owner.address)} <img className="ml-4 h-auto bg-transparent " src={Arrow} alt="arrow" />
+                  <div className="flex items-center justify-between">
+                    <Address address={nftMetaData?.owner && nftMetaData.owner.address} ensProvider={mainnetProvider} /> <img className="ml-4 h-auto bg-transparent " src={Arrow} alt="arrow" />
                   </div>
                 </Link>
               </div>

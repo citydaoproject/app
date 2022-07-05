@@ -25,7 +25,7 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
     closeButton: false,
     closeOnClick: false,
   });
-  let lunchadPadPopup = new mapboxgl.Popup({
+  const lunchadPadPopup = new mapboxgl.Popup({
     maxWidth: "unset",
     closeButton: false,
     closeOnClick: false,
@@ -188,15 +188,15 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
         if (!map.current.getLayer(`parcel_fill`)) {
           addFilledToMap(newPlots, "parcel", 0, "#eff551");
         }
-        if (!map.current.getLayer("drainage_outline")) {
-          addOutlineToMap(drainage, "drainage", 1, 1, "#E0E371");
-        }
+        // if (!map.current.getLayer("drainage_outline")) {
+        //   addOutlineToMap(drainage, "drainage", 1, 1, "#E0E371");
+        // }
         if (!map.current.getLayer("road_outline")) {
           addOutlineToMap(road, "road", 1, 1, "#E0E371");
         }
-        if (!map.current.getLayer("entranceGate_outline")) {
-          addOutlineToMap(entranceGate, "entranceGate", 1, 1, "#E0E371");
-        }
+        // if (!map.current.getLayer("entranceGate_outline")) {
+        //   addOutlineToMap(entranceGate, "entranceGate", 1, 1, "#E0E371");
+        // }
         if (!map.current.getLayer("edge_outline")) {
           addOutlineToMap(edge, "edge", 2, 1, "#FFFFFF");
         }
@@ -301,6 +301,7 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
             // Change the cursor style as a UI indicator.
             map.current.getCanvas().style.cursor = 'pointer';
 
+            // Copy coordinates array.
             const coordinates = e.features[0].geometry.coordinates[0];
             let popupTitle = `<div class="flex flex-col items-start launchpad-popup"><img class="bg-transparent plot-image my-2" src=${Icon2} alt="Land" />`;
             popupTitle += `<p class="secondary-font text-base my-1">LFG Landing</p>`;

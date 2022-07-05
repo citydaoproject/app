@@ -80,7 +80,7 @@ function Web3Wrapper() {
       <BrowserRouter>
         <Switch>
           <Route exact path="/">
-            <BrowsePlots web3Modal={web3Modal} networkProvider={networkProvider} />
+            <BrowsePlots web3Modal={web3Modal} networkProvider={networkProvider} mainnetProvider={mainnetProvider} />
           </Route>
           <Route exact path="/whitelist">
             <Whitelist web3Modal={web3Modal} networkProvider={networkProvider} />
