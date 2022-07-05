@@ -5,7 +5,7 @@ import { Plot } from "../models/Plot";
 import { useAppSelector, useAppDispatch } from "../hooks";
 import Address from "./Address";
 import Web3Wrapper from "../Web3Wrapper";
-import LAND_IMG from "../assets/images/SampleLandImage.png";
+import LAND_IMG from "../assets/images/Land.png";
 import { ViewPlot } from ".";
 import { stringifyPlotId } from "../helpers/stringifyPlotId";
 import { sliceUserAddress } from "../helpers/sliceUserAddress";
@@ -66,9 +66,7 @@ export default function PlotDetail({ plot, contracts, injectedProvider, mainnetP
               initial={{ x: -300, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               exit={{ x: -300, opacity: 0 }}
-              style={{ height: "240px" }}
               transition={{ delay: 0.1 }}
-              className="object-cover"
             />
             <motion.div
               initial={{ x: -300, opacity: 0 }}
