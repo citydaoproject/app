@@ -45,6 +45,11 @@ export default function SidePanel({ contracts, injectedProvider, mainnetProvider
         setNewPlotsNum(filteredPlot.length);
     }, [idFilter])
 
+    useEffect(() => {
+        const filteredArray = newPlots.filter(item => userNft.includes(item.id));
+        console.log(filteredArray)
+    }, [userNft, newPlots])
+
     return (
         <div className="plot-tabs overflow-auto">
             {activePlot !== undefined ? (
