@@ -36,11 +36,10 @@ export default function PlotButton({ plot, delay }: Props) {
           <div className="flex justify-start items-center">
             <img src={LAND_IMG} alt={plot?.id.toString()} className="img-small" />
             <div className="flex flex-col items-baseline secondary-font">
-              <span className="plot-title text-lg font-medium leading-6 mx-2 text-primary-3 text-xl">
+              <span className="plot-title primary-font text-lg font-medium leading-6 mx-2 text-primary-3 text-xl">
                 Plot #{stringifyPlotId(plot.id)}
               </span>
-              <div className="mx-2 flex flex-row items-center text-white text-opacity-75 text-lg"><img src={PlotLocation} alt={"PlotLocation #" + plot?.id.toString()} className="pr-4"/>NW QUADRANT</div>
-              <span className="mx-2 text-base">OS</span>
+              <div className="mx-2 flex flex-row items-center secondary-font text-white text-opacity-75 text-xl">{plot?.properties.Name}</div>
             </div>
           </div>
         </div>

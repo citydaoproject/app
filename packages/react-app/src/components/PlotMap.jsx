@@ -188,15 +188,9 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
         if (!map.current.getLayer(`parcel_fill`)) {
           addFilledToMap(newPlots, "parcel", 0, "#eff551");
         }
-        // if (!map.current.getLayer("drainage_outline")) {
-        //   addOutlineToMap(drainage, "drainage", 1, 1, "#E0E371");
-        // }
         if (!map.current.getLayer("road_outline")) {
           addOutlineToMap(road, "road", 1, 1, "#E0E371");
         }
-        // if (!map.current.getLayer("entranceGate_outline")) {
-        //   addOutlineToMap(entranceGate, "entranceGate", 1, 1, "#E0E371");
-        // }
         if (!map.current.getLayer("edge_outline")) {
           addOutlineToMap(edge, "edge", 2, 1, "#FFFFFF");
         }
