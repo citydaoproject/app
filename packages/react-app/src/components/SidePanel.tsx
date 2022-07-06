@@ -13,13 +13,12 @@ interface Props {
     contracts: any;
     injectedProvider: any;
     mainnetProvider: any;
+    userNft: Array<number>;
 }
 
-export default function SidePanel({ contracts, injectedProvider, mainnetProvider }: Props) {
+export default function SidePanel({ contracts, injectedProvider, mainnetProvider, userNft }: Props) {
     const userAddress = useAppSelector((state: RootState) => state.user.address);
-    const fetchingPlots = useAppSelector((state: RootState) => state.plots.fetching);
     const idFilter = useAppSelector((state: RootState) => state.plots.idFilter);
-    const currentNumDisplay = useAppSelector((state: RootState) => state.plots.numDisplay);
     const activePlot = useAppSelector(state => state.plots.activePlot);
     const [newPlots, setNewPlots] = useState<Plot[]>([])
     const [newPlotsNum, setNewPlotsNum] = useState(0);
@@ -46,6 +45,11 @@ export default function SidePanel({ contracts, injectedProvider, mainnetProvider
         setNewPlotsNum(filteredPlot.length);
     }, [idFilter])
 
+    useEffect(() => {
+        const filteredArray = newPlots.filter(item => userNft.includes(item.id));
+        console.log(filteredArray)
+    }, [userNft, newPlots])
+
     return (
         <div className="plot-tabs overflow-auto">
             {activePlot !== undefined ? (
@@ -64,9 +68,12 @@ export default function SidePanel({ contracts, injectedProvider, mainnetProvider
                             activePlot !== undefined ? (
                                 <PlotDetail plot={activePlot} contracts={contracts} injectedProvider={injectedProvider} mainnetProvider={mainnetProvider} />
                             ) : (
-                                <div className="px-10 py-11">
-                                    <LocationDetail />
-                                    <TerrainDetail />
+                                <div className="py-6">
+                                    <PlotList
+                                        plots={newPlots.filter(item => userNft.includes(item.id))}
+                                        totalNum={userNft.length}
+                                        emptyMessage={"No plots have been purchased. You could be the first!"}
+                                    />
                                 </div>
                             )
                         )

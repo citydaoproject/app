@@ -22,8 +22,9 @@ export default function BrowsePlots({ networkProvider, web3Modal, mainnetProvide
   const contracts: any = useContractLoader(networkProvider);
   const whitelistedAmount = useAppSelector(state => state.user.whitelistedAmount);
   const [injectedProvider, setInjectedProvider] = useState<ethers.providers.Web3Provider>();
+  const [userNft, setUserNft] = useState<Array<number>>([])
 
-  useUserSigner(injectedProvider); // initialize signer
+  const signer = useUserSigner(injectedProvider); // initialize signer
 
   useEffect(() => {
     if (!userAddress) {
@@ -38,7 +39,7 @@ export default function BrowsePlots({ networkProvider, web3Modal, mainnetProvide
     } else {
       toast.dismiss("isWhitelisted");
       toast.error(
-        "You don’t own a Parcel-0 NFT in your wallet: " + userAddress?.slice(0, 6) + "..." + userAddress?.slice(-5, -1),
+        "You don’t own a Parcel-0 NFT in your wallet: " + userAddress?.slice(0, 6).toLowerCase() + "..." + userAddress?.slice(-5, -1).toLowerCase(),
         {
           toastId: "notWhitelisted",
           autoClose: false,
@@ -84,9 +85,38 @@ export default function BrowsePlots({ networkProvider, web3Modal, mainnetProvide
     }
   };
 
+  const readOwnedParcelCount = async () => {
+    try {
+      if (contracts && contracts.CitizenNFT && userAddress) {
+        const balanceOfFunc = await contracts.CityDaoParcel.connect(signer)["balanceOf"];
+        const numParcel = await balanceOfFunc(userAddress);
+        readOwnedParcelID(numParcel.toNumber())
+      }
+    } catch (e) {
+    }
+  }
+
+  const getTokenId = async (index: number) => {
+    return new Promise<number>(async resolve => {
+      const tokenOfOwnerByIndex = await contracts.CityDaoParcel.connect(signer)["tokenOfOwnerByIndex"];
+      const tokenId = await tokenOfOwnerByIndex(userAddress, index);
+      resolve(tokenId.toNumber());
+    })
+  }
+
+  const readOwnedParcelID = async (count: number) => {
+    let idList = [];
+    for (let i = 0; i < count; i++) {
+      const tokenId = await getTokenId(i);
+      idList.push(tokenId)
+    }
+    setUserNft(idList)
+  }
+
   useEffect(() => {
     readWhitelistStatus();
-  }, [contracts, userAddress, plots]);
+    readOwnedParcelCount();
+  }, [contracts, userAddress]);
 
   return (
     <div className="browse-plots-wrapper">
@@ -98,7 +128,7 @@ export default function BrowsePlots({ networkProvider, web3Modal, mainnetProvide
       </div>
 
       <Header connectWallet={loadWeb3Modal} />
-      <SidePanel contracts={contracts} injectedProvider={injectedProvider} mainnetProvider={mainnetProvider} />
+      <SidePanel contracts={contracts} injectedProvider={injectedProvider} mainnetProvider={mainnetProvider} userNft={userNft} />
 
       {/* key prop is to cause rerendering whenever it changes */}
       <PlotMap
