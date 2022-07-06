@@ -26,28 +26,6 @@ export default function BrowsePlots({ networkProvider, web3Modal, mainnetProvide
 
   const signer = useUserSigner(injectedProvider); // initialize signer
 
-  useEffect(() => {
-    if (!userAddress) {
-      return;
-    }
-    if (whitelistedAmount && whitelistedAmount > 0) {
-      toast.dismiss("notWhitelisted");
-      toast.success(`You've been whitelisted to buy ${whitelistedAmount} plots 🎉`, {
-        toastId: "isWhitelisted",
-        autoClose: false,
-      });
-    } else {
-      toast.dismiss("isWhitelisted");
-      toast.error(
-        "You don’t own a Parcel-0 NFT in your wallet: " + userAddress?.slice(0, 6).toLowerCase() + "..." + userAddress?.slice(-5, -1).toLowerCase(),
-        {
-          toastId: "notWhitelisted",
-          autoClose: false,
-        },
-      );
-    }
-  }, [whitelistedAmount, userAddress]);
-
   const loadWeb3Modal = useCallback(async () => {
     try {
       const provider = await web3Modal.connect();
@@ -74,17 +52,6 @@ export default function BrowsePlots({ networkProvider, web3Modal, mainnetProvide
     }
   }, [setInjectedProvider, DEBUG]);
 
-  const readWhitelistStatus = async () => {
-    try {
-      if (contracts && contracts.CityDaoParcel && userAddress) {
-        const whitelistedAmount = await contracts.CityDaoParcel.getWhitelistedAmount(userAddress);
-        dispatch(setWhitelistedAmount(whitelistedAmount.toNumber()));
-      }
-    } catch (e) {
-      dispatch(setWhitelistedAmount(0));
-    }
-  };
-
   const readOwnedParcelCount = async () => {
     try {
       if (contracts && contracts.CitizenNFT && userAddress) {
@@ -110,11 +77,20 @@ export default function BrowsePlots({ networkProvider, web3Modal, mainnetProvide
       const tokenId = await getTokenId(i);
       idList.push(tokenId)
     }
-    setUserNft(idList)
+    if(idList.length > 0) {
+      setUserNft(idList)
+    } else {
+      toast.error(
+        "You don’t own a Parcel-0 NFT in your wallet: " + userAddress?.slice(0, 6).toLowerCase() + "..." + userAddress?.slice(-5, -1).toLowerCase(),
+        {
+          toastId: "notWhitelisted",
+          autoClose: false,
+        },
+      );
+    }
   }
 
   useEffect(() => {
-    readWhitelistStatus();
     readOwnedParcelCount();
   }, [contracts, userAddress]);
 
