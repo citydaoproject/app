@@ -103,7 +103,7 @@ export default function BrowsePlots({ networkProvider, web3Modal, mainnetProvide
         <SearchPlots />
       </div>
 
-      <Header connectWallet={loadWeb3Modal} />
+      <Header connectWallet={loadWeb3Modal} userNft={userNft.length} />
       <SidePanel contracts={contracts} injectedProvider={injectedProvider} mainnetProvider={mainnetProvider} userNft={userNft} />
 
       {/* key prop is to cause rerendering whenever it changes */}

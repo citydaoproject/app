@@ -16,6 +16,7 @@ export default function PlotTabs() {
   const [newPlotsNum, setNewPlotsNum] = useState(0);
 
   useEffect(() => {
+    console.log(plotsList)
     let plotData = plotsList.features as Plot[];
     plotData.map((plot: Plot, index: number) => {
       if (plot["id"]) {

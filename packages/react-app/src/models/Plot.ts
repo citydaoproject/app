@@ -9,5 +9,6 @@ export interface Plot {
   id: number;
   geometry: any;
   properties: any;
+  bbox: any;
   type: string;
 }

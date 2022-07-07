@@ -3,11 +3,12 @@ import { ConnectWalletButton } from ".";
 
 interface Props {
   connectWallet: () => void;
+  userNft: number;
 }
-export default function Header({ connectWallet }: Props) {
+export default function Header({ connectWallet, userNft }: Props) {
   return (
     <div className="connect-wallet-section header border-b primary-font text-xl flex h-16 lg:px-4 items-center">
-      <span className="bg-gray-1 opacity-75 text-lg secondary-font mr-5">YOUR PLOTS (0)</span>
+      <span className="bg-gray-1 opacity-75 text-lg secondary-font mr-5">YOUR PLOTS ({userNft})</span>
       <ConnectWalletButton onClick={connectWallet} />
     </div>
   );
