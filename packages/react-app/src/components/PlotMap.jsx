@@ -220,7 +220,7 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
                     'type': 'Feature',
                     'geometry': {
                       'type': 'Point',
-                      'coordinates': [-109.25998069963450, 44.924365148882462]
+                      'coordinates': [-109.25998739898205, 44.924363970512005]
                     }
                   }
                 ]
