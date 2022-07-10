@@ -79,7 +79,7 @@ export default function PlotDetail({ plot, contracts, injectedProvider, mainnetP
                 <span className="text-left primary-font mb-4 tracking-wider">SUBDIVISION</span>
                 <div className="flex flex-row items-center">
                   <img src={Icon1} className="mr-4" />
-                  <span className="text-right secondary-font text-lg text-white text-opacity-75 tracking-wider">{activePlot?.properties.Name}</span>
+                  <span className="text-right secondary-font text-lg text-white text-opacity-75 tracking-wider">{activePlot?.properties.District}</span>
                 </div>
               </div>
             </motion.div>
@@ -100,7 +100,7 @@ export default function PlotDetail({ plot, contracts, injectedProvider, mainnetP
                       </div>
                       <span className="secondary-font text-xl text-white text-opacity-75 tracking-wider">Gravel</span>
                     </div>
-                    <span className="primary-font text-lg tracking-wider">{activePlot?.properties.HISTO_0}%</span>
+                    <span className="primary-font text-lg tracking-wider">{activePlot?.properties.HISTO_0 ?? 0}%</span>
                   </div>
                   <div className="flex flex-row items-center w-full justify-between">
                     <div className="flex flex-row items-center">
@@ -109,7 +109,7 @@ export default function PlotDetail({ plot, contracts, injectedProvider, mainnetP
                       </div>
                       <span className="secondary-font text-xl text-white text-opacity-75 tracking-wider">Rock</span>
                     </div>
-                    <span className="primary-font text-lg tracking-wider">{activePlot?.properties.HISTO_4}%</span>
+                    <span className="primary-font text-lg tracking-wider">{activePlot?.properties.HISTO_4 ?? 0}%</span>
                   </div>
                   <div className="flex flex-row items-center w-full justify-between">
                     <div className="flex flex-row items-center">
@@ -118,7 +118,7 @@ export default function PlotDetail({ plot, contracts, injectedProvider, mainnetP
                       </div>
                       <span className="secondary-font text-xl text-white text-opacity-75 tracking-wider">Vegeration</span>
                     </div>
-                    <span className="primary-font text-lg tracking-wider">{activePlot?.properties.HISTO_255}%</span>
+                    <span className="primary-font text-lg tracking-wider">{activePlot?.properties.HISTO_255 ?? 0}%</span>
                   </div>
                 </div>
               </div>
