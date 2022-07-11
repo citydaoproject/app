@@ -11,20 +11,20 @@ import { setNumDisplayPlots } from "../actions/plotsSlice";
 interface Props {
   plots: Plot[];
   totalNum: number;
-  emptyMessage: string;
+  isLoading?: boolean;
 }
 
-export default function PlotList({ plots, totalNum, emptyMessage }: Props) {
+export default function PlotList({ plots, totalNum, isLoading }: Props) {
   const dispatch = useAppDispatch();
   const idFilter = useAppSelector((state: RootState) => state.plots.idFilter);
   const currentNumDisplay = useAppSelector((state: RootState) => state.plots.numDisplay);
 
   useEffect(() => {
-    dispatch(setNumDisplayPlots(10))
+    dispatch(setNumDisplayPlots(10));
   }, [idFilter]);
 
   const increaseNumDisplayedPlots = () => {
-    dispatch(setNumDisplayPlots(currentNumDisplay + 10))
+    dispatch(setNumDisplayPlots(currentNumDisplay + 10));
   };
 
   return (
@@ -40,7 +40,7 @@ export default function PlotList({ plots, totalNum, emptyMessage }: Props) {
           Show more
         </span>
       )}
-      {plots?.length === 0 && <span className="text-gray-7 third-font">{emptyMessage}</span>}
+      {plots?.length === 0 && isLoading && <span className="text-gray-7 third-font">Loading...</span>}
     </div>
   );
 }

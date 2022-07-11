@@ -1,3 +1,3 @@
 export const sliceUserAddress = (address: string) => {
-  return address?.slice(0, 6) + "..." + address?.slice(-5, -1);
+  return address?.slice(0, 6) + "..." + address?.slice(-4);
 };
