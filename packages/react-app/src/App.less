@@ -133,7 +133,6 @@
 
   @media (max-width: 720px) {
     overflow-y: scroll;
-    height: auto;
     background-color: @gray-2;
   }
 }
@@ -165,6 +164,15 @@
 
 /* Plots status bar */ 
 .plot-status {
+  @media (max-width: 485px) {
+    & {
+      flex-wrap: wrap;
+      bottom: 1rem !important;
+    }
+    div {
+      width: 50%
+    }
+  }
   .acres:before {
     content: '';
     width: 13px;
