@@ -11,7 +11,7 @@ import { plotsList, drainageData, roadData, entranceGateData, edgeData, launchpa
 import { setActivePlot, setHighlightedPlot, setIdFilter } from "../actions/plotsSlice";
 import Land from "../assets/images/SampleLandImage.png";
 import Icon2 from "../assets/images/icon2.png";
-import Arrow from "../assets/images/arrow.png";
+import Icon3 from "../assets/images/icon3.png";
 import PlotsStatus from "./PlotsStatus";
 
 mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_TOKEN;
@@ -200,6 +200,9 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
         if (!map.current.getLayer("launchpad_fill")) {
           addFilledToMap(launchpadData, "launchpad", 0, "#E0E371");
         }
+        if (!map.current.getLayer("entrance_fill")) {
+          addFilledToMap(entranceGate, "entrance", 0, "#E0E371");
+        }
 
         map.current.loadImage(
           CityDAO,
@@ -312,6 +315,30 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
             lunchadPadPopup.setLngLat([centerLat, centerLng]).setHTML(popupTitle).addTo(map.current);
           });
           map.current.on('mouseleave', 'launchpad_fill', () => {
+            map.current.getCanvas().style.cursor = '';
+            lunchadPadPopup.remove();
+          });
+          map.current.on('mouseenter', 'entrance_fill', (e) => {
+            // Change the cursor style as a UI indicator.
+            map.current.getCanvas().style.cursor = 'pointer';
+
+            // Copy coordinates array.
+            const coordinates = e.features[0].geometry.coordinates[0];
+            let popupTitle = `<div class="flex flex-col items-start launchpad-popup"><img class="bg-transparent plot-image my-2" src=${Icon3} alt="Degentrance" />`;
+            popupTitle += `<p class="secondary-font text-base my-1">Degentrance</p>`;
+            popupTitle += "<p class='primary-font text-xs text-white text-opacity-75 my-1 text-left'>Lorem ipsum dolor sit amet, consectetur</p>";
+            popupTitle += `</div>`;
+
+            const lats = coordinates.map(codinate => codinate[0]);
+            const lngs = coordinates.map(codinate => codinate[1]);
+            const centerLat = (Math.min(...lats) + Math.max(...lats)) / 2;
+            const centerLng = (Math.min(...lngs) + Math.max(...lngs)) / 2;
+
+            // Populate the popup and set its coordinates
+            // based on the feature found.
+            lunchadPadPopup.setLngLat([centerLat, centerLng]).setHTML(popupTitle).addTo(map.current);
+          });
+          map.current.on('mouseleave', 'entrance_fill', () => {
             map.current.getCanvas().style.cursor = '';
             lunchadPadPopup.remove();
           });
