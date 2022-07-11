@@ -93,7 +93,12 @@ export default function BrowsePlots({ networkProvider, web3Modal, mainnetProvide
         <SearchPlots />
       </div>
 
-      <Header connectWallet={loadWeb3Modal} userNft={userNft.length} isParcelCountRead={isParcelCountRead} />
+      <Header
+        userAddress={userAddress}
+        connectWallet={loadWeb3Modal}
+        userNft={userNft.length}
+        isParcelCountRead={isParcelCountRead}
+      />
       <SidePanel
         contracts={contracts}
         injectedProvider={injectedProvider}
