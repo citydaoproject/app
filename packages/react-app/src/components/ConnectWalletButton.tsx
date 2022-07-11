@@ -2,6 +2,7 @@ import { Tooltip } from "antd";
 import React from "react";
 import { useAppSelector } from "../hooks";
 import { RootState } from "../store";
+import { sliceUserAddress } from "../helpers/sliceUserAddress";
 
 interface Props {
   onClick: () => void;
@@ -12,11 +13,9 @@ export default function ConnectWalletButton({ onClick }: Props) {
     <Tooltip title={userAddress}>
       <button
         onClick={onClick}
-        className={`connect-wallet-button primary-font ${
-          userAddress ? "lowercase" : ""
-        } px-4 h-9 rounded`}
+        className={`connect-wallet-button primary-font ${userAddress ? "lowercase" : ""} px-4 h-9 rounded`}
       >
-        {userAddress ? userAddress?.slice(0, 6) + "..." + userAddress?.slice(-5, -1) : "Connect"}
+        {userAddress ? sliceUserAddress(userAddress) : "Connect"}
       </button>
     </Tooltip>
   );

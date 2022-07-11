@@ -6,7 +6,6 @@ import { useContractLoader, useAppSelector, useAppDispatch, useUserSigner } from
 import { PlotMap, LogoDisplay, Header, SidePanel } from "../components";
 import { SearchPlots } from "../components";
 import { logoutOfWeb3Modal } from "../helpers";
-import { setWhitelistedAmount } from "../actions/userSlice";
 
 interface Props {
   networkProvider: any;
@@ -15,14 +14,13 @@ interface Props {
 }
 
 export default function BrowsePlots({ networkProvider, web3Modal, mainnetProvider }: Props) {
-  const dispatch = useAppDispatch();
   const DEBUG = useAppSelector(state => state.debug.debug);
   const plots = useAppSelector(state => state.plots.plots);
   const userAddress = useAppSelector(state => state.user.address);
   const contracts: any = useContractLoader(networkProvider);
-  const whitelistedAmount = useAppSelector(state => state.user.whitelistedAmount);
   const [injectedProvider, setInjectedProvider] = useState<ethers.providers.Web3Provider>();
-  const [userNft, setUserNft] = useState<Array<number>>([])
+  const [userNft, setUserNft] = useState<Array<number>>([]);
+  const [isParcelCountRead, setIsParcelCountRead] = useState(false);
 
   const signer = useUserSigner(injectedProvider); // initialize signer
 
@@ -55,40 +53,32 @@ export default function BrowsePlots({ networkProvider, web3Modal, mainnetProvide
   const readOwnedParcelCount = async () => {
     try {
       if (contracts && contracts.CitizenNFT && userAddress) {
+        console.log("setIsParcelCountRead");
+        setIsParcelCountRead(false);
         const balanceOfFunc = await contracts.CityDaoParcel.connect(signer)["balanceOf"];
         const numParcel = await balanceOfFunc(userAddress);
-        readOwnedParcelID(numParcel.toNumber())
+        readOwnedParcelID(numParcel.toNumber());
+        setIsParcelCountRead(true);
       }
-    } catch (e) {
-    }
-  }
+    } catch (e) {}
+  };
 
   const getTokenId = async (index: number) => {
     return new Promise<number>(async resolve => {
       const tokenOfOwnerByIndex = await contracts.CityDaoParcel.connect(signer)["tokenOfOwnerByIndex"];
       const tokenId = await tokenOfOwnerByIndex(userAddress, index);
       resolve(tokenId.toNumber());
-    })
-  }
+    });
+  };
 
   const readOwnedParcelID = async (count: number) => {
-    let idList = [];
+    const idList = [];
     for (let i = 0; i < count; i++) {
       const tokenId = await getTokenId(i);
-      idList.push(tokenId)
+      idList.push(tokenId);
     }
-    if(idList.length > 0) {
-      setUserNft(idList)
-    } else {
-      toast.error(
-        "You don’t own a Parcel-0 NFT in your wallet: " + userAddress?.slice(0, 6).toLowerCase() + "..." + userAddress?.slice(-5, -1).toLowerCase(),
-        {
-          toastId: "notWhitelisted",
-          autoClose: false,
-        },
-      );
-    }
-  }
+    setUserNft(idList);
+  };
 
   useEffect(() => {
     readOwnedParcelCount();
@@ -103,8 +93,13 @@ export default function BrowsePlots({ networkProvider, web3Modal, mainnetProvide
         <SearchPlots />
       </div>
 
-      <Header connectWallet={loadWeb3Modal} userNft={userNft.length} />
-      <SidePanel contracts={contracts} injectedProvider={injectedProvider} mainnetProvider={mainnetProvider} userNft={userNft} />
+      <Header connectWallet={loadWeb3Modal} userNft={userNft.length} isParcelCountRead={isParcelCountRead} />
+      <SidePanel
+        contracts={contracts}
+        injectedProvider={injectedProvider}
+        mainnetProvider={mainnetProvider}
+        userNft={userNft}
+      />
 
       {/* key prop is to cause rerendering whenever it changes */}
       <PlotMap
