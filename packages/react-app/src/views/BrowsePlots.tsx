@@ -60,7 +60,7 @@ export default function BrowsePlots({ networkProvider, web3Modal, mainnetProvide
         readOwnedParcelID(numParcel.toNumber());
         setIsParcelCountRead(true);
       }
-    } catch (e) {}
+    } catch (e) { }
   };
 
   const getTokenId = async (index: number) => {
@@ -87,9 +87,7 @@ export default function BrowsePlots({ networkProvider, web3Modal, mainnetProvide
   return (
     <div className="browse-plots-wrapper">
       <div className="logo-display flex items-center justify-between h-16 border-b pb-px">
-        <Link to="/whitelist" className="logo-link">
-          <LogoDisplay />
-        </Link>
+        <LogoDisplay />
         <SearchPlots />
       </div>
 
