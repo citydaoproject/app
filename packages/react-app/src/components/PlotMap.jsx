@@ -182,11 +182,11 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
   useEffect(() => {
     if (map?.current && newPlots) {
       map.current.on("load", function () {
-        if (!map.current.getLayer("unallocated_outline")) {
-          addOutlineToMap(unallocatedData, "unallocated", 1, 0.5, "#00ffaa");
-        }
         if (!map.current.getLayer(`unallocated_fill`)) {
           addFilledToMap(unallocatedData, "unallocated", 0.5, "#E0E371");
+        }
+        if (!map.current.getLayer("unallocated_outline")) {
+          addOutlineToMap(unallocatedData, "unallocated", 1, 0.5, "#00ffaa");
         }
         if (!map.current.getLayer("parcel_outline")) {
           addOutlineToMap(newPlots, "parcel", 1, 0.5, "#00ffaa");
