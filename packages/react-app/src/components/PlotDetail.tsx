@@ -137,8 +137,10 @@ export default function PlotDetail({ plot, contracts, injectedProvider, mainnetP
               transition={{ delay: 0.4 }}
             >
               <div className="flex flex-col justify-between py-3.5 mt-3">
-                <span className="text-left primary-font tracking-wider mb-2">POINTS OF INTEREST</span>
-                <span className="text-left secondary-font text-white text-opacity-75 tracking-wider">N/A</span>
+                <span className="text-left primary-font tracking-wider mb-2">FEATURE</span>
+                <span className="text-left secondary-font text-white text-opacity-75 tracking-wider">
+                  {activePlot?.properties.feature}
+                </span>
               </div>
             </motion.div>
             <motion.div
