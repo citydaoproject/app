@@ -9,10 +9,10 @@ import { AnimatePresence, motion } from "framer-motion";
 import { stringifyPlotId } from "../helpers/stringifyPlotId";
 import { plotsList, drainageData, roadData, entranceGateData, edgeData, launchpadData } from "../data";
 import { setActivePlot, setHighlightedPlot, setIdFilter } from "../actions/plotsSlice";
-import Land from "../assets/images/SampleLandImage.png";
 import Icon2 from "../assets/images/icon2.png";
 import Icon3 from "../assets/images/icon3.png";
 import PlotsStatus from "./PlotsStatus";
+import { PLOT_IMAGES_BASE_URI } from "../constants";
 
 mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_TOKEN;
 
@@ -80,6 +80,7 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
       });
 
       closePopup();
+      const plotImageUrl = `${PLOT_IMAGES_BASE_URI}/${stringifyPlotId(activePlot.id)}.png`;
 
       //Create html content for popup
       let popupTitle = `<div class="flex items-center mb-2.5"><p class="text-primary-3 secondary-font text-lg">Plot #${stringifyPlotId(
@@ -90,7 +91,7 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
       let popupContent = "<div class='popup-content'><div class='cordinates'>";
       let coordinates = activePlot.geometry.coordinates[0][0];
       popupContent += "</div>";
-      popupContent += `<img class="bg-transparent plot-image" src=${Land} alt="Land" />`;
+      popupContent += `<img class="bg-transparent plot-image" src=${plotImageUrl} alt="Land" />`;
       popupContent += "</div>";
 
       const lats = coordinates.map(codinate => codinate[0]);

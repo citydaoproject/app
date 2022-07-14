@@ -5,9 +5,8 @@ import { useAppDispatch, useAppSelector } from "../hooks";
 import { setHighlightedPlot } from "../actions";
 import { setActivePlot } from "../actions/plotsSlice";
 
-import LAND_IMG from "../assets/images/SampleLandImage.png";
-import PlotLocation from "../assets/images/plot-location.png"
 import { stringifyPlotId } from "../helpers/stringifyPlotId";
+import { PLOT_IMAGES_BASE_URI } from "../constants";
 
 interface Props {
   plot: Plot;
@@ -34,12 +33,18 @@ export default function PlotButton({ plot, delay }: Props) {
       >
         <div className="flex justify-between w-full p-1 items-center">
           <div className="flex justify-start items-center">
-            <img src={LAND_IMG} alt={plot?.id.toString()} className="img-small" />
+            <img
+              src={`${PLOT_IMAGES_BASE_URI}/${stringifyPlotId(plot.id)}.png`}
+              alt={plot?.id.toString()}
+              className="img-small"
+            />
             <div className="flex flex-col items-baseline secondary-font">
               <span className="plot-title primary-font text-lg font-medium leading-6 mx-2 text-primary-3 text-xl">
                 Plot #{stringifyPlotId(plot.id)}
               </span>
-              <div className="mx-2 flex flex-row items-center secondary-font text-white text-opacity-75 text-xl">{plot?.properties.Name}</div>
+              <div className="mx-2 flex flex-row items-center secondary-font text-white text-opacity-75 text-xl">
+                {plot?.properties.Name}
+              </div>
             </div>
           </div>
         </div>

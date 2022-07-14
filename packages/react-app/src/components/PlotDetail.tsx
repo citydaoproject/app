@@ -14,6 +14,7 @@ import Gravel from "../assets/images/gravel.png";
 import Sage from "../assets/images/sage.png";
 import Rock from "../assets/images/rock.png";
 import Arrow from "../assets/images/arrow.png";
+import { PLOT_IMAGES_BASE_URI } from "../constants";
 
 interface Props {
   plot: Plot;
@@ -61,7 +62,7 @@ export default function PlotDetail({ plot, contracts, injectedProvider, mainnetP
               </div>
             </motion.div>
             <motion.img
-              src={plotMetadata?.image ?? LAND_IMG}
+              src={activePlot ? `${PLOT_IMAGES_BASE_URI}/${activePlot.id}.png` : LAND_IMG}
               alt={plot?.id.toString()}
               initial={{ x: -300, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
