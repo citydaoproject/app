@@ -14,7 +14,11 @@ export default function LocationDetail() {
         </div>
         <span className="uppercase text-lg mb-4">DESCRIPTION</span>
         <span className="primary-font text-lg text-left mb-8 description text-white text-opacity-75">
-          Located an hour north of Cody, Wyoming, Parcel 0 is CityDAO's first experiment.
+          Located an hour north of Cody, Wyoming, Parcel 0 is{" "}
+          <a href="https://citydao.io/" target="_blank" rel="noreferrer">
+            CityDAO
+          </a>
+          's first experiment.
         </span>
       </div>
     </div>
