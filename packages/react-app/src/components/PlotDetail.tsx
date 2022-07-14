@@ -113,9 +113,7 @@ export default function PlotDetail({ plot, contracts, injectedProvider, mainnetP
                       </div>
                       <span className="secondary-font text-xl text-white text-opacity-75 tracking-wider">Rock</span>
                     </div>
-                    <span className="primary-font text-lg tracking-wider">
-                      {activePlot?.properties.rock_pct ?? 0}%
-                    </span>
+                    <span className="primary-font text-lg tracking-wider">{activePlot?.properties.rock_pct ?? 0}%</span>
                   </div>
                   <div className="flex flex-row items-center w-full justify-between">
                     <div className="flex flex-row items-center">
@@ -126,9 +124,7 @@ export default function PlotDetail({ plot, contracts, injectedProvider, mainnetP
                         Vegeration
                       </span>
                     </div>
-                    <span className="primary-font text-lg tracking-wider">
-                      {activePlot?.properties.veg_pct ?? 0}%
-                    </span>
+                    <span className="primary-font text-lg tracking-wider">{activePlot?.properties.veg_pct ?? 0}%</span>
                   </div>
                 </div>
               </div>
@@ -154,21 +150,26 @@ export default function PlotDetail({ plot, contracts, injectedProvider, mainnetP
             >
               <div className="flex flex-col justify-between py-3.5 mt-3">
                 <span className="text-left primary-font tracking-wider mb-2">Owner</span>
-                <Tooltip title={addressFinal}>
-                  <Link
-                    to={{
-                      pathname: `https://etherscan.io/address/${nftMetaData && nftMetaData.owner && nftMetaData.owner.address
+                {addressFinal === "N/A" ? (
+                  <div className="flex items-center justify-between">N/A</div>
+                ) : (
+                  <Tooltip title={addressFinal}>
+                    <Link
+                      to={{
+                        pathname: `https://etherscan.io/address/${
+                          nftMetaData && nftMetaData.owner && nftMetaData.owner.address
                         }`,
-                    }}
-                    target={"_blank"}
-                    className="logo-link w-full mb-2.5"
-                  >
-                    <div className="flex items-center justify-between">
-                      <Address address={addressFinal} ensProvider={mainnetProvider} />{" "}
-                      <img className="ml-4 h-auto bg-transparent " src={Arrow} alt="arrow" />
-                    </div>
-                  </Link>
-                </Tooltip>
+                      }}
+                      target={"_blank"}
+                      className="logo-link w-full mb-2.5"
+                    >
+                      <div className="flex items-center justify-between">
+                        <Address address={addressFinal} ensProvider={mainnetProvider} />{" "}
+                        <img className="ml-4 h-auto bg-transparent " src={Arrow} alt="arrow" />
+                      </div>
+                    </Link>
+                  </Tooltip>
+                )}
               </div>
             </motion.div>
             <motion.div
