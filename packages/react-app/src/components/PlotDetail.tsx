@@ -80,7 +80,7 @@ export default function PlotDetail({ plot, contracts, injectedProvider, mainnetP
                 <div className="flex flex-row items-center">
                   <img src={Icon1} className="mr-4" />
                   <span className="text-right secondary-font text-lg text-white text-opacity-75 tracking-wider">
-                    {activePlot?.properties.District}
+                    {activePlot?.properties.district}
                   </span>
                 </div>
               </div>
@@ -102,7 +102,9 @@ export default function PlotDetail({ plot, contracts, injectedProvider, mainnetP
                       </div>
                       <span className="secondary-font text-xl text-white text-opacity-75 tracking-wider">Gravel</span>
                     </div>
-                    <span className="primary-font text-lg tracking-wider">{activePlot?.properties.HISTO_0 ?? 0}%</span>
+                    <span className="primary-font text-lg tracking-wider">
+                      {activePlot?.properties.other_pct ?? 0}%
+                    </span>
                   </div>
                   <div className="flex flex-row items-center w-full justify-between">
                     <div className="flex flex-row items-center">
@@ -111,7 +113,9 @@ export default function PlotDetail({ plot, contracts, injectedProvider, mainnetP
                       </div>
                       <span className="secondary-font text-xl text-white text-opacity-75 tracking-wider">Rock</span>
                     </div>
-                    <span className="primary-font text-lg tracking-wider">{activePlot?.properties.HISTO_4 ?? 0}%</span>
+                    <span className="primary-font text-lg tracking-wider">
+                      {activePlot?.properties.rock_pct ?? 0}%
+                    </span>
                   </div>
                   <div className="flex flex-row items-center w-full justify-between">
                     <div className="flex flex-row items-center">
@@ -123,7 +127,7 @@ export default function PlotDetail({ plot, contracts, injectedProvider, mainnetP
                       </span>
                     </div>
                     <span className="primary-font text-lg tracking-wider">
-                      {activePlot?.properties.HISTO_255 ?? 0}%
+                      {activePlot?.properties.veg_pct ?? 0}%
                     </span>
                   </div>
                 </div>
@@ -153,9 +157,8 @@ export default function PlotDetail({ plot, contracts, injectedProvider, mainnetP
                 <Tooltip title={addressFinal}>
                   <Link
                     to={{
-                      pathname: `https://etherscan.io/address/${
-                        nftMetaData && nftMetaData.owner && nftMetaData.owner.address
-                      }`,
+                      pathname: `https://etherscan.io/address/${nftMetaData && nftMetaData.owner && nftMetaData.owner.address
+                        }`,
                     }}
                     target={"_blank"}
                     className="logo-link w-full mb-2.5"
