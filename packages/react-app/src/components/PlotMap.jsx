@@ -34,21 +34,21 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
   const highlightedPlot = useAppSelector(state => state.plots.highlightedPlot);
   const activePlot = useAppSelector(state => state.plots.activePlot);
   const idFilter = useAppSelector(state => state.plots.idFilter);
-  const [newPlots] = useState(plotsList)
-  const [drainage] = useState(drainageData)
-  const [road] = useState(roadData)
-  const [entranceGate] = useState(entranceGateData)
-  const [edge] = useState(edgeData)
+  const [newPlots] = useState(plotsList);
+  const [drainage] = useState(drainageData);
+  const [road] = useState(roadData);
+  const [entranceGate] = useState(entranceGateData);
+  const [edge] = useState(edgeData);
 
   let highlightedPlotId = -1;
 
-  const handleSetActivePlot = (plot) => {
+  const handleSetActivePlot = plot => {
     dispatch(setActivePlot(plot));
     if (!plot) {
       closePopup();
       dispatch(setIdFilter(""));
     }
-  }
+  };
 
   useEffect(() => {
     if (idFilter != "") {
@@ -56,12 +56,12 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
       let filteredPlot = [];
       filteredPlot = plotData.filter(plot => {
         return stringifyPlotId(plot.id).includes(idFilter);
-      })
+      });
       handleSetActivePlot(filteredPlot[0]);
       return;
     }
     handleSetActivePlot(undefined);
-  }, [idFilter])
+  }, [idFilter]);
 
   //remove popups
   const closePopup = () => {
@@ -69,7 +69,7 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
     if (popups.length) {
       popups[0].remove();
     }
-  }
+  };
 
   // zoom to plot on selection
   useEffect(() => {
@@ -82,21 +82,26 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
       closePopup();
 
       //Create html content for popup
-      let popupTitle = `<div class="flex items-center mb-2.5"><p class="text-primary-3 secondary-font text-lg">Plot #${stringifyPlotId(activePlot.id)}</p>`;
-      popupTitle += "<span class='primary-font text-base cursor-pointer absolute right-2.5' id='close-popup'>X</span>"
-      popupTitle += `</div>`
+      let popupTitle = `<div class="flex items-center mb-2.5"><p class="text-primary-3 secondary-font text-lg">Plot #${stringifyPlotId(
+        activePlot.id,
+      )}</p>`;
+      popupTitle += "<span class='primary-font text-base cursor-pointer absolute right-2.5' id='close-popup'>X</span>";
+      popupTitle += `</div>`;
       let popupContent = "<div class='popup-content'><div class='cordinates'>";
       let coordinates = activePlot.geometry.coordinates[0][0];
       popupContent += "</div>";
-      popupContent += `<img class="bg-transparent plot-image" src=${Land} alt="Land" />`
+      popupContent += `<img class="bg-transparent plot-image" src=${Land} alt="Land" />`;
       popupContent += "</div>";
 
       const lats = coordinates.map(codinate => codinate[0]);
       const lngs = coordinates.map(codinate => codinate[1]);
       const centerLat = (Math.min(...lats) + Math.max(...lats)) / 2;
       const centerLng = (Math.min(...lngs) + Math.max(...lngs)) / 2;
-      popup.setLngLat([centerLat, centerLng]).setHTML(popupTitle + popupContent).addTo(map.current);
-      document.getElementById('close-popup').addEventListener('click', () => handleSetActivePlot(undefined));
+      popup
+        .setLngLat([centerLat, centerLng])
+        .setHTML(popupTitle + popupContent)
+        .addTo(map.current);
+      document.getElementById("close-popup").addEventListener("click", () => handleSetActivePlot(undefined));
     }
   }, [activePlot]);
 
@@ -116,7 +121,7 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
         paint: {
           "line-color": color,
           "line-width": width,
-          "line-opacity": opacity
+          "line-opacity": opacity,
         },
       });
     }
@@ -137,7 +142,7 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
         type: "fill",
         paint: {
           "fill-color": color,
-          "fill-opacity": opacity
+          "fill-opacity": opacity,
         },
       });
     }
@@ -204,63 +209,60 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
           addFilledToMap(entranceGate, "entrance", 0, "#E0E371");
         }
 
-        map.current.loadImage(
-          CityDAO,
-          (error, image) => {
-            if (error) throw error;
+        map.current.loadImage(CityDAO, (error, image) => {
+          if (error) throw error;
 
-            // Add the image to the map style.
-            if (map.current.hasImage("citydao")) return;
-            map.current.addImage('citydao', image);
+          // Add the image to the map style.
+          if (map.current.hasImage("citydao")) return;
+          map.current.addImage("citydao", image);
 
-            // Add a data source containing one point feature.
-            map.current.addSource('point', {
-              'type': 'geojson',
-              'data': {
-                'type': 'FeatureCollection',
-                'features': [
-                  {
-                    'type': 'Feature',
-                    'geometry': {
-                      'type': 'Point',
-                      'coordinates': [-109.25998739898205, 44.924363970512005]
-                    }
-                  }
-                ]
-              }
-            });
+          // Add a data source containing one point feature.
+          map.current.addSource("point", {
+            type: "geojson",
+            data: {
+              type: "FeatureCollection",
+              features: [
+                {
+                  type: "Feature",
+                  geometry: {
+                    type: "Point",
+                    coordinates: [-109.25998739898205, 44.924363970512005],
+                  },
+                },
+              ],
+            },
+          });
 
-            // Add a layer to use the image to represent the data.
-            map.current.addLayer({
-              'id': 'points',
-              'type': 'symbol',
-              'source': 'point', // reference the data source
-              'layout': {
-                'icon-image': 'citydao', // reference the image
-                'icon-size': 0.5
-              }
-            });
-          }
-        );
+          // Add a layer to use the image to represent the data.
+          map.current.addLayer({
+            id: "points",
+            type: "symbol",
+            source: "point", // reference the data source
+            layout: {
+              "icon-image": "citydao", // reference the image
+              "icon-size": 0.5,
+            },
+          });
+        });
 
         setTimeout(() => {
           setMapLoaded(true);
 
           // When the user enter the mouse into parcel_fill layer, we'll update the
           // cursor pointer
-          map.current.on('mouseenter', 'parcel_fill', () => {
-            map.current.getCanvas().style.cursor = 'pointer';
+          map.current.on("mouseenter", "parcel_fill", () => {
+            map.current.getCanvas().style.cursor = "pointer";
           });
           // When the user leave parcel_fill layer, we'll update the
           // cursor pointer
-          map.current.on('mouseleave', 'parcel_fill', () => {
-            map.current.getCanvas().style.cursor = '';
+          map.current.on("mouseleave", "parcel_fill", () => {
+            map.current.getCanvas().style.cursor = "";
             dispatch(setHighlightedPlot(undefined));
           });
 
           // When the user moves their mouse over the parcel_fill layer, we'll update the
           // highlighted plot state
-          map.current.on('mousemove', 'parcel_fill', (e) => {
+          map.current.on("mousemove", "parcel_fill", e => {
             if (e.features.length > 0) {
               const hoveredFeature = e.features[0];
               let filteredPlot = [];
@@ -268,7 +270,7 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
               //Filter plot list by hovered plot id
               filteredPlot = newPlots.features.filter(plot => {
                 return plot.id == hoveredFeature.id;
-              })
+              });
 
               //Return if highlighted plot is same with hovered plot
               if (highlightedPlotId == hoveredFeature.id) {
@@ -283,26 +285,27 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
 
           // When the user click plot on map, we'll update the
           // selected plot state
-          map.current.on('click', 'parcel_fill', (e) => {
+          map.current.on("click", "parcel_fill", e => {
             const clickedFeature = e.features[0];
             let filteredPlot = [];
             //Filter plot list by hovered plot id
             filteredPlot = newPlots.features.filter(plot => {
               return plot.id == clickedFeature.id;
-            })
+            });
             //Set active plot
-            handleSetActivePlot(filteredPlot[0])
+            handleSetActivePlot(filteredPlot[0]);
           });
 
-          map.current.on('mouseenter', 'launchpad_fill', (e) => {
+          map.current.on("mouseenter", "launchpad_fill", e => {
             // Change the cursor style as a UI indicator.
-            map.current.getCanvas().style.cursor = 'pointer';
+            map.current.getCanvas().style.cursor = "pointer";
 
             // Copy coordinates array.
             const coordinates = e.features[0].geometry.coordinates[0];
             let popupTitle = `<div class="flex flex-col items-start launchpad-popup"><img class="bg-transparent plot-image my-2" src=${Icon2} alt="Land" />`;
             popupTitle += `<p class="secondary-font text-base my-1">LFG Landing</p>`;
-            popupTitle += "<p class='primary-font text-xs text-white text-opacity-75 my-1 text-left'>Lorem ipsum dolor sit amet, consectetur</p>";
+            popupTitle +=
+              "<p class='primary-font text-xs text-white text-opacity-75 my-1 text-left'>Lorem ipsum dolor sit amet, consectetur</p>";
             popupTitle += `</div>`;
 
             const lats = coordinates.map(codinate => codinate[0]);
@@ -314,19 +317,20 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
             // based on the feature found.
             lunchadPadPopup.setLngLat([centerLat, centerLng]).setHTML(popupTitle).addTo(map.current);
           });
-          map.current.on('mouseleave', 'launchpad_fill', () => {
-            map.current.getCanvas().style.cursor = '';
+          map.current.on("mouseleave", "launchpad_fill", () => {
+            map.current.getCanvas().style.cursor = "";
             lunchadPadPopup.remove();
           });
-          map.current.on('mouseenter', 'entrance_fill', (e) => {
+          map.current.on("mouseenter", "entrance_fill", e => {
             // Change the cursor style as a UI indicator.
-            map.current.getCanvas().style.cursor = 'pointer';
+            map.current.getCanvas().style.cursor = "pointer";
 
             // Copy coordinates array.
             const coordinates = e.features[0].geometry.coordinates[0];
             let popupTitle = `<div class="flex flex-col items-start launchpad-popup"><img class="bg-transparent plot-image my-2" src=${Icon3} alt="Degentrance" />`;
             popupTitle += `<p class="secondary-font text-base my-1">Degentrance</p>`;
-            popupTitle += "<p class='primary-font text-xs text-white text-opacity-75 my-1 text-left'>Lorem ipsum dolor sit amet, consectetur</p>";
+            popupTitle +=
+              "<p class='primary-font text-xs text-white text-opacity-75 my-1 text-left'>Lorem ipsum dolor sit amet, consectetur</p>";
             popupTitle += `</div>`;
 
             const lats = coordinates.map(codinate => codinate[0]);
@@ -338,14 +342,14 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
             // based on the feature found.
             lunchadPadPopup.setLngLat([centerLat, centerLng]).setHTML(popupTitle).addTo(map.current);
           });
-          map.current.on('mouseleave', 'entrance_fill', () => {
-            map.current.getCanvas().style.cursor = '';
+          map.current.on("mouseleave", "entrance_fill", () => {
+            map.current.getCanvas().style.cursor = "";
             lunchadPadPopup.remove();
           });
         }, 1000);
       });
     }
-  }, [newPlots, map.current])
+  }, [newPlots, map.current]);
 
   return (
     <div className="plot-map flex-grow flex flex-col relative bg-gray-1 border-r">
