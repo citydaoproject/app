@@ -105,6 +105,7 @@ export default function BrowsePlots({ networkProvider, web3Modal, mainnetProvide
         mainnetProvider={mainnetProvider}
         userNft={userNft}
         isShowingOwnedPlot={isShowingOwnedPlot}
+        setShowingOwnedPlot={setShowingOwnedPlot}
       />
 
       {/* key prop is to cause rerendering whenever it changes */}
@@ -113,6 +114,7 @@ export default function BrowsePlots({ networkProvider, web3Modal, mainnetProvide
         startingCoordinates={[-109.25689639464197, 44.922331600075466]}
         startingZoom={15.825123438299038}
         startingPitch={20}
+        setShowingOwnedPlot={setShowingOwnedPlot}
       />
     </div>
   );

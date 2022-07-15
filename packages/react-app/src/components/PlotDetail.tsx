@@ -24,9 +24,10 @@ interface Props {
   contracts: any;
   injectedProvider: any;
   mainnetProvider: any;
+  setShowingOwnedPlot: any;
 }
 
-export default function PlotDetail({ plot, contracts, injectedProvider, mainnetProvider }: Props) {
+export default function PlotDetail({ plot, contracts, injectedProvider, mainnetProvider, setShowingOwnedPlot }: Props) {
   const dispatch = useAppDispatch();
   const [plotMetadata, setPlotMetadata] = useState<any>({} as any);
   const activePlot = useAppSelector(state => state.plots.activePlot);
@@ -42,6 +43,7 @@ export default function PlotDetail({ plot, contracts, injectedProvider, mainnetP
     const popups = document.getElementsByClassName("mapboxgl-popup");
     if (popups.length) {
       popups[0].remove();
+      setShowingOwnedPlot(false);
     }
   };
   const addressFinal = nftMetaData?.owner && nftMetaData.owner.address;
