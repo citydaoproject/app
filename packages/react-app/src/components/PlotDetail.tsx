@@ -259,6 +259,17 @@ export default function PlotDetail({ plot, contracts, injectedProvider, mainnetP
                     IPFS <img className="ml-4 h-auto bg-transparent " src={Arrow} alt="arrow" />
                   </div>
                 </Link>
+                <Link
+                  to={{
+                    pathname: `https://bafybeieypckzw36w2zolhyttkef6oa2zhuldutljccse66jbakvdxkfyym.ipfs.nftstorage.link/${plot?.id}.kml`,
+                  }}
+                  target="_blank"
+                  className="logo-link w-full my-2.5"
+                >
+                  <div className="flex items-center justify-between secondary-font text-xl text-white text-opacity-75 tracking-wider">
+                    KML File <img className="ml-4 h-auto bg-transparent " src={Arrow} alt="arrow" />
+                  </div>
+                </Link>
               </div>
             </motion.div>
           </div>
