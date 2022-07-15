@@ -33,11 +33,7 @@ export default function PlotButton({ plot, delay }: Props) {
       >
         <div className="flex justify-between w-full p-1 items-center">
           <div className="flex justify-start items-center">
-            <img
-              src={`${PLOT_IMAGES_BASE_URI}/${stringifyPlotId(plot.id)}.png`}
-              alt={plot?.id.toString()}
-              className="img-small"
-            />
+            <img src={`${PLOT_IMAGES_BASE_URI}/${plot.id}.png`} alt={plot?.id.toString()} className="img-small" />
             <div className="flex flex-col items-baseline secondary-font">
               <span className="plot-title primary-font text-lg font-medium leading-6 mx-2 text-primary-3 text-xl">
                 Plot #{stringifyPlotId(plot.id)}

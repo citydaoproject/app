@@ -80,7 +80,7 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
       });
 
       closePopup();
-      const plotImageUrl = `${PLOT_IMAGES_BASE_URI}/${stringifyPlotId(activePlot.id)}.png`;
+      const plotImageUrl = `${PLOT_IMAGES_BASE_URI}/${activePlot.id}.png`;
 
       //Create html content for popup
       let popupTitle = `<div class="flex items-center mb-2.5"><p class="text-primary-3 secondary-font text-lg">Plot #${stringifyPlotId(
