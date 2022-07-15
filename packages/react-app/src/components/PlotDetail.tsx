@@ -119,10 +119,10 @@ export default function PlotDetail({ plot, contracts, injectedProvider, mainnetP
                   <div className="flex flex-row items-center w-full justify-between">
                     <div className="flex flex-row items-center">
                       <div className="mr-6 w-5">
-                        <img className="bg-transparent" src={Sage} alt="Vegeration" />
+                        <img className="bg-transparent" src={Sage} alt="Vegetation" />
                       </div>
                       <span className="secondary-font text-xl text-white text-opacity-75 tracking-wider">
-                        Vegeration
+                        Vegetation
                       </span>
                     </div>
                     <span className="primary-font text-lg tracking-wider">{activePlot?.properties.veg_pct ?? 0}%</span>
