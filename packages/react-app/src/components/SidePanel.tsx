@@ -13,14 +13,13 @@ interface Props {
   injectedProvider: any;
   mainnetProvider: any;
   userNft: Array<number>;
+  isShowingOwnedPlot: boolean;
 }
 
-export default function SidePanel({ contracts, injectedProvider, mainnetProvider, userNft }: Props) {
-  const userAddress = useAppSelector((state: RootState) => state.user.address);
+export default function SidePanel({ contracts, injectedProvider, mainnetProvider, userNft, isShowingOwnedPlot }: Props) {
   const idFilter = useAppSelector((state: RootState) => state.plots.idFilter);
   const activePlot = useAppSelector(state => state.plots.activePlot);
   const [newPlots, setNewPlots] = useState<Plot[]>([]);
-  const [newPlotsNum, setNewPlotsNum] = useState(0);
 
   useEffect(() => {
     const plotData = plotsList.features as Plot[];
@@ -41,12 +40,7 @@ export default function SidePanel({ contracts, injectedProvider, mainnetProvider
       return stringifyPlotId(plot.id).includes(idFilter ?? "");
     });
     setNewPlots(filteredPlot);
-    setNewPlotsNum(filteredPlot.length);
   }, [idFilter]);
-
-  useEffect(() => {
-    const filteredArray = newPlots.filter(item => userNft.includes(item.id));
-  }, [userNft, newPlots]);
 
   return (
     <div className="plot-tabs overflow-auto">
@@ -57,21 +51,14 @@ export default function SidePanel({ contracts, injectedProvider, mainnetProvider
           injectedProvider={injectedProvider}
           mainnetProvider={mainnetProvider}
         />
-      ) : !userAddress ? (
+      ) : isShowingOwnedPlot ? (
+        <div className="py-6">
+          <PlotList plots={newPlots.filter(item => userNft.includes(item.id))} totalNum={userNft.length} />
+        </div>
+      ) : (
         <div className="px-10 py-11">
           <LocationDetail />
           <TerrainDetail />
-        </div>
-      ) : activePlot !== undefined ? (
-        <PlotDetail
-          plot={activePlot}
-          contracts={contracts}
-          injectedProvider={injectedProvider}
-          mainnetProvider={mainnetProvider}
-        />
-      ) : (
-        <div className="py-6">
-          <PlotList plots={newPlots.filter(item => userNft.includes(item.id))} totalNum={userNft.length} />
         </div>
       )}
     </div>

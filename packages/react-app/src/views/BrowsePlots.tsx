@@ -21,6 +21,7 @@ export default function BrowsePlots({ networkProvider, web3Modal, mainnetProvide
   const [injectedProvider, setInjectedProvider] = useState<ethers.providers.Web3Provider>();
   const [userNft, setUserNft] = useState<Array<number>>([]);
   const [isParcelCountRead, setIsParcelCountRead] = useState(false);
+  const [isShowingOwnedPlot, setShowingOwnedPlot] = useState(false);
 
   const signer = useUserSigner(injectedProvider); // initialize signer
 
@@ -96,12 +97,14 @@ export default function BrowsePlots({ networkProvider, web3Modal, mainnetProvide
         connectWallet={loadWeb3Modal}
         userNft={userNft.length}
         isParcelCountRead={isParcelCountRead}
+        setShowingOwnedPlot={setShowingOwnedPlot}
       />
       <SidePanel
         contracts={contracts}
         injectedProvider={injectedProvider}
         mainnetProvider={mainnetProvider}
         userNft={userNft}
+        isShowingOwnedPlot={isShowingOwnedPlot}
       />
 
       {/* key prop is to cause rerendering whenever it changes */}
