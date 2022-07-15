@@ -204,12 +204,24 @@ export default function PlotDetail({ plot, contracts, injectedProvider, mainnetP
                     View Opensea <img className="ml-4 h-auto bg-transparent " src={Arrow} alt="arrow" />
                   </div>
                 </Link>
-                <Link to="#" className="logo-link w-full my-2.5">
+                <Link
+                  to={{
+                    pathname: `https://etherscan.io/token/0x90384e76b6b3ddb47396ff85144819ded148900d?a=${plot?.id}`,
+                  }}
+                  target="_blank"
+                  className="logo-link w-full my-2.5"
+                >
                   <div className="flex items-center justify-between secondary-font text-xl text-white text-opacity-75 tracking-wider">
                     Etherscan <img className="ml-4 h-auto bg-transparent " src={Arrow} alt="arrow" />
                   </div>
                 </Link>
-                <Link to="#" className="logo-link w-full my-2.5">
+                <Link
+                  to={{
+                    pathname: `https://opensea.mypinata.cloud/ipfs/Qmb6SayMEofSSepGERswCNLdZG5ymXEgoqA6AqugS7Ziek/${plot?.id}`,
+                  }}
+                  target="_blank"
+                  className="logo-link w-full my-2.5"
+                >
                   <div className="flex items-center justify-between secondary-font text-xl text-white text-opacity-75 tracking-wider">
                     IPFS <img className="ml-4 h-auto bg-transparent " src={Arrow} alt="arrow" />
                   </div>
