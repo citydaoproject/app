@@ -127,6 +127,29 @@ export default function PlotDetail({ plot, contracts, injectedProvider, mainnetP
                     </div>
                     <span className="primary-font text-lg tracking-wider">{activePlot?.properties.veg_pct ?? 0}%</span>
                   </div>
+                  <div className="flex flex-row items-center w-full justify-between">
+                    <div className="flex flex-row items-center">
+                      <div className="mr-6 w-5"></div>
+                      <span className="secondary-font text-xl text-white text-opacity-75 tracking-wider">
+                        Elevation
+                      </span>
+                    </div>
+                    <span className="primary-font text-lg tracking-wider">{activePlot?.properties.elevation}</span>
+                  </div>
+                  <div className="flex flex-row items-center w-full justify-between">
+                    <div className="flex flex-row items-center">
+                      <div className="mr-6 w-5"></div>
+                      <span className="secondary-font text-xl text-white text-opacity-75 tracking-wider">Slope</span>
+                    </div>
+                    <span className="primary-font text-lg tracking-wider">{activePlot?.properties.slope}</span>
+                  </div>
+                  <div className="flex flex-row items-center w-full justify-between">
+                    <div className="flex flex-row items-center">
+                      <div className="mr-6 w-5"></div>
+                      <span className="secondary-font text-xl text-white text-opacity-75 tracking-wider">Aspect</span>
+                    </div>
+                    <span className="primary-font text-lg tracking-wider">{activePlot?.properties.aspect}</span>
+                  </div>
                 </div>
               </div>
             </motion.div>
@@ -224,6 +247,17 @@ export default function PlotDetail({ plot, contracts, injectedProvider, mainnetP
                 >
                   <div className="flex items-center justify-between secondary-font text-xl text-white text-opacity-75 tracking-wider">
                     IPFS <img className="ml-4 h-auto bg-transparent " src={Arrow} alt="arrow" />
+                  </div>
+                </Link>
+                <Link
+                  to={{
+                    pathname: `https://bafybeieypckzw36w2zolhyttkef6oa2zhuldutljccse66jbakvdxkfyym.ipfs.nftstorage.link/${plot?.id}.kml`,
+                  }}
+                  target="_blank"
+                  className="logo-link w-full my-2.5"
+                >
+                  <div className="flex items-center justify-between secondary-font text-xl text-white text-opacity-75 tracking-wider">
+                    KML File <img className="ml-4 h-auto bg-transparent " src={Arrow} alt="arrow" />
                   </div>
                 </Link>
               </div>
