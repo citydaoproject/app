@@ -7,7 +7,7 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import { useAppSelector, useAppDispatch } from "../hooks";
 import { AnimatePresence, motion } from "framer-motion";
 import { stringifyPlotId } from "../helpers/stringifyPlotId";
-import { plotsList, drainageData, roadData, entranceGateData, edgeData, launchpadData } from "../data";
+import { plotsList, roadData, entranceGateData, edgeData, launchpadData } from "../data";
 import { setActivePlot, setHighlightedPlot, setIdFilter } from "../actions/plotsSlice";
 import Icon2 from "../assets/images/icon2.png";
 import Icon3 from "../assets/images/icon3.png";
@@ -16,7 +16,7 @@ import { PLOT_IMAGES_BASE_URI } from "../constants";
 
 mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_TOKEN;
 
-export default function PlotMap({ startingCoordinates, startingZoom, startingPitch }) {
+export default function PlotMap({ startingCoordinates, startingZoom, startingPitch, setShowingOwnedPlot, userNft }) {
   const dispatch = useAppDispatch();
   const mapContainer = useRef(null);
   const map = useRef(null);
@@ -35,7 +35,6 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
   const activePlot = useAppSelector(state => state.plots.activePlot);
   const idFilter = useAppSelector(state => state.plots.idFilter);
   const [newPlots] = useState(plotsList);
-  const [drainage] = useState(drainageData);
   const [road] = useState(roadData);
   const [entranceGate] = useState(entranceGateData);
   const [edge] = useState(edgeData);
@@ -63,11 +62,29 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
     handleSetActivePlot(undefined);
   }, [idFilter]);
 
+  useEffect(() => {
+    const drawOwnedPlots = () => {
+      
+      const ownedPlots = newPlots.features.filter(plot => userNft.includes(plot.properties.PLOT_ID));
+      const collection = {
+        "type": "FeatureCollection",
+        "features": ownedPlots
+      }
+      if (!map.current.getLayer("owned_outline")) {
+        addOutlineToMap(collection, "owned", 1, 1, "#ffff00");
+      }
+    }
+    if (userNft.length > 0 && map.current) {
+      drawOwnedPlots()
+    }
+  }, [userNft, map.current])
+
   //remove popups
   const closePopup = () => {
     const popups = document.getElementsByClassName("mapboxgl-popup");
     if (popups.length) {
       popups[0].remove();
+      setShowingOwnedPlot(false);
     }
   };
 
@@ -295,6 +312,7 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
             });
             //Set active plot
             handleSetActivePlot(filteredPlot[0]);
+            setShowingOwnedPlot(false);
           });
 
           map.current.on("mouseenter", "launchpad_fill", e => {

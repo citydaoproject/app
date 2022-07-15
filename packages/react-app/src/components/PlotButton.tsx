@@ -11,11 +11,17 @@ import { PLOT_IMAGES_BASE_URI } from "../constants";
 interface Props {
   plot: Plot;
   delay: number;
+  setShowingOwnedPlot: any;
 }
 
-export default function PlotButton({ plot, delay }: Props) {
+export default function PlotButton({ plot, delay, setShowingOwnedPlot }: Props) {
   const dispatch = useAppDispatch();
   const highlightedPlot = useAppSelector(state => state.plots.highlightedPlot);
+
+  const handleSelectPlot = () => {
+    dispatch(setActivePlot(plot));
+    setShowingOwnedPlot(false);
+  }
 
   return (
     // Don't use the antd Button class here as that adds subcomponents that mess with styling
@@ -26,9 +32,7 @@ export default function PlotButton({ plot, delay }: Props) {
         animate={{ y: 0, opacity: 1 }}
         exit={{ y: 50, opacity: 0 }}
         transition={{ delay: 0.1 * delay }}
-        onMouseEnter={() => dispatch(setHighlightedPlot(plot))}
-        onMouseLeave={() => dispatch(setHighlightedPlot(undefined))}
-        onClick={() => dispatch(setActivePlot(plot))}
+        onClick={() => handleSelectPlot()}
         className={`btn w-full ${highlightedPlot === plot ? "highlight" : ""}`}
       >
         <div className="flex justify-between w-full p-1 items-center">

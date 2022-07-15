@@ -13,14 +13,14 @@ interface Props {
   injectedProvider: any;
   mainnetProvider: any;
   userNft: Array<number>;
+  isShowingOwnedPlot: boolean;
+  setShowingOwnedPlot: any;
 }
 
-export default function SidePanel({ contracts, injectedProvider, mainnetProvider, userNft }: Props) {
-  const userAddress = useAppSelector((state: RootState) => state.user.address);
+export default function SidePanel({ contracts, injectedProvider, mainnetProvider, userNft, isShowingOwnedPlot, setShowingOwnedPlot }: Props) {
   const idFilter = useAppSelector((state: RootState) => state.plots.idFilter);
   const activePlot = useAppSelector(state => state.plots.activePlot);
   const [newPlots, setNewPlots] = useState<Plot[]>([]);
-  const [newPlotsNum, setNewPlotsNum] = useState(0);
 
   useEffect(() => {
     const plotData = plotsList.features as Plot[];
@@ -28,7 +28,7 @@ export default function SidePanel({ contracts, injectedProvider, mainnetProvider
       if (plot["id"]) {
         return;
       }
-      plot["id"] = index + 1;
+      plot["id"] = plot.properties.PLOT_ID;
       return;
     });
     setNewPlots(plotData);
@@ -41,26 +41,17 @@ export default function SidePanel({ contracts, injectedProvider, mainnetProvider
       return stringifyPlotId(plot.id).includes(idFilter ?? "");
     });
     setNewPlots(filteredPlot);
-    setNewPlotsNum(filteredPlot.length);
   }, [idFilter]);
-
-  useEffect(() => {
-    const filteredArray = newPlots.filter(item => userNft.includes(item.id));
-  }, [userNft, newPlots]);
 
   return (
     <div className="plot-tabs overflow-auto">
-      {activePlot !== undefined ? (
-        <PlotDetail
-          plot={activePlot}
-          contracts={contracts}
-          injectedProvider={injectedProvider}
-          mainnetProvider={mainnetProvider}
-        />
-      ) : !userAddress ? (
-        <div className="px-10 py-11">
-          <LocationDetail />
-          <TerrainDetail />
+      {isShowingOwnedPlot ? (
+        <div className="py-6">
+          <PlotList
+            plots={newPlots.filter(item => userNft.includes(item.id))}
+            totalNum={userNft.length}
+            setShowingOwnedPlot={setShowingOwnedPlot}
+          />
         </div>
       ) : activePlot !== undefined ? (
         <PlotDetail
@@ -68,10 +59,12 @@ export default function SidePanel({ contracts, injectedProvider, mainnetProvider
           contracts={contracts}
           injectedProvider={injectedProvider}
           mainnetProvider={mainnetProvider}
+          setShowingOwnedPlot={setShowingOwnedPlot}
         />
       ) : (
-        <div className="py-6">
-          <PlotList plots={newPlots.filter(item => userNft.includes(item.id))} totalNum={userNft.length} />
+        <div className="px-10 py-11">
+          <LocationDetail />
+          <TerrainDetail />
         </div>
       )}
     </div>

@@ -12,9 +12,10 @@ interface Props {
   plots: Plot[];
   totalNum: number;
   isLoading?: boolean;
+  setShowingOwnedPlot: any;
 }
 
-export default function PlotList({ plots, totalNum, isLoading }: Props) {
+export default function PlotList({ plots, totalNum, isLoading, setShowingOwnedPlot }: Props) {
   const dispatch = useAppDispatch();
   const idFilter = useAppSelector((state: RootState) => state.plots.idFilter);
   const currentNumDisplay = useAppSelector((state: RootState) => state.plots.numDisplay);
@@ -32,7 +33,11 @@ export default function PlotList({ plots, totalNum, isLoading }: Props) {
       {plots?.map((plot: Plot, idx: number) => (
         <motion.div className="list-item" key={plot.id} layout>
           {/* modulo delay by 10 because plot buttons are added in batches of 10 */}
-          <PlotButton plot={plot} delay={idx % 10} />
+          <PlotButton
+            plot={plot}
+            delay={idx % 10}
+            setShowingOwnedPlot={setShowingOwnedPlot}
+          />
         </motion.div>
       ))}
       {totalNum > plots?.length && (

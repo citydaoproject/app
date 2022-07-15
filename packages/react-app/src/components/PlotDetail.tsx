@@ -10,6 +10,9 @@ import { stringifyPlotId } from "../helpers/stringifyPlotId";
 import { useGetNftMetadata } from "../hooks/useGetNftMetadata";
 import { setActivePlot, setIdFilter } from "../actions/plotsSlice";
 import Icon1 from "../assets/images/icon1.png";
+import Icon4 from "../assets/images/icon4.png";
+import Icon5 from "../assets/images/icon5.png";
+import Icon6 from "../assets/images/icon6.png";
 import Gravel from "../assets/images/gravel.png";
 import Sage from "../assets/images/sage.png";
 import Rock from "../assets/images/rock.png";
@@ -21,9 +24,10 @@ interface Props {
   contracts: any;
   injectedProvider: any;
   mainnetProvider: any;
+  setShowingOwnedPlot: any;
 }
 
-export default function PlotDetail({ plot, contracts, injectedProvider, mainnetProvider }: Props) {
+export default function PlotDetail({ plot, contracts, injectedProvider, mainnetProvider, setShowingOwnedPlot }: Props) {
   const dispatch = useAppDispatch();
   const [plotMetadata, setPlotMetadata] = useState<any>({} as any);
   const activePlot = useAppSelector(state => state.plots.activePlot);
@@ -39,6 +43,7 @@ export default function PlotDetail({ plot, contracts, injectedProvider, mainnetP
     const popups = document.getElementsByClassName("mapboxgl-popup");
     if (popups.length) {
       popups[0].remove();
+      setShowingOwnedPlot(false);
     }
   };
   const addressFinal = nftMetaData?.owner && nftMetaData.owner.address;
@@ -129,26 +134,36 @@ export default function PlotDetail({ plot, contracts, injectedProvider, mainnetP
                   </div>
                   <div className="flex flex-row items-center w-full justify-between">
                     <div className="flex flex-row items-center">
-                      <div className="mr-6 w-5"></div>
+                      <div className="mr-6 w-5">
+                        <img className="bg-transparent" src={Icon5} alt="Elevation" />
+                      </div>
                       <span className="secondary-font text-xl text-white text-opacity-75 tracking-wider">
-                        Elevation
+                      Elevation
                       </span>
                     </div>
-                    <span className="primary-font text-lg tracking-wider">{activePlot?.properties.elevation}</span>
+                    <span className="primary-font text-lg tracking-wider">{activePlot?.properties.elevation ?? "N/A"}</span>
                   </div>
                   <div className="flex flex-row items-center w-full justify-between">
                     <div className="flex flex-row items-center">
-                      <div className="mr-6 w-5"></div>
-                      <span className="secondary-font text-xl text-white text-opacity-75 tracking-wider">Slope</span>
+                      <div className="mr-6 w-5">
+                        <img className="bg-transparent" src={Icon6} alt="Slope" />
+                      </div>
+                      <span className="secondary-font text-xl text-white text-opacity-75 tracking-wider">
+                      Slope
+                      </span>
                     </div>
-                    <span className="primary-font text-lg tracking-wider">{activePlot?.properties.slope}</span>
+                    <span className="primary-font text-lg tracking-wider">{activePlot?.properties.slope ?? "N/A"}</span>
                   </div>
                   <div className="flex flex-row items-center w-full justify-between">
                     <div className="flex flex-row items-center">
-                      <div className="mr-6 w-5"></div>
-                      <span className="secondary-font text-xl text-white text-opacity-75 tracking-wider">Aspect</span>
+                      <div className="mr-6 w-5">
+                        <img className="bg-transparent" src={Icon4} alt="Aspect" />
+                      </div>
+                      <span className="secondary-font text-xl text-white text-opacity-75 tracking-wider">
+                      Aspect
+                      </span>
                     </div>
-                    <span className="primary-font text-lg tracking-wider">{activePlot?.properties.aspect}</span>
+                    <span className="primary-font text-lg tracking-wider">{activePlot?.properties.aspect ?? "N/A"}</span>
                   </div>
                 </div>
               </div>

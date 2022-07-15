@@ -21,6 +21,7 @@ export default function BrowsePlots({ networkProvider, web3Modal, mainnetProvide
   const [injectedProvider, setInjectedProvider] = useState<ethers.providers.Web3Provider>();
   const [userNft, setUserNft] = useState<Array<number>>([]);
   const [isParcelCountRead, setIsParcelCountRead] = useState(false);
+  const [isShowingOwnedPlot, setShowingOwnedPlot] = useState(false);
 
   const signer = useUserSigner(injectedProvider); // initialize signer
 
@@ -57,7 +58,7 @@ export default function BrowsePlots({ networkProvider, web3Modal, mainnetProvide
         setIsParcelCountRead(false);
         const balanceOfFunc = await contracts.CityDaoParcel.connect(signer)["balanceOf"];
         const numParcel = await balanceOfFunc(userAddress);
-        readOwnedParcelID(numParcel.toNumber());
+        await readOwnedParcelID(numParcel.toNumber());
         setIsParcelCountRead(true);
       }
     } catch (e) { }
@@ -96,12 +97,15 @@ export default function BrowsePlots({ networkProvider, web3Modal, mainnetProvide
         connectWallet={loadWeb3Modal}
         userNft={userNft.length}
         isParcelCountRead={isParcelCountRead}
+        setShowingOwnedPlot={setShowingOwnedPlot}
       />
       <SidePanel
         contracts={contracts}
         injectedProvider={injectedProvider}
         mainnetProvider={mainnetProvider}
         userNft={userNft}
+        isShowingOwnedPlot={isShowingOwnedPlot}
+        setShowingOwnedPlot={setShowingOwnedPlot}
       />
 
       {/* key prop is to cause rerendering whenever it changes */}
@@ -110,6 +114,8 @@ export default function BrowsePlots({ networkProvider, web3Modal, mainnetProvide
         startingCoordinates={[-109.25689639464197, 44.922331600075466]}
         startingZoom={15.825123438299038}
         startingPitch={20}
+        userNft={userNft}
+        setShowingOwnedPlot={setShowingOwnedPlot}
       />
     </div>
   );

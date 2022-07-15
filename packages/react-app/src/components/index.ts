@@ -4,7 +4,6 @@ export { default as PlotMap } from "./PlotMap";
 export { default as PlotButton } from "./PlotButton";
 export { default as PlotDetail } from "./PlotDetail";
 export { default as PlotList } from "./PlotList";
-export { default as PlotTabs } from "./PlotTabs";
 export { default as LogoDisplay } from "./LogoDisplay";
 export { default as Header } from "./Header";
 export { default as ConnectWalletButton } from "./ConnectWalletButton";
