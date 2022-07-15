@@ -17,18 +17,6 @@ export default function PlotTabs() {
 
   useEffect(() => {
     const plotData = plotsList.features as Plot[];
-    plotData.map((plot: Plot, index: number) => {
-      if (plot["id"]) {
-        return;
-      }
-      plot["id"] = plot.properties.PLOT_ID;
-      return;
-    });
-    setNewPlots(plotData);
-  }, []);
-
-  useEffect(() => {
-    const plotData = plotsList.features as Plot[];
     let filteredPlot = [];
     filteredPlot = plotData.filter(plot => {
       return stringifyPlotId(plot.id).includes(idFilter ?? "");

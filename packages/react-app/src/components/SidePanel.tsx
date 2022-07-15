@@ -27,7 +27,7 @@ export default function SidePanel({ contracts, injectedProvider, mainnetProvider
       if (plot["id"]) {
         return;
       }
-      plot["id"] = index + 1;
+      plot["id"] = plot.properties.PLOT_ID;
       return;
     });
     setNewPlots(plotData);
