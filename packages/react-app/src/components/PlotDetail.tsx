@@ -10,6 +10,9 @@ import { stringifyPlotId } from "../helpers/stringifyPlotId";
 import { useGetNftMetadata } from "../hooks/useGetNftMetadata";
 import { setActivePlot, setIdFilter } from "../actions/plotsSlice";
 import Icon1 from "../assets/images/icon1.png";
+import Icon4 from "../assets/images/icon4.png";
+import Icon5 from "../assets/images/icon5.png";
+import Icon6 from "../assets/images/icon6.png";
 import Gravel from "../assets/images/gravel.png";
 import Sage from "../assets/images/sage.png";
 import Rock from "../assets/images/rock.png";
@@ -130,7 +133,7 @@ export default function PlotDetail({ plot, contracts, injectedProvider, mainnetP
                   <div className="flex flex-row items-center w-full justify-between">
                     <div className="flex flex-row items-center">
                       <div className="mr-6 w-5">
-                        <img className="bg-transparent" src={Sage} alt="Elevation" />
+                        <img className="bg-transparent" src={Icon5} alt="Elevation" />
                       </div>
                       <span className="secondary-font text-xl text-white text-opacity-75 tracking-wider">
                       Elevation
@@ -141,7 +144,7 @@ export default function PlotDetail({ plot, contracts, injectedProvider, mainnetP
                   <div className="flex flex-row items-center w-full justify-between">
                     <div className="flex flex-row items-center">
                       <div className="mr-6 w-5">
-                        <img className="bg-transparent" src={Sage} alt="Slope" />
+                        <img className="bg-transparent" src={Icon6} alt="Slope" />
                       </div>
                       <span className="secondary-font text-xl text-white text-opacity-75 tracking-wider">
                       Slope
@@ -152,7 +155,7 @@ export default function PlotDetail({ plot, contracts, injectedProvider, mainnetP
                   <div className="flex flex-row items-center w-full justify-between">
                     <div className="flex flex-row items-center">
                       <div className="mr-6 w-5">
-                        <img className="bg-transparent" src={Sage} alt="Aspect" />
+                        <img className="bg-transparent" src={Icon4} alt="Aspect" />
                       </div>
                       <span className="secondary-font text-xl text-white text-opacity-75 tracking-wider">
                       Aspect
