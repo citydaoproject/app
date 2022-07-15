@@ -16,7 +16,7 @@ import { PLOT_IMAGES_BASE_URI } from "../constants";
 
 mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_TOKEN;
 
-export default function PlotMap({ startingCoordinates, startingZoom, startingPitch, setShowingOwnedPlot }) {
+export default function PlotMap({ startingCoordinates, startingZoom, startingPitch, setShowingOwnedPlot, userNft }) {
   const dispatch = useAppDispatch();
   const mapContainer = useRef(null);
   const map = useRef(null);
@@ -61,6 +61,23 @@ export default function PlotMap({ startingCoordinates, startingZoom, startingPit
     }
     handleSetActivePlot(undefined);
   }, [idFilter]);
+
+  useEffect(() => {
+    const drawOwnedPlots = () => {
+      
+      const ownedPlots = newPlots.features.filter(plot => userNft.includes(plot.properties.PLOT_ID));
+      const collection = {
+        "type": "FeatureCollection",
+        "features": ownedPlots
+      }
+      if (!map.current.getLayer("owned_outline")) {
+        addOutlineToMap(collection, "owned", 1, 1, "#ffff00");
+      }
+    }
+    if (userNft.length > 0 && map.current) {
+      drawOwnedPlots()
+    }
+  }, [userNft, map.current])
 
   //remove popups
   const closePopup = () => {

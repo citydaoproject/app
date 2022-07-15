@@ -58,7 +58,7 @@ export default function BrowsePlots({ networkProvider, web3Modal, mainnetProvide
         setIsParcelCountRead(false);
         const balanceOfFunc = await contracts.CityDaoParcel.connect(signer)["balanceOf"];
         const numParcel = await balanceOfFunc(userAddress);
-        readOwnedParcelID(numParcel.toNumber());
+        await readOwnedParcelID(numParcel.toNumber());
         setIsParcelCountRead(true);
       }
     } catch (e) { }
@@ -114,6 +114,7 @@ export default function BrowsePlots({ networkProvider, web3Modal, mainnetProvide
         startingCoordinates={[-109.25689639464197, 44.922331600075466]}
         startingZoom={15.825123438299038}
         startingPitch={20}
+        userNft={userNft}
         setShowingOwnedPlot={setShowingOwnedPlot}
       />
     </div>
