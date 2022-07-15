@@ -127,6 +127,39 @@ export default function PlotDetail({ plot, contracts, injectedProvider, mainnetP
                     </div>
                     <span className="primary-font text-lg tracking-wider">{activePlot?.properties.veg_pct ?? 0}%</span>
                   </div>
+                  <div className="flex flex-row items-center w-full justify-between">
+                    <div className="flex flex-row items-center">
+                      <div className="mr-6 w-5">
+                        <img className="bg-transparent" src={Sage} alt="Elevation" />
+                      </div>
+                      <span className="secondary-font text-xl text-white text-opacity-75 tracking-wider">
+                      Elevation
+                      </span>
+                    </div>
+                    <span className="primary-font text-lg tracking-wider">{activePlot?.properties.elevation ?? "N/A"}</span>
+                  </div>
+                  <div className="flex flex-row items-center w-full justify-between">
+                    <div className="flex flex-row items-center">
+                      <div className="mr-6 w-5">
+                        <img className="bg-transparent" src={Sage} alt="Slope" />
+                      </div>
+                      <span className="secondary-font text-xl text-white text-opacity-75 tracking-wider">
+                      Slope
+                      </span>
+                    </div>
+                    <span className="primary-font text-lg tracking-wider">{activePlot?.properties.slope ?? "N/A"}</span>
+                  </div>
+                  <div className="flex flex-row items-center w-full justify-between">
+                    <div className="flex flex-row items-center">
+                      <div className="mr-6 w-5">
+                        <img className="bg-transparent" src={Sage} alt="Aspect" />
+                      </div>
+                      <span className="secondary-font text-xl text-white text-opacity-75 tracking-wider">
+                      Aspect
+                      </span>
+                    </div>
+                    <span className="primary-font text-lg tracking-wider">{activePlot?.properties.aspect ?? "N/A"}</span>
+                  </div>
                 </div>
               </div>
             </motion.div>
