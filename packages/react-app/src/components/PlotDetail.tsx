@@ -46,7 +46,7 @@ export default function PlotDetail({ plot, contracts, injectedProvider, mainnetP
       setShowingOwnedPlot(false);
     }
   };
-  const addressFinal = nftMetaData?.owner && nftMetaData.owner.address;
+  const addressFinal = nftMetaData?.top_ownerships && nftMetaData?.top_ownerships[0].owner.address;
   return (
     <AnimatePresence>
       <div className="plot-detail">
@@ -138,19 +138,19 @@ export default function PlotDetail({ plot, contracts, injectedProvider, mainnetP
                         <img className="bg-transparent" src={Icon5} alt="Elevation" />
                       </div>
                       <span className="secondary-font text-xl text-white text-opacity-75 tracking-wider">
-                      Elevation
+                        Elevation
                       </span>
                     </div>
-                    <span className="primary-font text-lg tracking-wider">{activePlot?.properties.elevation ?? "N/A"}</span>
+                    <span className="primary-font text-lg tracking-wider">
+                      {activePlot?.properties.elevation ?? "N/A"}
+                    </span>
                   </div>
                   <div className="flex flex-row items-center w-full justify-between">
                     <div className="flex flex-row items-center">
                       <div className="mr-6 w-5">
                         <img className="bg-transparent" src={Icon6} alt="Slope" />
                       </div>
-                      <span className="secondary-font text-xl text-white text-opacity-75 tracking-wider">
-                      Slope
-                      </span>
+                      <span className="secondary-font text-xl text-white text-opacity-75 tracking-wider">Slope</span>
                     </div>
                     <span className="primary-font text-lg tracking-wider">{activePlot?.properties.slope ?? "N/A"}</span>
                   </div>
@@ -159,11 +159,11 @@ export default function PlotDetail({ plot, contracts, injectedProvider, mainnetP
                       <div className="mr-6 w-5">
                         <img className="bg-transparent" src={Icon4} alt="Aspect" />
                       </div>
-                      <span className="secondary-font text-xl text-white text-opacity-75 tracking-wider">
-                      Aspect
-                      </span>
+                      <span className="secondary-font text-xl text-white text-opacity-75 tracking-wider">Aspect</span>
                     </div>
-                    <span className="primary-font text-lg tracking-wider">{activePlot?.properties.aspect ?? "N/A"}</span>
+                    <span className="primary-font text-lg tracking-wider">
+                      {activePlot?.properties.aspect ?? "N/A"}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -198,7 +198,7 @@ export default function PlotDetail({ plot, contracts, injectedProvider, mainnetP
                     <Link
                       to={{
                         pathname: `https://etherscan.io/address/${
-                          nftMetaData && nftMetaData.owner && nftMetaData.owner.address
+                          nftMetaData?.top_ownerships && nftMetaData?.top_ownerships[0].owner.address
                         }`,
                       }}
                       target={"_blank"}

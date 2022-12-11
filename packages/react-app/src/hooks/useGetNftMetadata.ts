@@ -28,9 +28,13 @@ export const useGetNftMetadata = (activeAssetId: number | undefined) => {
           });
     } else if (activeAssetId !== undefined && activeAssetId > LAST_ALLOCATED_PLOT_ID) {
       setNftMetaData({
-        owner: {
-          address: "N/A"
-        }
+        top_ownerships: [
+          {
+            owner: {
+              address: "N/A"
+            }
+          }
+        ]
       })
     }
   }, [activeAssetId])
